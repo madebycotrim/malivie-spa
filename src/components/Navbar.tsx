@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
           >
             <img
               src={logoMalivieWhite}
-              alt="Maliviê SPA Logotipo Oficial"
+              alt="Maliviê SPA Logotipo"
               className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]"
             />
           </a>

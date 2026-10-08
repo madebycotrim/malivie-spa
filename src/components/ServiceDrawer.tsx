@@ -160,14 +160,14 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
               </a>
 
               <p className="text-[11px] text-center text-[#F3EFE6]/50 font-sans">
-                Atendimento direto pelo canal oficial do Maliviê SPA •{' '}
+                Atendimento direto pelo canal do Maliviê SPA •{' '}
                 <a
                   href={SPA_BUSINESS_DATA.social.linktree}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#7A8B7B] hover:text-[#D4AF37] underline transition-colors"
                 >
-                  Linktree Oficial
+                  Linktree
                 </a>
               </p>
             </div>

@@ -11,7 +11,7 @@ import {
 import { TESTIMONIALS } from '../data/spaData';
 import { ReviewItem } from '../types';
 
-// Ícone Oficial Multicolorido do Google "G"
+// Ícone Multicolorido do Google "G"
 const GoogleLogoIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
     <path
@@ -33,7 +33,7 @@ const GoogleLogoIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   </svg>
 );
 
-// Ícone Oficial de Local Guide do Google (Estrela Laranja de 6 pontas)
+// Ícone de Local Guide do Google (Estrela Laranja de 6 pontas)
 const LocalGuideStarIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="#FF7A00" aria-hidden="true">
     <path d="M12 2l2.4 6.6 7 .6-5.3 4.6 1.6 6.9-5.7-3.6-5.7 3.6 1.6-6.9-5.3-4.6 7-.6z" />
@@ -88,7 +88,7 @@ export const ReviewsSection: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* ========================================================================= */}
-        {/* CABEÇALHO OFICIAL                                                         */}
+        {/* CABEÇALHO                                                         */}
         {/* ========================================================================= */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <motion.h2
@@ -164,7 +164,7 @@ export const ReviewsSection: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Selo oficial discreto do Google no canto superior direito */}
+                        {/* Selo discreto do Google no canto superior direito */}
                         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#121C16] border border-[#F3EFE6]/10 text-[11px] text-[#F3EFE6]/75 flex-shrink-0">
                           <GoogleLogoIcon className="w-3.5 h-3.5" />
                           <span className="hidden sm:inline">Google Avaliações</span>

@@ -427,7 +427,7 @@ export const TESTIMONIALS: ReviewItem[] = [
   {
     id: 'rev-insta-1',
     author: 'Nathiele Saúde',
-    location: '@nathielesaude • Instagram Oficial',
+    location: '@nathielesaude • Instagram',
     rating: 5.0,
     date: 'Verificado',
     localGuideDetails: '@nathielesaude · Cliente Verificada',

@@ -80,7 +80,7 @@ export const LocationAndFooterSection: React.FC = () => {
             <div className="relative w-full flex-1 min-h-[320px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group">
               <img
                 src={fachadaImg}
-                alt="Fachada oficial do Maliviê SPA no Núcleo Bandeirante, Brasília"
+                alt="Fachada do Maliviê SPA no Núcleo Bandeirante, Brasília"
                 style={{ objectPosition: 'center 60%' }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               />
@@ -118,7 +118,7 @@ export const LocationAndFooterSection: React.FC = () => {
             <div className="relative w-full flex-1 min-h-[300px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group">
               <iframe
                 title="Google Maps Interativo - Maliviê SPA"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3838.285497217522!2d-47.96985782390618!3d-15.872212384777598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a3a91bca7f781%3A0xb3bc87e59f427f7f!2sMalivi%C3%AA%20SPA%20-%203%C2%AA%20Avenida%2C%201124%20-%20lote%201208-A%2C%20Loja%203%20-%20N%C3%BAcleo%20Bandeirante%2C%20Bras%C3%ADlia%20-%20DF!5e0!3m2!1spt-BR!2sbr!4v1710000000000!5m2!1spt-BR!2sbr"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3838.285497217522!2d-47.96985782390618!3d-15.872212384777598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a2fec33e25ea5%3A0xc3918d2ad9f06bdc!2sMalivi%C3%AA%20SPA!5e0!3m2!1spt-BR!2sbr!4v1710000000000!5m2!1spt-BR!2sbr"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -165,7 +165,7 @@ export const LocationAndFooterSection: React.FC = () => {
 
           {/* Column 3: 2 Separate Cards (Top & Bottom) */}
           <div className="lg:col-span-4 flex flex-col justify-between gap-5 h-full">
-            {/* Card Top: Endereço Físico Oficial */}
+            {/* Card Top: Endereço Físico */}
             <div className="rounded-3xl bg-[#18251E] border border-[#F3EFE6]/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex flex-col justify-between overflow-hidden hover:border-[#D4AF37]/30 transition-all flex-1">
               {/* Header */}
               <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-[#F3EFE6]/10">

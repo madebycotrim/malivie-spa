@@ -195,12 +195,8 @@ export const GiftCardSection: React.FC = () => {
                 className="w-full sm:w-auto"
               >
                 <MessageCircle className="w-5 h-5 text-[#121C16]" />
-                <span>Presentear com Gift Card Oficial</span>
+                <span>Presentear com Gift Card</span>
               </MagneticButton>
-
-              <span className="text-xs text-[#7A8B7B] font-medium text-center sm:text-left">
-                Voucher físico com dedicatória ou envio digital imediato
-              </span>
             </div>
           </motion.div>
         </div>
