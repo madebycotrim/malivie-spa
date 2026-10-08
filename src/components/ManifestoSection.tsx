@@ -1,0 +1,214 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { GlassWater, Sparkles, Lamp, CheckCircle2 } from 'lucide-react';
+import { OFFICIAL_COPIES, WELCOME_RITUAL_STEPS } from '../data/spaData';
+import ritualBoasVindasImg from '../assets/images/ritual-boas-vindas.webp';
+import ritualToalhaImg from '../assets/images/malivie-bandeja-reflexao.webp';
+import roupaoChinelosImg from '../assets/images/malivie-roupao-chinelos.webp';
+
+export const ManifestoSection: React.FC = () => {
+  return (
+    <section id="manifesto" className="relative py-28 sm:py-36 bg-[#FBF9F6] text-[#2C2C2C] overflow-hidden">
+      {/* Decorative ambient silk glow */}
+      <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-[#F0EAE1]/80 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-[#D3B8AA]/25 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+        {/* Editorial Subheader */}
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#7A8B7B] border border-[#7A8B7B]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+            O Ritual de Recepção Maliviê
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-[1.15]"
+          >
+            "Aqui, você é recebido(a) com <span className="italic font-normal text-[#7A8B7B]">calma</span>."
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-4 text-base sm:text-lg text-[#555555] font-sans font-normal leading-relaxed"
+          >
+            {OFFICIAL_COPIES.welcome}
+          </motion.p>
+        </div>
+
+        {/* High-Fashion Asymmetric Layout (Inspora Design Inspired) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-20">
+          {/* Left Column: Atmospheric Image with Editorial Overlay */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9 }}
+            className="lg:col-span-5 relative"
+          >
+            <div className="relative mx-auto max-w-md lg:max-w-none">
+              {/* Luxury Frame Accent */}
+              <div className="absolute -inset-3 rounded-3xl border border-[#D4AF37]/30 -rotate-1 pointer-events-none" />
+              
+              <div className="relative overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(18,28,22,0.15)] aspect-[4/5] bg-[#121C16]">
+                <img
+                  src={ritualBoasVindasImg}
+                  alt="Ritual de boas-vindas Maliviê SPA com escalda-pés em bacia de madeira e welcome drink em cristal"
+                  className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                
+                {/* Floating Micro-Badge */}
+                <div className="absolute bottom-5 left-5 right-5 p-4 rounded-xl bg-[#121C16]/90 backdrop-blur-md text-[#F3EFE6] border border-[#F3EFE6]/15">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-full bg-[#7A8B7B]/30 text-[#D4AF37]">
+                      <GlassWater className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-serif italic text-base text-[#F3EFE6]">Taça de Cristal & Boas-Vindas</h4>
+                      <p className="text-xs text-[#F3EFE6]/70 font-sans">Infusão artesanal de frutas e ervas</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Editorial Manifesto Quotes & Philosophy */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.2 }}
+            className="lg:col-span-7 flex flex-col justify-center space-y-8"
+          >
+            {/* The Big Quote Block */}
+            <div className="relative p-8 sm:p-10 rounded-3xl bg-[#F0EAE1]/70 border border-[#7A8B7B]/20 shadow-sm space-y-4">
+              <span className="font-serif text-6xl text-[#7A8B7B]/30 leading-none select-none absolute top-4 left-6">
+                “
+              </span>
+              <p className="font-serif text-lg sm:text-2xl text-[#2C2C2C] italic font-light leading-relaxed relative z-10 pt-4">
+                {OFFICIAL_COPIES.manifestoMain}
+              </p>
+              <p className="font-sans text-sm sm:text-base text-[#555555] leading-relaxed relative z-10 border-t border-[#7A8B7B]/20 pt-4">
+                "{OFFICIAL_COPIES.manifestoSecondary}"
+              </p>
+              <p className="font-serif italic text-sm sm:text-base text-[#7A8B7B] leading-relaxed relative z-10">
+                "{OFFICIAL_COPIES.welcomeDetail}"
+              </p>
+              <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-widest text-[#7A8B7B] font-semibold">
+                <span className="w-8 h-[1px] bg-[#7A8B7B]" />
+                <span>Maliviê SPA • Filosofia do Desacelerar</span>
+              </div>
+            </div>
+
+            {/* The 4 pillars of the Arrival Experience */}
+            <div className="space-y-4 pt-2">
+              <h3 className="font-serif text-2xl text-[#2C2C2C]">
+                O que acontece no minuto em que você chega:
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {WELCOME_RITUAL_STEPS.map((step, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#7A8B7B]/50 transition-colors shadow-sm flex flex-col gap-2"
+                  >
+                    <div className="flex items-center gap-2 text-[#7A8B7B]">
+                      <CheckCircle2 className="w-4 h-4 text-[#7A8B7B]" />
+                      <h4 className="font-sans font-semibold text-sm text-[#2C2C2C]">
+                        {step.title}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-[#555555] leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ambient Lighting & Temperature note */}
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#E8E0D5]/50 border border-[#D3B8AA]/40 text-xs text-[#2C2C2C]">
+              <Lamp className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
+              <span>
+                <strong>Atmosfera Sensorial:</strong> Luzes indiretas em temperatura de cor aquecida de 3000K,
+                aromatização com sálvia e lavanda, toalhas aquecidas e chinelos aveludados antes de qualquer procedimento.
+              </span>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Second Editorial Block: Authentic Ritual Reflection Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="rounded-3xl bg-[#F0EAE1] border border-[#E8E0D5] p-6 sm:p-10 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+        >
+          {/* Dual Authentic Photo Showcase */}
+          <div className="lg:col-span-6 grid grid-cols-2 gap-4">
+            <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/5] bg-[#121C16] group">
+              <img
+                src={roupaoChinelosImg}
+                alt="Roupão e chinelos aveludados com bordado dourado Maliviê SPA sobre a maca de massagem"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 text-[11px] text-[#F3EFE6] font-medium leading-tight">
+                Roupão & Chinelos Bordados
+              </div>
+            </div>
+
+            <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/5] bg-[#121C16] group">
+              <img
+                src={ritualToalhaImg}
+                alt="Bandeja de madeira com pedras vulcânicas e toalha bordada Maliviê SPA"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 text-[11px] text-[#F3EFE6] font-medium leading-tight">
+                Toalha & Pedras Vulcânicas
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-6 space-y-4">
+            <span className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] text-[#7A8B7B]">
+              Reflexão Maliviê
+            </span>
+            <h3 className="font-serif text-2xl sm:text-4xl text-[#2C2C2C] italic font-light leading-snug">
+              "Você se lembra da última vez em que não fez nada?"
+            </h3>
+            <p className="font-sans text-sm sm:text-base text-[#555555] leading-relaxed">
+              Fazer pausas também é produtivo. Seu bem-estar precisa de espaço na sua rotina para que você possa florescer por inteiro. Permita-se desacelerar e renovar suas energias em um espaço inteiramente dedicado a você.
+            </p>
+            <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-sans font-medium text-[#2C2C2C]">
+              <span className="px-3 py-1 rounded-full bg-white/80 border border-[#E8E0D5]">
+                Toalhas higienizadas aquecidas
+              </span>
+              <span className="px-3 py-1 rounded-full bg-white/80 border border-[#E8E0D5]">
+                Pedras vulcânicas minerais
+              </span>
+              <span className="px-3 py-1 rounded-full bg-white/80 border border-[#E8E0D5]">
+                Óleos vegetais nobres
+              </span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
