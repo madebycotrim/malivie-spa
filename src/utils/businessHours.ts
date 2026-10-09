@@ -8,11 +8,11 @@
 const HORARIOS: ReadonlyArray<{ abre: number; fecha: number } | null> = [
   { abre: 8, fecha: 13 }, // domingo
   null, // segunda
-  { abre: 8, fecha: 20 }, // terça
-  { abre: 8, fecha: 20 }, // quarta
-  { abre: 8, fecha: 20 }, // quinta
-  { abre: 8, fecha: 20 }, // sexta
-  { abre: 8, fecha: 20 }, // sábado
+  { abre: 8, fecha: 19 }, // terça
+  { abre: 8, fecha: 19 }, // quarta
+  { abre: 8, fecha: 19 }, // quinta
+  { abre: 8, fecha: 19 }, // sexta
+  { abre: 8, fecha: 19 }, // sábado
 ];
 
 export const isAbertoAgora = (agora: Date = new Date()): boolean => {

@@ -10,6 +10,7 @@ import {
 import { TESTIMONIALS } from '../data/spaData';
 import { ReviewItem } from '../types';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
+import { EditableText } from './editor/EditableText';
 
 // Ícone Multicolorido do Google "G"
 const GoogleLogoIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
@@ -87,7 +88,9 @@ export const ReviewsSection: React.FC = () => {
             <GoogleLogoIcon className="w-4 h-4" />
             <span className="font-semibold text-[#FBBC04]">5.0 ★★★★★</span>
             <span className="text-[#F3EFE6]/40">·</span>
-            <span className="text-[#F3EFE6]/85 font-sans">117+ avaliações reais no Google Maps</span>
+            <EditableText id="reviews.badge" defaultText="117+ avaliações reais no Google Maps" as="span">
+              117+ avaliações reais no Google Maps
+            </EditableText>
           </motion.div>
 
           <motion.h2
@@ -97,7 +100,9 @@ export const ReviewsSection: React.FC = () => {
             transition={{ duration: 0.9, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight"
           >
-            Relatos de quem se permitiu <span className="italic font-normal text-[#D4AF37]">desacelerar</span>
+            <EditableText id="reviews.title" defaultText="Relatos de quem se permitiu desacelerar" as="span">
+              Relatos de quem se permitiu <span className="italic font-normal text-[#D4AF37]">desacelerar</span>
+            </EditableText>
           </motion.h2>
 
           <motion.p
@@ -107,7 +112,13 @@ export const ReviewsSection: React.FC = () => {
             transition={{ duration: 0.85, delay: 0.15, ease: EASE_ORGANIC }}
             className="mt-4 text-xs sm:text-sm text-[#F3EFE6]/75 font-sans max-w-xl mx-auto leading-relaxed"
           >
-            Depoimentos 100% autênticos extraídos diretamente da ficha oficial do Google Maps de clientes que viveram a experiência Maliviê.
+            <EditableText
+              id="reviews.description"
+              defaultText="Depoimentos 100% autênticos extraídos diretamente da ficha oficial do Google Maps de clientes que viveram a experiência Maliviê."
+              as="span"
+            >
+              Depoimentos 100% autênticos extraídos diretamente da ficha oficial do Google Maps de clientes que viveram a experiência Maliviê.
+            </EditableText>
           </motion.p>
         </div>
 
@@ -137,10 +148,14 @@ export const ReviewsSection: React.FC = () => {
 
                         <div>
                           <h4 className="font-sans font-semibold text-base sm:text-lg text-[#F3EFE6]">
-                            {review.author}
+                            <EditableText id={`review.${review.id}.author`} defaultText={review.author} as="span">
+                              {review.author}
+                            </EditableText>
                           </h4>
                           <p className="text-xs text-[#F3EFE6]/60 font-sans mt-0.5">
-                            {review.location}
+                            <EditableText id={`review.${review.id}.location`} defaultText={review.location} as="span">
+                              {review.location}
+                            </EditableText>
                           </p>
                         </div>
                       </div>
@@ -156,14 +171,20 @@ export const ReviewsSection: React.FC = () => {
                           ))}
                         </div>
                         <span className="text-xs text-[#F3EFE6]/55 font-sans ml-1">
-                          {review.date}
+                          <EditableText id={`review.${review.id}.date`} defaultText={review.date} as="span">
+                            {review.date}
+                          </EditableText>
                         </span>
                       </div>
 
                       {/* 3. CONTEÚDO DA AVALIAÇÃO INTEGRAL */}
                       <div className="pt-4 flex-1">
                         <p className="font-sans text-sm sm:text-base text-[#F3EFE6]/90 leading-relaxed font-normal">
-                          "{review.comment}"
+                          "
+                          <EditableText id={`review.${review.id}.comment`} defaultText={review.comment} as="span">
+                            {review.comment}
+                          </EditableText>
+                          "
                         </p>
                       </div>
 

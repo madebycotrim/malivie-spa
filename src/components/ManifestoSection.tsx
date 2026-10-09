@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { GlassWater, Sparkles, Lamp, CheckCircle2 } from 'lucide-react';
 import { OFFICIAL_COPIES, WELCOME_RITUAL_STEPS } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
+import { EditableText } from './editor/EditableText';
+import { EditableImage } from './editor/EditableImage';
+import { EditableIcon } from './editor/EditableIcon';
 import ritualBoasVindasImg from '../assets/images/ritual-boas-vindas.webp';
 
 export const ManifestoSection: React.FC = () => {
@@ -22,8 +25,10 @@ export const ManifestoSection: React.FC = () => {
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#7A8B7B] border border-[#7A8B7B]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-            O Ritual de Recepção Maliviê
+            <EditableIcon id="manifesto.badge.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <EditableText id="manifesto.badge" defaultText="O Ritual de Recepção Maliviê" as="span">
+              O Ritual de Recepção Maliviê
+            </EditableText>
           </motion.div>
 
           <motion.h2
@@ -33,7 +38,13 @@ export const ManifestoSection: React.FC = () => {
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-[1.15]"
           >
-            "Aqui, você é recebido(a) com <span className="italic font-normal text-[#7A8B7B]">calma</span>."
+            <EditableText
+              id="manifesto.heading"
+              defaultText={`"Aqui, você é recebido(a) com calma."`}
+              as="span"
+            >
+              "Aqui, você é recebido(a) com <span className="italic font-normal text-[#7A8B7B]">calma</span>."
+            </EditableText>
           </motion.h2>
 
           <motion.p
@@ -43,7 +54,13 @@ export const ManifestoSection: React.FC = () => {
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 text-base sm:text-lg text-[#555555] font-sans font-normal leading-relaxed"
           >
-            {OFFICIAL_COPIES.welcome}
+            <EditableText
+              id="manifesto.welcome"
+              defaultText={OFFICIAL_COPIES.welcome}
+              as="span"
+            >
+              {OFFICIAL_COPIES.welcome}
+            </EditableText>
           </motion.p>
         </div>
 
@@ -62,23 +79,33 @@ export const ManifestoSection: React.FC = () => {
               <div className="absolute -inset-3 rounded-3xl border border-[#D4AF37]/30 -rotate-1 pointer-events-none" />
               
               <div className="relative overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(18,28,22,0.15)] aspect-[4/5] bg-[#121C16]">
-                <img
-                  loading="lazy"
-                  decoding="async"
-                  src={ritualBoasVindasImg}
+                <EditableImage
+                  id="manifesto.ritualBoasVindas"
+                  defaultImage={ritualBoasVindasImg}
                   alt="Ritual de boas-vindas Maliviê SPA com escalda-pés em bacia de madeira e welcome drink em cristal"
+                  prefix="manifesto"
                   className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700 ease-out"
                 />
-                
-                {/* Floating Micro-Badge */}
-                <div className="absolute bottom-5 left-5 right-5 p-4 rounded-xl bg-[#121C16]/90 backdrop-blur-md text-[#F3EFE6] border border-[#F3EFE6]/15">
+                    {/* Floating Micro-Badge */}
+                <div
+                  className="absolute bottom-5 left-5 right-5 z-30 pointer-events-auto p-4 rounded-xl bg-[#121C16]/90 backdrop-blur-md text-[#F3EFE6] border border-[#F3EFE6]/15"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div className="flex items-center gap-3">
                     <div className="p-2.5 rounded-full bg-[#7A8B7B]/30 text-[#D4AF37]">
-                      <GlassWater className="w-5 h-5" />
+                      <EditableIcon id="manifesto.drink.icon" defaultIcon="CupSoda" className="w-5 h-5" fallbackComponent={GlassWater} />
                     </div>
                     <div>
-                      <h4 className="font-serif italic text-base text-[#F3EFE6]">Taça de Cristal & Boas-Vindas</h4>
-                      <p className="text-xs text-[#F3EFE6]/70 font-sans">Infusão artesanal de frutas e ervas</p>
+                      <h4 className="font-serif italic text-base text-[#F3EFE6]">
+                        <EditableText id="manifesto.drinkTitle" defaultText="Taça de Cristal & Boas-Vindas" as="span">
+                          Taça de Cristal & Boas-Vindas
+                        </EditableText>
+                      </h4>
+                      <p className="text-xs text-[#F3EFE6]/70 font-sans">
+                        <EditableText id="manifesto.drinkDesc" defaultText="Infusão artesanal de frutas e ervas" as="span">
+                          Infusão artesanal de frutas e ervas
+                        </EditableText>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -100,7 +127,13 @@ export const ManifestoSection: React.FC = () => {
                 “
               </span>
               <p className="font-serif text-lg sm:text-2xl text-[#2C2C2C] italic font-light leading-relaxed relative z-10 pt-3">
-                {OFFICIAL_COPIES.manifestoMain}
+                <EditableText
+                  id="manifesto.mainQuote"
+                  defaultText={OFFICIAL_COPIES.manifestoMain}
+                  as="span"
+                >
+                  {OFFICIAL_COPIES.manifestoMain}
+                </EditableText>
               </p>
               <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-widest text-[#7A8B7B] font-semibold">
                 <span className="w-8 h-[1px] bg-[#7A8B7B]" />
@@ -111,7 +144,9 @@ export const ManifestoSection: React.FC = () => {
             {/* The 4 pillars of the Arrival Experience */}
             <div className="space-y-4 pt-2">
               <h3 className="font-serif text-2xl text-[#2C2C2C]">
-                O que acontece no minuto em que você chega:
+                <EditableText id="manifesto.pillarsTitle" defaultText="O que acontece no minuto em que você chega:" as="span">
+                  O que acontece no minuto em que você chega:
+                </EditableText>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -121,14 +156,22 @@ export const ManifestoSection: React.FC = () => {
                     className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#7A8B7B]/60 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(18,28,22,0.06)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col gap-2 group cursor-default"
                   >
                     <div className="flex items-center gap-2 text-[#7A8B7B] group-hover:text-[#677868] transition-colors">
-                      <CheckCircle2 className="w-4 h-4 text-[#7A8B7B] group-hover:scale-110 transition-transform duration-300" />
+                      <EditableIcon
+                        id={`manifesto.step.${idx}.icon`}
+                        defaultIcon="CheckCircle2"
+                        className="w-4 h-4 text-[#7A8B7B] group-hover:scale-110 transition-transform duration-300"
+                      />
                       <h4 className="font-sans font-semibold text-sm text-[#2C2C2C]">
-                        {step.title}
+                        <EditableText id={`manifesto.step.${idx}.title`} defaultText={step.title} as="span">
+                          {step.title}
+                        </EditableText>
                       </h4>
                     </div>
-                    <p className="text-xs text-[#555555] leading-relaxed">
-                      {step.description}
-                    </p>
+                    <div className="text-xs text-[#555555] leading-relaxed">
+                      <EditableText id={`manifesto.step.${idx}.description`} defaultText={step.description} as="p">
+                        {step.description}
+                      </EditableText>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -136,11 +179,14 @@ export const ManifestoSection: React.FC = () => {
 
             {/* Ambient Lighting & Temperature note */}
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#E8E0D5]/50 border border-[#D3B8AA]/40 text-xs text-[#2C2C2C]">
-              <Lamp className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
-              <span>
-                <strong>Atmosfera Sensorial:</strong> Luzes indiretas em temperatura de cor aquecida de 3000K,
-                aromatização com sálvia e lavanda, toalhas aquecidas e chinelos aveludados antes de qualquer procedimento.
-              </span>
+              <EditableIcon id="manifesto.atmosphere.icon" defaultIcon="Sparkles" className="w-5 h-5 text-[#D4AF37] flex-shrink-0" fallbackComponent={Lamp} />
+              <EditableText
+                id="manifesto.atmosphereNote"
+                defaultText="**Atmosfera Sensorial:** Luzes indiretas em temperatura de cor aquecida de 3000K, aromatização com sálvia e lavanda, toalhas aquecidas e chinelos aveludados antes de qualquer procedimento."
+                as="span"
+              >
+                **Atmosfera Sensorial:** Luzes indiretas em temperatura de cor aquecida de 3000K, aromatização com sálvia e lavanda, toalhas aquecidas e chinelos aveludados antes de qualquer procedimento.
+              </EditableText>
             </div>
           </motion.div>
         </div>

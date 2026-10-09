@@ -5,6 +5,9 @@ import { OFFICIAL_COPIES, SPA_BUSINESS_DATA } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { trackWhatsAppClick } from '../services/analytics';
+import { EditableText } from './editor/EditableText';
+import { EditableImage } from './editor/EditableImage';
+import { EditableIcon } from './editor/EditableIcon';
 import giftCardImg from '../assets/images/malivie-gift-card-instagram.webp';
 
 export const GiftCardSection: React.FC = () => {
@@ -16,7 +19,7 @@ export const GiftCardSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+        <div className="text-center max-w-4xl mx-auto mb-16 sm:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -24,8 +27,10 @@ export const GiftCardSection: React.FC = () => {
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D3B8AA]/20 text-[#2C2C2C] border border-[#D3B8AA]/40 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
-            <Gift className="w-3.5 h-3.5 text-[#B99887]" />
-            Experiência Para Quem Você Ama
+            <EditableIcon id="giftCard.badge.icon" defaultIcon="Gift" className="w-3.5 h-3.5 text-[#B99887]" />
+            <EditableText id="giftCard.badge" defaultText="Experiência Para Quem Você Ama" as="span">
+              Experiência Para Quem Você Ama
+            </EditableText>
           </motion.div>
 
           <motion.h2
@@ -33,9 +38,15 @@ export const GiftCardSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
-            className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-tight"
+            className="font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#2C2C2C] font-light leading-tight tracking-tight whitespace-nowrap"
           >
-            {OFFICIAL_COPIES.giftCardTitle}
+            <EditableText
+              id="giftCard.title"
+              defaultText={OFFICIAL_COPIES.giftCardTitle}
+              as="span"
+            >
+              {OFFICIAL_COPIES.giftCardTitle}
+            </EditableText>
           </motion.h2>
 
           <motion.p
@@ -45,7 +56,15 @@ export const GiftCardSection: React.FC = () => {
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 font-serif italic text-lg sm:text-2xl text-[#7A8B7B] max-w-2xl mx-auto leading-relaxed"
           >
-            "{OFFICIAL_COPIES.giftCardTagline}"
+            "
+            <EditableText
+              id="giftCard.tagline"
+              defaultText={OFFICIAL_COPIES.giftCardTagline}
+              as="span"
+            >
+              {OFFICIAL_COPIES.giftCardTagline}
+            </EditableText>
+            "
           </motion.p>
         </div>
 
@@ -64,41 +83,29 @@ export const GiftCardSection: React.FC = () => {
               <div className="absolute -inset-3 rounded-3xl border border-[#D3B8AA]/40 rotate-1 pointer-events-none" />
 
               <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(211,184,170,0.35)] bg-[#121C16] border border-[#D3B8AA]/30 group">
-                <img
-                  loading="lazy"
-                  decoding="async"
-                  src={giftCardImg}
+                <EditableImage
+                  id="giftCard.image"
+                  defaultImage={giftCardImg}
                   alt="Gift Card Maliviê SPA - O presente que não ocupa espaço na prateleira, mas sim no coração"
+                  prefix="gift-card"
                   className="w-full h-auto object-cover group-hover:scale-103 transition-transform duration-700 ease-out"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#121C16]/85 via-transparent to-transparent pointer-events-none" />
-
-                {/* Floating Bottom Card */}
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-[#121C16]/90 backdrop-blur-md text-[#F3EFE6] border border-[#F3EFE6]/15 space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-serif italic text-sm text-[#D4AF37]">
-                      {OFFICIAL_COPIES.giftCardHook}
-                    </span>
-                    <span className="text-[10px] uppercase font-sans tracking-wider text-[#D3B8AA] font-bold">
-                      Maliviê SPA
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#F3EFE6]/75 font-sans leading-tight">
-                    {OFFICIAL_COPIES.giftCardSubTagline}
-                  </p>
-                </div>
               </div>
 
               {/* Badges below image */}
               <div className="mt-4 flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-[#555555]">
                 <span className="inline-flex items-center gap-1.5 font-medium">
-                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>Voucher Físico ou Digital</span>
+                  <EditableIcon id="giftCard.badgeFormat.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <EditableText id="giftCard.badgeFormat" defaultText="Voucher Físico ou Digital" as="span">
+                    Voucher Físico ou Digital
+                  </EditableText>
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-medium">
-                  <Check className="w-3.5 h-3.5 text-[#7A8B7B]" />
-                  <span>Validade de 30 dias</span>
+                  <EditableIcon id="giftCard.badgeValidity.icon" defaultIcon="Check" className="w-3.5 h-3.5 text-[#7A8B7B]" />
+                  <EditableText id="giftCard.badgeValidity" defaultText="Validade de 60 dias" as="span">
+                    Validade de 60 dias
+                  </EditableText>
                 </span>
               </div>
             </div>
@@ -115,10 +122,14 @@ export const GiftCardSection: React.FC = () => {
             {/* Opening Headline */}
             <div className="space-y-2">
               <span className="text-xs uppercase font-sans font-bold tracking-[0.25em] text-[#B99887] block">
-                {OFFICIAL_COPIES.giftCardHook}
+                <EditableText id="giftCard.hook" defaultText={OFFICIAL_COPIES.giftCardHook} as="span">
+                  {OFFICIAL_COPIES.giftCardHook}
+                </EditableText>
               </span>
               <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#2C2C2C] font-light leading-snug">
-                {OFFICIAL_COPIES.giftCardForWhom}
+                <EditableText id="giftCard.forWhom" defaultText={OFFICIAL_COPIES.giftCardForWhom} as="span">
+                  {OFFICIAL_COPIES.giftCardForWhom}
+                </EditableText>
               </h3>
             </div>
 
@@ -126,28 +137,46 @@ export const GiftCardSection: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#7A8B7B] font-sans">
-                  A Amiga
+                  <EditableText id="giftCard.personaAmiga.label" defaultText="A Amiga" as="span">
+                    A Amiga
+                  </EditableText>
                 </span>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
-                  "{OFFICIAL_COPIES.giftCardPersonaAmiga}"
+                  "
+                  <EditableText id="giftCard.personaAmiga" defaultText={OFFICIAL_COPIES.giftCardPersonaAmiga} as="span">
+                    {OFFICIAL_COPIES.giftCardPersonaAmiga}
+                  </EditableText>
+                  "
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#B99887] font-sans">
-                  A Mãe
+                  <EditableText id="giftCard.personaMae.label" defaultText="A Mãe" as="span">
+                    A Mãe
+                  </EditableText>
                 </span>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
-                  "{OFFICIAL_COPIES.giftCardPersonaMae}"
+                  "
+                  <EditableText id="giftCard.personaMae" defaultText={OFFICIAL_COPIES.giftCardPersonaMae} as="span">
+                    {OFFICIAL_COPIES.giftCardPersonaMae}
+                  </EditableText>
+                  "
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] font-sans">
-                  A Mulher Admirada
+                  <EditableText id="giftCard.personaMulher.label" defaultText="A Mulher Admirada" as="span">
+                    A Mulher Admirada
+                  </EditableText>
                 </span>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
-                  "{OFFICIAL_COPIES.giftCardPersonaMulher}"
+                  "
+                  <EditableText id="giftCard.personaMulher" defaultText={OFFICIAL_COPIES.giftCardPersonaMulher} as="span">
+                    {OFFICIAL_COPIES.giftCardPersonaMulher}
+                  </EditableText>
+                  "
                 </p>
               </div>
             </div>
@@ -155,37 +184,54 @@ export const GiftCardSection: React.FC = () => {
             {/* Core Message Card */}
             <div className="p-6 sm:p-7 rounded-3xl bg-[#F0EAE1]/80 border border-[#D3B8AA]/40 space-y-4 shadow-sm">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#7A8B7B]">
-                <Heart className="w-4 h-4 text-[#D3B8AA]" />
-                <span>O que você realmente entrega</span>
+                <EditableIcon id="giftCard.deliveryTitle.icon" defaultIcon="Heart" className="w-4 h-4 text-[#D3B8AA]" />
+                <EditableText id="giftCard.deliveryTitle" defaultText="O que você realmente entrega" as="span">
+                  O que você realmente entrega
+                </EditableText>
               </div>
 
               <p className="font-serif italic text-base sm:text-lg text-[#2C2C2C] leading-relaxed">
-                "{OFFICIAL_COPIES.giftCardExperience}"
+                "
+                <EditableText id="giftCard.experience" defaultText={OFFICIAL_COPIES.giftCardExperience} as="span">
+                  {OFFICIAL_COPIES.giftCardExperience}
+                </EditableText>
+                "
               </p>
 
               {/* 3 Steps */}
               <div className="pt-3 border-t border-[#D3B8AA]/30 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div className="flex items-center gap-2 text-[#2C2C2C] font-medium">
                   <span className="w-5 h-5 rounded-full bg-[#7A8B7B]/15 text-[#7A8B7B] flex items-center justify-center text-[10px] font-bold">1</span>
-                  <span>Ela escolhe o dia.</span>
+                  <EditableText id="giftCard.deliveryStep1" defaultText="Ela escolhe o dia." as="span">
+                    Ela escolhe o dia.
+                  </EditableText>
                 </div>
                 <div className="flex items-center gap-2 text-[#2C2C2C] font-medium">
                   <span className="w-5 h-5 rounded-full bg-[#7A8B7B]/15 text-[#7A8B7B] flex items-center justify-center text-[10px] font-bold">2</span>
-                  <span>Ela escolhe a experiência.</span>
+                  <EditableText id="giftCard.deliveryStep2" defaultText="Ela escolhe a experiência." as="span">
+                    Ela escolhe a experiência.
+                  </EditableText>
                 </div>
                 <div className="flex items-center gap-2 text-[#2C2C2C] font-medium">
                   <span className="w-5 h-5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center text-[10px] font-bold">3</span>
-                  <span>Você entende o que ela precisava.</span>
+                  <EditableText id="giftCard.deliveryStep3" defaultText="Você entende o que ela precisava." as="span">
+                    Você entende o que ela precisava.
+                  </EditableText>
                 </div>
               </div>
             </div>
 
             {/* Official Baseline Note */}
             <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex items-center gap-3 text-xs text-[#555555] shadow-xs">
-              <Gift className="w-5 h-5 text-[#B99887] flex-shrink-0" />
-              <p className="leading-relaxed">
-                <strong className="text-[#2C2C2C]">Presenteie com autocuidado:</strong> {OFFICIAL_COPIES.giftCardOfficial}
-              </p>
+              <EditableIcon id="giftCard.officialNote.icon" defaultIcon="Gift" className="w-5 h-5 text-[#B99887] flex-shrink-0" />
+              <EditableText
+                id="giftCard.officialNote"
+                defaultText={OFFICIAL_COPIES.giftCardOfficial}
+                as="p"
+                className="leading-relaxed"
+              >
+                {OFFICIAL_COPIES.giftCardOfficial}
+              </EditableText>
             </div>
 
             {/* CTA Button */}
@@ -199,8 +245,10 @@ export const GiftCardSection: React.FC = () => {
                 size="lg"
                 className="w-full sm:w-auto"
               >
-                <MessageCircle className="w-5 h-5 text-[#121C16]" />
-                <span>Presentear com Gift Card</span>
+                <EditableIcon id="giftCard.ctaButton.icon" defaultIcon="MessageCircle" className="w-5 h-5 text-[#121C16]" />
+                <EditableText id="giftCard.ctaButton" defaultText="Presentear com Gift Card" as="span">
+                  Presentear com Gift Card
+                </EditableText>
               </MagneticButton>
             </div>
           </motion.div>

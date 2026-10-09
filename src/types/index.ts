@@ -1,12 +1,24 @@
 export type ServiceCategory = 
   | 'todos' 
   | 'head-spa' 
+  | 'relaxamento' 
+  | 'terapias' 
+  | 'corporal-facial' 
+  | 'spa-pes' 
+  | 'day-spa' 
+  | 'especiais' 
+  | 'planos-horas' 
+  | 'complementos'
   | 'massagens' 
   | 'pedras-quentes'
-  | 'spa-pes'
-  | 'acupuntura'
-  | 'day-spa' 
-  | 'planos-horas';
+  | 'acupuntura';
+
+export interface PriceOption {
+  duration?: string;
+  price: string;
+  originalPrice?: string;
+  note?: string;
+}
 
 export interface ServiceItem {
   id: string;
@@ -20,6 +32,10 @@ export interface ServiceItem {
   image: string;
   popular?: boolean;
   featured?: boolean;
+  badge?: string;
+  price?: string;
+  priceOptions?: PriceOption[];
+  courtesyNote?: string;
   includedItems: string[];
   ritualSteps?: string[];
   therapists: string[];
@@ -31,7 +47,7 @@ export interface FAQItem {
   id: string;
   question: string;
   answer: string;
-  category: 'head-spa' | 'preparacao' | 'geral';
+  category: 'head-spa' | 'preparacao' | 'geral' | 'politicas' | 'planos';
 }
 
 export interface ReviewItem {

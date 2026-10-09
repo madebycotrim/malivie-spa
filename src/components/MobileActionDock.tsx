@@ -3,6 +3,7 @@ import { MessageCircle, Navigation, Volume2, VolumeX } from 'lucide-react';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { asmrEngine } from '../services/soundEngine';
 import { trackWhatsAppClick } from '../services/analytics';
+import { EditableText } from './editor/EditableText';
 
 export const MobileActionDock: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -35,7 +36,9 @@ export const MobileActionDock: React.FC = () => {
           className="flex-[1.4] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#7A8B7B] text-[#121C16] font-bold text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
         >
           <MessageCircle className="w-4 h-4" />
-          <span className="whitespace-nowrap">Agendar um horário!</span>
+          <EditableText id="dock.cta" defaultText="Agendar um horário!" as="span" className="whitespace-nowrap">
+            Agendar um horário!
+          </EditableText>
         </a>
 
         {/* Como Chegar Shortcut */}
@@ -45,7 +48,9 @@ export const MobileActionDock: React.FC = () => {
           className="flex-1 flex items-center justify-center gap-1.5 py-3 px-2 rounded-full bg-[#18251E] text-[#F3EFE6] border border-[#F3EFE6]/15 text-xs font-medium active:scale-95 transition-transform"
         >
           <Navigation className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>Como Chegar</span>
+          <EditableText id="dock.directions" defaultText="Como Chegar" as="span">
+            Como Chegar
+          </EditableText>
         </button>
 
         {/* Som ASMR Toggle */}

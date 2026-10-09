@@ -1,9 +1,12 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Clock, Heart, Users, MessageCircle, Sparkles, Check, Coffee, ArrowRight } from 'lucide-react';
 import { ServiceItem } from '../types';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { trackWhatsAppClick } from '../services/analytics';
+import { EditableText } from './editor/EditableText';
+import { EditableIcon } from './editor/EditableIcon';
 
 interface ServiceDrawerProps {
   service: ServiceItem | null;
@@ -34,7 +37,9 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
 
   const whatsappBookingUrl = SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name);
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -46,7 +51,8 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-[#121C16]/80 backdrop-blur-md cursor-pointer"
+            className="fixed inset-0 bg-[#121C16]/80 backdrop-blur-md cursor-pointer"
+            style={{ zIndex: 99990 }}
           />
 
           {/* Slide-Over Drawer Container */}
@@ -56,7 +62,8 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 220, mass: 0.8 }}
-            className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-xl bg-[#18251E] text-[#F3EFE6] border-l border-[#F3EFE6]/15 shadow-[-20px_0_50px_rgba(0,0,0,0.6)] flex flex-col justify-between overflow-hidden overscroll-contain"
+            className="fixed top-0 right-0 bottom-0 w-full max-w-xl bg-[#18251E] text-[#F3EFE6] border-l border-[#F3EFE6]/15 shadow-[-20px_0_50px_rgba(0,0,0,0.6)] flex flex-col justify-between overflow-hidden overscroll-contain"
+            style={{ zIndex: 99991 }}
           >
             {/* Drawer Header */}
             <div className="relative p-6 sm:p-8 border-b border-[#F3EFE6]/10 flex items-center justify-between">
@@ -65,7 +72,9 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
                   {service.categoryLabel} • Detalhes do Ritual
                 </span>
                 <h3 className="font-serif text-2xl sm:text-3xl text-[#F3EFE6] font-light mt-1">
-                  {service.name}
+                  <EditableText id={`drawer.${service.id}.name`} defaultText={service.name} as="span">
+                    {service.name}
+                  </EditableText>
                 </h3>
               </div>
 
@@ -95,7 +104,7 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#18251E] via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121C16]/85 backdrop-blur-md text-xs text-[#D4AF37] border border-[#D4AF37]/30">
-                  <Clock className="w-3.5 h-3.5" />
+                  <EditableIcon id="drawer.duration.icon" defaultIcon="Clock" className="w-3.5 h-3.5" />
                   <span>Duração: {service.duration}</span>
                 </div>
               </div>
@@ -103,17 +112,23 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
               {/* Tagline & Long Description */}
               <div className="space-y-3">
                 <p className="font-serif italic text-lg sm:text-xl text-[#D4AF37]">
-                  "{service.tagline}"
+                  "
+                  <EditableText id={`drawer.${service.id}.tagline`} defaultText={service.tagline} as="span">
+                    {service.tagline}
+                  </EditableText>
+                  "
                 </p>
-                <p className="font-sans text-xs sm:text-sm text-[#F3EFE6]/80 leading-relaxed">
-                  {service.longDescription}
-                </p>
+                <div className="font-sans text-xs sm:text-sm text-[#F3EFE6]/80 leading-relaxed">
+                  <EditableText id={`drawer.${service.id}.longDesc`} defaultText={service.longDescription} as="p">
+                    {service.longDescription}
+                  </EditableText>
+                </div>
               </div>
 
               {/* Included Items / Mimos Inclusos */}
               <div className="p-5 rounded-2xl bg-[#121C16]/70 border border-[#F3EFE6]/10 space-y-3">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#7A8B7B] font-semibold">
-                  <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                  <EditableIcon id="drawer.mimos.icon" defaultIcon="Sparkles" className="w-4 h-4 text-[#D4AF37]" />
                   <span>Mimos & Cuidados Inclusos Nesta Experiência</span>
                 </div>
                 <ul className="space-y-2.5">
@@ -129,52 +144,88 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
               {/* Humanized Therapist Highlight (Andressa e Luciana) */}
               <div className="p-5 rounded-2xl bg-gradient-to-br from-[#1E2D24] to-[#18251E] border border-[#7A8B7B]/30 space-y-2">
                 <div className="flex items-center gap-2 text-xs text-[#D4AF37] font-semibold uppercase tracking-wider">
-                  <Users className="w-4 h-4 text-[#7A8B7B]" />
+                  <EditableIcon id="drawer.therapists.icon" defaultIcon="HeartHandshake" className="w-4 h-4 text-[#7A8B7B]" fallbackComponent={Users} />
                   <span>Equipe Terapêutica Humanizada</span>
                 </div>
-                <p className="text-xs text-[#F3EFE6]/90 leading-relaxed font-sans">
-                  Seu atendimento é conduzido com sensibilidade, toques acolhedores e maestria técnica pelas terapeutas <strong>Andressa e Luciana</strong>, garantindo um acolhimento respeitoso ao seu ritmo e conforto físico.
-                </p>
+                <EditableText
+                  id="drawer.therapists"
+                  defaultText="Seu atendimento é conduzido com sensibilidade, toques acolhedores e maestria técnica pelas terapeutas **Andressa e Luciana**, garantindo um acolhimento respeitoso ao seu ritmo e conforto físico."
+                  as="p"
+                  className="text-xs text-[#F3EFE6]/90 leading-relaxed font-sans"
+                >
+                  Seu atendimento é conduzido com sensibilidade, toques acolhedores e maestria técnica pelas terapeutas **Andressa e Luciana**, garantindo um acolhimento respeitoso ao seu ritmo e conforto físico.
+                </EditableText>
                 <div className="flex items-center gap-2 pt-1 text-[11px] text-[#7A8B7B] font-serif italic">
-                  <Heart className="w-3.5 h-3.5 text-[#D3B8AA]" />
+                  <EditableIcon id="drawer.ambience.icon" defaultIcon="Heart" className="w-3.5 h-3.5 text-[#D3B8AA]" />
                   <span>Ambiente silencioso, luz âmbar (3000K) e toalhas aquecidas.</span>
                 </div>
               </div>
 
               {/* Chá de Despedida Ritual */}
               <div className="flex items-center gap-3 p-4 rounded-xl bg-[#121C16]/40 border border-[#F3EFE6]/5 text-xs text-[#F3EFE6]/70">
-                <Coffee className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
+                <EditableIcon id="drawer.tea.icon" defaultIcon="Coffee" className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
                 <span>
                   Ao término da sessão, você desfruta de um tempo livre na sala de relaxamento com chá artesanal digestivo e castanhas.
                 </span>
               </div>
 
               {/* Transparência de Investimento & Reserva */}
-              <div className="p-5 rounded-2xl bg-[#121C16]/80 border border-[#D4AF37]/30 space-y-2.5">
+              <div className="p-5 rounded-2xl bg-[#121C16]/80 border border-[#D4AF37]/30 space-y-3">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-semibold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Investimento & Condições
+                    <EditableIcon id="drawer.investment.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5" />
+                    Investimento & Opções
                   </span>
-                  <span className="text-[11px] text-[#7A8B7B] font-mono">
-                    {service.priceHint || 'Valores sob consulta'}
-                  </span>
+                  {service.price && (
+                    <span className="text-xs text-[#F3EFE6] font-bold">
+                      {service.price}
+                    </span>
+                  )}
                 </div>
-                <p className="text-xs text-[#F3EFE6]/75 leading-relaxed font-sans">
-                  Sessão individual com sala exclusiva. O valor inclui todos os cosmecêuticos, toalhas aquecidas, secagem (no Head Spa), roupão e mimos de recepção. Parcelamento em até 3x ou condições especiais para pacotes e planos.
+
+                {/* Opções de Duração e Preço */}
+                {service.priceOptions && service.priceOptions.length > 0 && (
+                  <div className="space-y-2 pt-1 border-t border-white/10">
+                    {service.priceOptions.map((opt, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 text-xs"
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium text-[#F3EFE6]">
+                            {opt.duration || 'Opção'}
+                          </span>
+                          {opt.note && (
+                            <span className="text-[10px] text-[#7A8B7B]">
+                              {opt.note}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          {opt.originalPrice && (
+                            <span className="text-[11px] text-[#F3EFE6]/40 line-through">
+                              {opt.originalPrice}
+                            </span>
+                          )}
+                          <span className="font-bold text-[#D4AF37] text-sm">
+                            {opt.price}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {service.courtesyNote && (
+                  <div className="flex items-start gap-2 pt-1 text-[11px] text-[#7A8B7B]">
+                    <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                    <span>{service.courtesyNote}</span>
+                  </div>
+                )}
+
+                <p className="text-[11px] text-[#F3EFE6]/70 leading-relaxed font-sans">
+                  Sessão privativa. Inclui toalhas aquecidas, roupão, aromaterapia e cerimonial do chá. Cancelamentos ou remarcações devem ser solicitados com no mínimo 12 horas de antecedência.
                 </p>
-                <div className="pt-1">
-                  <a
-                    href={SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl ? SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl(service.name) : SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
-                    onClick={() => trackWhatsAppClick('drawer_consultar_valores', service.name)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-medium"
-                  >
-                    <span>Consultar tabela de valores deste ritual</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </a>
-                </div>
               </div>
             </div>
 
@@ -207,6 +258,7 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
           </motion.aside>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

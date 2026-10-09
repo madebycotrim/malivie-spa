@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { trackWhatsAppClick } from '../services/analytics';
+import { EditableText } from './editor/EditableText';
 import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
 
 interface NavbarProps {
@@ -52,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between">
-          {/* Official Brand Logo (No mobile, surge apenas ao rolar a tela para não duplicar com o Hero) */}
+          {/* Official Brand Logo */}
           <a
             href="#"
             onClick={(e) => handleLinkClick(e, '#root')}
@@ -70,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
             />
           </a>
 
-          {/* Desktop Navigation Links (Apenas os essenciais) */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-7 lg:gap-8">
             {navLinks.map((link) => (
               <a
@@ -79,7 +80,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 onClick={(e) => handleLinkClick(e, link.href)}
                 className="text-xs uppercase tracking-[0.18em] font-medium text-[#F3EFE6]/80 hover:text-[#D4AF37] transition-colors duration-300 relative py-1 group"
               >
-                {link.label}
+                <EditableText id={`nav.link.${link.href}`} defaultText={link.label} as="span">
+                  {link.label}
+                </EditableText>
                 <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
@@ -98,7 +101,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
             >
               <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
               <MessageCircle className="w-3.5 h-3.5 text-[#121C16] relative z-10" />
-              <span className="relative z-10 font-semibold">Agendar um horário!</span>
+              <EditableText id="nav.cta" defaultText="Agendar um horário!" as="span" className="relative z-10 font-semibold">
+                Agendar um horário!
+              </EditableText>
             </a>
           </div>
 

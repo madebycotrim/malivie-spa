@@ -19,6 +19,14 @@ export const useLenis = () => {
       touchMultiplier: 1.2,
       wheelMultiplier: 0.95,
       infinite: false,
+      prevent: (node) => {
+        if (!node) return false;
+        return (
+          node.hasAttribute('data-lenis-prevent') ||
+          Boolean(node.closest?.('[data-lenis-prevent]')) ||
+          Boolean(node.closest?.('#icon-picker-modal'))
+        );
+      },
     });
 
     window.__lenis = lenis;

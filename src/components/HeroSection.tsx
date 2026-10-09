@@ -5,6 +5,8 @@ import { SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
 import { trackWhatsAppClick } from '../services/analytics';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
+import { EditableText } from './editor/EditableText';
+import { EditableIcon } from './editor/EditableIcon';
 import heroImage from '../assets/images/hero-head-spa.webp';
 import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
 
@@ -49,15 +51,24 @@ export const HeroSection: React.FC = () => {
           />
           <div className="mt-3 flex flex-col items-center gap-1">
             <span className="text-[10px] sm:text-xs uppercase tracking-[0.35em] text-[#D4AF37] font-sans font-semibold">
-              Head SPA Coreano • Day SPA
+              <EditableText id="hero.badge" defaultText="Head SPA Coreano • Day SPA" as="span">
+                Head SPA Coreano • Day SPA
+              </EditableText>
             </span>
             <h1 className="text-[11px] sm:text-xs uppercase tracking-[0.25em] text-[#94A595]/90 font-sans font-normal leading-relaxed">
-              <span className="whitespace-nowrap">{OFFICIAL_COPIES.locationSubtitle}</span>
+              <EditableText
+                id="hero.location"
+                defaultText={OFFICIAL_COPIES.locationSubtitle}
+                as="span"
+                className="whitespace-nowrap"
+              >
+                {OFFICIAL_COPIES.locationSubtitle}
+              </EditableText>
             </h1>
           </div>
         </motion.div>
 
-        {/* Official Slogan (Linhas laterais ativas apenas no desktop para evitar quebra assimétrica no mobile) */}
+        {/* Official Slogan */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -67,7 +78,15 @@ export const HeroSection: React.FC = () => {
           <div className="flex items-center justify-center gap-3">
             <span className="hidden sm:inline-block w-8 h-[1px] bg-[#D4AF37]/40" />
             <p className="font-serif italic text-xl sm:text-2xl md:text-3xl text-[#D4AF37] tracking-wide font-normal max-w-md sm:max-w-none leading-snug">
-              "{OFFICIAL_COPIES.slogan}"
+              "
+              <EditableText
+                id="hero.slogan"
+                defaultText={OFFICIAL_COPIES.slogan}
+                as="span"
+              >
+                {OFFICIAL_COPIES.slogan}
+              </EditableText>
+              "
             </p>
             <span className="hidden sm:inline-block w-8 h-[1px] bg-[#D4AF37]/40" />
           </div>
@@ -90,8 +109,10 @@ export const HeroSection: React.FC = () => {
               size="lg"
               className="w-full sm:w-auto font-medium"
             >
-              <MessageCircle className="w-5 h-5 text-[#121C16]" />
-              <span>{OFFICIAL_COPIES.ctaButton}</span>
+              <EditableIcon id="hero.cta.icon" defaultIcon="MessageCircle" className="w-5 h-5 text-[#121C16]" />
+              <EditableText id="hero.cta" defaultText={OFFICIAL_COPIES.ctaButton} as="span">
+                {OFFICIAL_COPIES.ctaButton}
+              </EditableText>
             </MagneticButton>
           </div>
 
@@ -101,7 +122,14 @@ export const HeroSection: React.FC = () => {
             size="lg"
             className="w-full sm:w-auto border-[#D4AF37]/35 hover:border-[#D4AF37]/60 shadow-[0_10px_30px_rgba(0,0,0,0.4)]"
           >
-            <span className="text-[#F3EFE6] font-medium">Conhecer o Ritual de Boas-Vindas</span>
+            <EditableText
+              id="hero.secondaryCta"
+              defaultText="Conhecer o Ritual de Boas-Vindas"
+              as="span"
+              className="text-[#F3EFE6] font-medium"
+            >
+              Conhecer o Ritual de Boas-Vindas
+            </EditableText>
             <ChevronDown className="w-4 h-4 text-[#D4AF37] group-hover:translate-y-0.5 transition-transform" />
           </MagneticButton>
         </motion.div>

@@ -13,51 +13,61 @@ import { LocationAndFooterSection } from './components/LocationAndFooterSection'
 import { AudioEqualizer } from './components/AudioEqualizer';
 import { MobileActionDock } from './components/MobileActionDock';
 
+import { EditorProvider } from './context/EditorContext';
+import { EditorToolbar } from './components/editor/EditorToolbar';
+import { ExportModal } from './components/editor/ExportModal';
+
 function App() {
   // Initialize Lenis smooth inertia scroll
   useLenis();
 
   return (
-    <div className="min-h-screen bg-[#121C16] text-[#F3EFE6] selection:bg-[#7A8B7B] selection:text-[#121C16] relative overflow-x-hidden font-sans">
-      {/* SEO & Structured Data */}
-      <SEOHead />
+    <EditorProvider>
+      <div className="min-h-screen bg-[#121C16] text-[#F3EFE6] selection:bg-[#7A8B7B] selection:text-[#121C16] relative overflow-x-hidden font-sans">
+        {/* Editor Floating Toolbar & Export Modal */}
+        <EditorToolbar />
+        <ExportModal />
 
-      {/* Adaptive Header / Navigation */}
-      <Navbar />
+        {/* SEO & Structured Data */}
+        <SEOHead />
 
-      {/* Main Content Sections */}
-      <main className="relative">
-        {/* SEÇÃO 1: HERO SECTION (Imersão Sensorial Botânica) */}
-        <HeroSection />
+        {/* Adaptive Header / Navigation */}
+        <Navbar />
 
-        {/* SEÇÃO 2: O MANIFESTO DO DESACELERAMENTO & RITUAL DE BOAS-VINDAS */}
-        <ManifestoSection />
+        {/* Main Content Sections */}
+        <main className="relative">
+          {/* SEÇÃO 1: HERO SECTION (Imersão Sensorial Botânica) */}
+          <HeroSection />
 
-        {/* SEÇÃO 3: DESTAQUE CARRO-CHEFE – HEAD SPA COREANO */}
-        <HeadSpaSection />
+          {/* SEÇÃO 2: O MANIFESTO DO DESACELERAMENTO & RITUAL DE BOAS-VINDAS */}
+          <ManifestoSection />
 
-        {/* SEÇÃO 4: MENU INTERATIVO DE RITUAIS TERAPÊUTICOS */}
-        <ServicesMenuSection />
+          {/* SEÇÃO 3: DESTAQUE CARRO-CHEFE – HEAD SPA COREANO */}
+          <HeadSpaSection />
 
-        {/* SEÇÃO 5: PROVA SOCIAL & RECONHECIMENTO (5.0 ESTRELAS) */}
-        <ReviewsSection />
+          {/* SEÇÃO 4: MENU INTERATIVO DE RITUAIS TERAPÊUTICOS */}
+          <ServicesMenuSection />
 
-        {/* SEÇÃO 6: GIFT CARD & PRESENTES DE AUTOCUIDADO */}
-        <GiftCardSection />
+          {/* SEÇÃO 5: PROVA SOCIAL & RECONHECIMENTO (5.0 ESTRELAS) */}
+          <ReviewsSection />
 
-        {/* SEÇÃO 7: PERGUNTAS FREQUENTES & PREPARO PARA A VISITA */}
-        <FAQSection />
+          {/* SEÇÃO 6: GIFT CARD & PRESENTES DE AUTOCUIDADO */}
+          <GiftCardSection />
 
-        {/* SEÇÃO 8: LOCALIZAÇÃO, HORÁRIOS & RODAPÉ PREMIUM */}
-        <LocationAndFooterSection />
-      </main>
+          {/* SEÇÃO 7: PERGUNTAS FREQUENTES & PREPARO PARA A VISITA */}
+          <FAQSection />
 
-      {/* Floating ASMR Audio Equalizer (Desktop & Tablet) */}
-      <AudioEqualizer />
+          {/* SEÇÃO 8: LOCALIZAÇÃO, HORÁRIOS & RODAPÉ PREMIUM */}
+          <LocationAndFooterSection />
+        </main>
 
-      {/* Sticky Mobile Action Dock (Fixed Bottom-0 on Mobile) */}
-      <MobileActionDock />
-    </div>
+        {/* Floating ASMR Audio Equalizer (Desktop & Tablet) */}
+        <AudioEqualizer />
+
+        {/* Sticky Mobile Action Dock (Fixed Bottom-0 on Mobile) */}
+        <MobileActionDock />
+      </div>
+    </EditorProvider>
   );
 }
 

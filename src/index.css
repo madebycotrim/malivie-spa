@@ -207,3 +207,21 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Editor Mode Global Styling */
+.global-editing-active {
+  outline: 2px solid #D4AF37 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(18, 28, 22, 0.95) !important;
+  color: #F3EFE6 !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.45) !important;
+  border-radius: 4px !important;
+  cursor: text !important;
+  position: relative !important;
+  z-index: 9985 !important;
+}
+
+body.editor-mode-active [contenteditable="true"] {
+  caret-color: #D4AF37 !important;
+}
+

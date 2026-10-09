@@ -5,6 +5,9 @@ import { HEAD_SPA_STEPS, SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaD
 import { MagneticButton } from './MagneticButton';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { trackWhatsAppClick } from '../services/analytics';
+import { EditableText } from './editor/EditableText';
+import { EditableImage } from './editor/EditableImage';
+import { EditableIcon } from './editor/EditableIcon';
 import headSpaTerapeutaImg from '../assets/images/head-spa-terapeuta-acolhimento.webp';
 import headSpaJatosImg from '../assets/images/head-spa-jatos-agua.webp';
 import headSpaArcoDouradoImg from '../assets/images/head-spa-arco-dourado.webp';
@@ -38,8 +41,10 @@ export const HeadSpaSection: React.FC = () => {
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
-            <Droplets className="w-3.5 h-3.5 text-[#7A8B7B]" />
-            Carro-Chefe Exclusivo
+            <EditableIcon id="headSpa.badge.icon" defaultIcon="Droplets" className="w-3.5 h-3.5 text-[#7A8B7B]" />
+            <EditableText id="headSpa.badge" defaultText="Carro-Chefe Exclusivo" as="span">
+              Carro-Chefe Exclusivo
+            </EditableText>
           </motion.div>
 
           <motion.h2
@@ -49,7 +54,13 @@ export const HeadSpaSection: React.FC = () => {
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight"
           >
-            {OFFICIAL_COPIES.headSpaTitle}
+            <EditableText
+              id="headSpa.title"
+              defaultText={OFFICIAL_COPIES.headSpaTitle}
+              as="span"
+            >
+              {OFFICIAL_COPIES.headSpaTitle}
+            </EditableText>
           </motion.h2>
 
           <motion.p
@@ -59,7 +70,15 @@ export const HeadSpaSection: React.FC = () => {
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 text-base sm:text-lg text-[#D4AF37]/90 font-serif italic max-w-2xl mx-auto leading-relaxed"
           >
-            "{OFFICIAL_COPIES.headSpaSubtitle}"
+            "
+            <EditableText
+              id="headSpa.subtitle"
+              defaultText={OFFICIAL_COPIES.headSpaSubtitle}
+              as="span"
+            >
+              {OFFICIAL_COPIES.headSpaSubtitle}
+            </EditableText>
+            "
           </motion.p>
 
           <motion.div
@@ -71,7 +90,13 @@ export const HeadSpaSection: React.FC = () => {
           >
             <Headphones className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
             <p className="font-sans leading-relaxed">
-              {OFFICIAL_COPIES.headSpaQuote}
+              <EditableText
+                id="headSpa.quote"
+                defaultText={OFFICIAL_COPIES.headSpaQuote}
+                as="span"
+              >
+                {OFFICIAL_COPIES.headSpaQuote}
+              </EditableText>
             </p>
           </motion.div>
         </div>
@@ -88,40 +113,57 @@ export const HeadSpaSection: React.FC = () => {
           >
             <div className="relative rounded-3xl overflow-hidden bg-[#18251E] border border-[#F3EFE6]/10 p-3 shadow-[0_25px_60px_rgba(0,0,0,0.5)] group">
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#121C16]">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeStep}
-                    src={stepImages[activeStep] || headSpaTerapeutaImg}
-                    alt={`Head Spa Coreano Maliviê SPA - ${HEAD_SPA_STEPS[activeStep]?.title || 'Ritual'}`}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.65, ease: EASE_ORGANIC }}
-                    className="w-full h-full object-cover object-center filter contrast-105"
-                  />
-                </AnimatePresence>
+                <EditableImage
+                  key={activeStep}
+                  id={`headSpa.step.${activeStep}.image`}
+                  defaultImage={stepImages[activeStep] || headSpaTerapeutaImg}
+                  alt={`Head Spa Coreano Maliviê SPA - ${HEAD_SPA_STEPS[activeStep]?.title || 'Ritual'}`}
+                  prefix={`head-spa-etapa-${activeStep + 1}`}
+                  className="w-full h-full object-cover object-center filter contrast-105"
+                  containerClassName="w-full h-full"
+                />
                 
                 {/* Visual Gradient Shimmer */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121C16] via-transparent to-black/20 pointer-events-none" />
 
                 {/* Floating Tag inside the photo */}
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121C16]/80 backdrop-blur-md border border-[#F3EFE6]/20 text-[11px] text-[#F3EFE6]">
+                <div
+                  className="absolute top-4 left-4 z-30 pointer-events-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121C16]/80 backdrop-blur-md border border-[#F3EFE6]/20 text-[11px] text-[#F3EFE6]"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-                  <span>Arco Hídrico Terapêutico ASMR</span>
+                  <EditableText id="headSpa.photoBadge" defaultText="Arco Hídrico Terapêutico ASMR" as="span">
+                    Arco Hídrico Terapêutico ASMR
+                  </EditableText>
                 </div>
 
                 {/* Bottom Overlay Info Card */}
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#121C16]/90 backdrop-blur-md border border-[#F3EFE6]/10 text-xs">
+                <div
+                  className="absolute bottom-4 left-4 right-4 z-30 pointer-events-auto p-4 rounded-xl bg-[#121C16]/90 backdrop-blur-md border border-[#F3EFE6]/10 text-xs"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-serif italic text-[#D4AF37] text-sm">
-                      Sensação da Sessão
+                      <EditableText id="headSpa.photoCardTitle" defaultText="Sensação da Sessão" as="span">
+                        Sensação da Sessão
+                      </EditableText>
                     </span>
                     <span className="text-[10px] uppercase font-sans tracking-widest text-[#7A8B7B]">
-                      80 Minutos
+                      <EditableText id="headSpa.photoCardDuration" defaultText="80 Minutos" as="span">
+                        80 Minutos
+                      </EditableText>
                     </span>
                   </div>
                   <p className="text-[#F3EFE6]/80 text-[11px] leading-relaxed">
-                    "{HEAD_SPA_STEPS[activeStep].sensoryNote}"
+                    "
+                    <EditableText
+                      id={`headSpa.step.${activeStep}.sensoryNote`}
+                      defaultText={HEAD_SPA_STEPS[activeStep].sensoryNote}
+                      as="span"
+                    >
+                      {HEAD_SPA_STEPS[activeStep].sensoryNote}
+                    </EditableText>
+                    "
                   </p>
                 </div>
               </div>
@@ -131,10 +173,20 @@ export const HeadSpaSection: React.FC = () => {
             {/* Micro Benefits Badge (Regulatório Seguro) */}
             <div className="mt-4 p-3.5 rounded-2xl bg-[#18251E]/60 border border-[#F3EFE6]/10 flex items-center justify-between text-xs text-[#F3EFE6]/85">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#7A8B7B]" />
-                <span>Alívio de tensões na cabeça, estresse e fadiga mental</span>
+                <EditableIcon id="headSpa.benefit.icon" defaultIcon="ShieldCheck" className="w-4 h-4 text-[#7A8B7B]" />
+                <EditableText
+                  id="headSpa.benefitText"
+                  defaultText="Alívio de tensões na cabeça, estresse e fadiga mental"
+                  as="span"
+                >
+                  Alívio de tensões na cabeça, estresse e fadiga mental
+                </EditableText>
               </div>
-              <span className="text-[#D4AF37] font-semibold text-[11px] whitespace-nowrap ml-2">Puro bem-estar</span>
+              <span className="text-[#D4AF37] font-semibold text-[11px] whitespace-nowrap ml-2">
+                <EditableText id="headSpa.benefitHighlight" defaultText="Puro bem-estar" as="span">
+                  Puro bem-estar
+                </EditableText>
+              </span>
             </div>
           </motion.div>
 
@@ -148,10 +200,14 @@ export const HeadSpaSection: React.FC = () => {
           >
             <div className="mb-2">
               <h3 className="font-serif text-2xl sm:text-3xl text-[#F3EFE6]">
-                As 4 Etapas do Ritual Completo
+                <EditableText id="headSpa.stepsHeading" defaultText="As 4 Etapas do Ritual Completo" as="span">
+                  As 4 Etapas do Ritual Completo
+                </EditableText>
               </h3>
               <p className="text-xs text-[#F3EFE6]/60 font-sans uppercase tracking-widest mt-1">
-                Clique nas fases para explorar a evolução do tratamento
+                <EditableText id="headSpa.stepsSubheading" defaultText="Clique nas fases para explorar a evolução do tratamento" as="span">
+                  Clique nas fases para explorar a evolução do tratamento
+                </EditableText>
               </p>
             </div>
 
@@ -186,10 +242,14 @@ export const HeadSpaSection: React.FC = () => {
                             isOpen ? 'text-[#F3EFE6]' : 'text-[#F3EFE6]/80'
                           }`}
                         >
-                          {step.title}
+                          <EditableText id={`headSpa.step.${idx}.title`} defaultText={step.title} as="span">
+                            {step.title}
+                          </EditableText>
                         </h4>
                         <span className="text-xs text-[#7A8B7B] font-sans font-medium tracking-wide">
-                          {step.subtitle}
+                          <EditableText id={`headSpa.step.${idx}.subtitle`} defaultText={step.subtitle} as="span">
+                            {step.subtitle}
+                          </EditableText>
                         </span>
                       </div>
                     </div>
@@ -212,19 +272,32 @@ export const HeadSpaSection: React.FC = () => {
                         transition={{ duration: 0.45, ease: EASE_LUXURY }}
                       >
                         <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-[#F3EFE6]/10 text-sm text-[#F3EFE6]/80 space-y-4">
-                          <p className="leading-relaxed font-sans text-xs sm:text-sm text-[#F3EFE6]/90">
+                          <EditableText
+                            id={`headSpa.step.${idx}.description`}
+                            defaultText={step.description}
+                            as="p"
+                            className="leading-relaxed font-sans text-xs sm:text-sm text-[#F3EFE6]/90"
+                          >
                             {step.description}
-                          </p>
+                          </EditableText>
 
                           <div className="space-y-2 pt-1">
                             <span className="text-[11px] font-sans uppercase tracking-widest text-[#D4AF37] font-semibold block">
-                              Detalhes do Procedimento:
+                              <EditableText id="headSpa.procedureDetailsLabel" defaultText="Detalhes do Procedimento:" as="span">
+                                Detalhes do Procedimento:
+                              </EditableText>
                             </span>
                             <ul className="grid grid-cols-1 gap-2">
                               {step.details.map((detail, dIdx) => (
                                 <li key={dIdx} className="flex items-start gap-2.5 text-xs text-[#F3EFE6]/75">
                                   <Check className="w-3.5 h-3.5 text-[#7A8B7B] flex-shrink-0 mt-0.5" />
-                                  <span>{detail}</span>
+                                  <EditableText
+                                    id={`headSpa.step.${idx}.detail.${dIdx}`}
+                                    defaultText={detail}
+                                    as="span"
+                                  >
+                                    {detail}
+                                  </EditableText>
                                 </li>
                               ))}
                             </ul>
@@ -232,7 +305,13 @@ export const HeadSpaSection: React.FC = () => {
 
                           <div className="pt-2 flex items-center justify-between text-xs border-t border-[#F3EFE6]/5">
                             <span className="text-[#D4AF37] font-serif italic text-sm">
-                              Terapeutas Especialistas: Andressa & Luciana
+                              <EditableText
+                                id={`headSpa.step.${idx}.therapists`}
+                                defaultText="Terapeutas Especialistas: Andressa & Luciana"
+                                as="span"
+                              >
+                                Terapeutas Especialistas: Andressa & Luciana
+                              </EditableText>
                             </span>
                           </div>
                         </div>
@@ -242,6 +321,66 @@ export const HeadSpaSection: React.FC = () => {
                 </div>
               );
             })}
+
+            {/* Modalidades Oficiais Head Spa & Oferta Especial */}
+            <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-[#18251E] border border-[#D4AF37]/30 space-y-4 shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F3EFE6]/10 pb-3">
+                <span className="text-xs uppercase font-sans font-bold tracking-widest text-[#D4AF37]">
+                  Escolha Sua Experiência Head SPA
+                </span>
+                <span className="text-[11px] text-[#7A8B7B] font-medium">
+                  Aromaterapia Inclusa • Escalda-pés cortesia com antecedência*
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#F3EFE6]/10 flex flex-col justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-[#F3EFE6] block">Head Spa Essencial</span>
+                    <span className="text-[11px] text-[#F3EFE6]/60 block mt-0.5">Couro cabeludo & fios com ozonioterapia</span>
+                  </div>
+                  <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
+                    <span className="text-[11px] text-[#7A8B7B]">45' min</span>
+                    <span className="text-sm font-serif font-bold text-[#D4AF37]">R$ 239,00</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#7A8B7B]/40 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-xs font-semibold text-[#F3EFE6] block">Head Spa Harmonia</span>
+                    </div>
+                    <span className="text-[11px] text-[#F3EFE6]/60 block mt-0.5">Essencial + Revitalização Facial</span>
+                  </div>
+                  <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
+                    <span className="text-[11px] text-[#7A8B7B]">80' min</span>
+                    <span className="text-sm font-serif font-bold text-[#D4AF37]">R$ 349,00</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#D4AF37]/40 flex flex-col justify-between relative overflow-hidden">
+                  <div className="absolute top-0 right-0 px-2 py-0.5 bg-[#D4AF37] text-[#121C16] text-[9px] font-bold uppercase tracking-wider rounded-bl">
+                    Completo
+                  </div>
+                  <div>
+                    <span className="text-xs font-semibold text-[#F3EFE6] block">Head Spa Plenitude</span>
+                    <span className="text-[11px] text-[#F3EFE6]/60 block mt-0.5">Head Spa + Facial + Esfoliação + Pedras Quentes</span>
+                  </div>
+                  <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
+                    <span className="text-[11px] text-[#7A8B7B]">160' min</span>
+                    <span className="text-sm font-serif font-bold text-[#D4AF37]">R$ 577,00</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Special Upsell Callout from Catalog page 10 */}
+              <div className="p-3 rounded-xl bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-2.5 text-xs text-[#F3EFE6]/90">
+                <Sparkles className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
+                <span className="font-sans leading-tight">
+                  <strong className="text-[#D4AF37]">Dica Especial:</strong> Adicione o Spa dos Pés por <strong>50% do valor</strong> e torne sua experiência ainda mais especial.
+                </span>
+              </div>
+            </div>
 
             {/* Direct Official Booking CTA for Head Spa */}
             <div className="pt-6 flex flex-col sm:flex-row items-center gap-4">
@@ -254,12 +393,16 @@ export const HeadSpaSection: React.FC = () => {
                 size="lg"
                 className="w-full sm:w-auto"
               >
-                <MessageCircle className="w-5 h-5 text-[#121C16]" />
-                <span>{OFFICIAL_COPIES.ctaButton}</span>
+                <EditableIcon id="headSpa.cta.icon" defaultIcon="MessageCircle" className="w-5 h-5 text-[#121C16]" />
+                <EditableText id="headSpa.cta" defaultText={OFFICIAL_COPIES.ctaButton} as="span">
+                  {OFFICIAL_COPIES.ctaButton}
+                </EditableText>
               </MagneticButton>
 
               <span className="text-xs text-[#F3EFE6]/60 font-serif italic text-center sm:text-left">
-                {SPA_BUSINESS_DATA.slogan}
+                <EditableText id="headSpa.slogan" defaultText={SPA_BUSINESS_DATA.slogan} as="span">
+                  {SPA_BUSINESS_DATA.slogan}
+                </EditableText>
               </span>
             </div>
           </motion.div>

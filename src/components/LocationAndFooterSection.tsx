@@ -16,11 +16,44 @@ import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { isAbertoAgora } from '../utils/businessHours';
 import { trackWhatsAppClick } from '../services/analytics';
+import { useEditor } from '../context/EditorContext';
+import { EditableText } from './editor/EditableText';
+import { EditableImage } from './editor/EditableImage';
+import { EditableIcon } from './editor/EditableIcon';
+import { PasswordModal } from './editor/PasswordModal';
 import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
 import fachadaImg from '../assets/images/malivie-fachada-oficial.webp';
 
 export const LocationAndFooterSection: React.FC = () => {
   const abertoAgora = isAbertoAgora();
+  const { toggleEditor, requestOpenEditor, isEditorActive, isPasswordModalOpen } = useEditor();
+  const clickCountRef = React.useRef(0);
+  const clickTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [logoPulse, setLogoPulse] = React.useState(false);
+
+  const handleLogoTripleClick = () => {
+    clickCountRef.current += 1;
+    setLogoPulse(true);
+    setTimeout(() => setLogoPulse(false), 300);
+
+    if (clickTimerRef.current) {
+      clearTimeout(clickTimerRef.current);
+    }
+
+    if (clickCountRef.current >= 3) {
+      clickCountRef.current = 0;
+      if (isEditorActive) {
+        toggleEditor();
+      } else {
+        requestOpenEditor();
+      }
+    } else {
+      clickTimerRef.current = setTimeout(() => {
+        clickCountRef.current = 0;
+      }, 3000);
+    }
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -51,7 +84,9 @@ export const LocationAndFooterSection: React.FC = () => {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <Compass className="w-3.5 h-3.5 text-[#7A8B7B]" />
-            Visite Nosso Santuário
+            <EditableText id="location.badge" defaultText="Visite Nosso Santuário" as="span">
+              Visite Nosso Santuário
+            </EditableText>
           </motion.div>
 
           <motion.h2
@@ -61,7 +96,9 @@ export const LocationAndFooterSection: React.FC = () => {
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight"
           >
-            Localização & <span className="italic font-normal text-[#D4AF37]">Horários</span>
+            <EditableText id="location.title" defaultText="Localização & Horários" as="span">
+              Localização & <span className="italic font-normal text-[#D4AF37]">Horários</span>
+            </EditableText>
           </motion.h2>
 
           <motion.p
@@ -71,7 +108,13 @@ export const LocationAndFooterSection: React.FC = () => {
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 text-xs sm:text-sm text-[#F3EFE6]/70 font-sans max-w-xl mx-auto leading-relaxed"
           >
-            Fácil acesso e conveniência no coração do Núcleo Bandeirante, com tranquilidade e discrição garantidas.
+            <EditableText
+              id="location.description"
+              defaultText="Fácil acesso e conveniência no coração do Núcleo Bandeirante, com tranquilidade e discrição garantidas."
+              as="span"
+            >
+              Fácil acesso e conveniência no coração do Núcleo Bandeirante, com tranquilidade e discrição garantidas.
+            </EditableText>
           </motion.p>
         </div>
 
@@ -85,32 +128,47 @@ export const LocationAndFooterSection: React.FC = () => {
                 <span className="relative flex h-2 w-2">
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]">
+                <EditableText
+                  id="location.facade.header"
+                  defaultText="Fachada & Espaço Físico"
+                  as="span"
+                  className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
+                >
                   Fachada & Espaço Físico
-                </span>
+                </EditableText>
               </div>
-              <span className="text-[11px] text-[#7A8B7B] font-mono font-medium">
+              <EditableText
+                id="location.facade.tag"
+                defaultText="Loja 3 • Térreo"
+                as="span"
+                className="text-[11px] text-[#7A8B7B] font-mono font-medium"
+              >
                 Loja 3 • Térreo
-              </span>
+              </EditableText>
             </div>
 
             {/* Photo Viewport - Fills full card height down to bottom padding, showing sidewalk and cutting off parking lot */}
             <div className="relative w-full flex-1 min-h-[320px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group">
-              <img
-                loading="lazy"
-                decoding="async"
-                src={fachadaImg}
+              <EditableImage
+                id="location.facade"
+                defaultImage={fachadaImg}
                 alt="Fachada do Maliviê SPA no Núcleo Bandeirante, Brasília"
+                prefix="fachada"
                 style={{ objectPosition: 'center 60%' }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/20 pointer-events-none" />
               
               {/* Floating Pill on top-left */}
-              <div className="absolute top-3 left-3 pointer-events-none">
+              <div
+                className="absolute top-3 left-3 z-30 pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg">
-                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>Fachada do Maliviê SPA</span>
+                  <EditableIcon id="location.facadeBadge.icon" defaultIcon="MapPin" className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <EditableText id="location.facadeBadge" defaultText="Fachada do Maliviê SPA" as="span">
+                    Fachada do Maliviê SPA
+                  </EditableText>
                 </div>
               </div>
             </div>
@@ -125,13 +183,23 @@ export const LocationAndFooterSection: React.FC = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7A8B7B] opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]">
+                <EditableText
+                  id="location.map.header"
+                  defaultText="Google Maps Interativo"
+                  as="span"
+                  className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
+                >
                   Google Maps Interativo
-                </span>
+                </EditableText>
               </div>
-              <span className="text-[11px] text-[#7A8B7B] font-mono font-medium">
+              <EditableText
+                id="location.map.tag"
+                defaultText="Brasília • DF"
+                as="span"
+                className="text-[11px] text-[#7A8B7B] font-mono font-medium"
+              >
                 Brasília • DF
-              </span>
+              </EditableText>
             </div>
 
             {/* Real Interactive Google Maps Viewport matching exact start of Facade */}
@@ -149,10 +217,15 @@ export const LocationAndFooterSection: React.FC = () => {
               />
 
               {/* Floating Address Tag Pill */}
-              <div className="absolute top-3 left-3 pointer-events-none">
+              <div
+                className="absolute top-3 left-3 z-30 pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg">
-                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>Maliviê SPA • 3ª Avenida, 1124 - Lote 1208-A, Loja 3</span>
+                  <EditableIcon id="location.mapBadge.icon" defaultIcon="MapPin" className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <EditableText id="location.mapBadge" defaultText="Maliviê SPA • 3ª Avenida, 1124 - Lote 1208-A, Loja 3" as="span">
+                    Maliviê SPA • 3ª Avenida, 1124 - Lote 1208-A, Loja 3
+                  </EditableText>
                 </div>
               </div> 
             </div>
@@ -165,8 +238,10 @@ export const LocationAndFooterSection: React.FC = () => {
                 rel="noopener noreferrer"
                 className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37]/50 transition-all shadow-sm group"
               >
-                <Navigation className="w-3.5 h-3.5 text-[#7A8B7B] group-hover:text-[#D4AF37] transition-colors" />
-                <span>Abrir no Maps</span>
+                <EditableIcon id="location.map.mapsBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#7A8B7B] group-hover:text-[#D4AF37] transition-colors" />
+                <EditableText id="location.map.mapsBtn" defaultText="Abrir no Maps" as="span">
+                  Abrir no Maps
+                </EditableText>
                 <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65" />
               </a>
 
@@ -176,8 +251,10 @@ export const LocationAndFooterSection: React.FC = () => {
                 rel="noopener noreferrer"
                 className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#7A8B7B]/50 transition-all shadow-sm group"
               >
-                <Navigation className="w-3.5 h-3.5 text-[#D4AF37] group-hover:text-[#7A8B7B] transition-colors" />
-                <span>Traçar no Waze</span>
+                <EditableIcon id="location.map.wazeBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#D4AF37] group-hover:text-[#7A8B7B] transition-colors" />
+                <EditableText id="location.map.wazeBtn" defaultText="Traçar no Waze" as="span">
+                  Traçar no Waze
+                </EditableText>
                 <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65" />
               </a>
             </div>
@@ -193,32 +270,63 @@ export const LocationAndFooterSection: React.FC = () => {
                   <span className="relative flex h-2 w-2">
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]">
+                  <EditableText
+                    id="location.address.header"
+                    defaultText="Endereço Físico"
+                    as="span"
+                    className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
+                  >
                     Endereço Físico
-                  </span>
+                  </EditableText>
                 </div>
-                <span className="text-[11px] text-[#7A8B7B] font-mono font-medium">
+                <EditableText
+                  id="location.address.cityTag"
+                  defaultText="Brasília • DF"
+                  as="span"
+                  className="text-[11px] text-[#7A8B7B] font-mono font-medium"
+                >
                   Brasília • DF
-                </span>
+                </EditableText>
               </div>
 
               {/* Body Content */}
               <div className="space-y-1 py-1">
-                <p className="font-serif text-base sm:text-lg text-[#F3EFE6] font-light leading-snug">
+                <EditableText
+                  id="location.address.street"
+                  defaultText={SPA_BUSINESS_DATA.address.street}
+                  as="p"
+                  className="font-serif text-base sm:text-lg text-[#F3EFE6] font-light leading-snug"
+                >
                   {SPA_BUSINESS_DATA.address.street}
-                </p>
-                <p className="text-xs text-[#F3EFE6]/70 font-sans leading-relaxed">
-                  {SPA_BUSINESS_DATA.address.neighborhood}, {SPA_BUSINESS_DATA.address.city} - {SPA_BUSINESS_DATA.address.state}
-                  <br />
-                  CEP: {SPA_BUSINESS_DATA.address.postalCode}
-                </p>
+                </EditableText>
+                <div className="text-xs text-[#F3EFE6]/70 font-sans leading-relaxed">
+                  <EditableText
+                    id="location.address.neighborhood"
+                    defaultText={`${SPA_BUSINESS_DATA.address.neighborhood}, ${SPA_BUSINESS_DATA.address.city} - ${SPA_BUSINESS_DATA.address.state}`}
+                    as="p"
+                  >
+                    {`${SPA_BUSINESS_DATA.address.neighborhood}, ${SPA_BUSINESS_DATA.address.city} - ${SPA_BUSINESS_DATA.address.state}`}
+                  </EditableText>
+                  <EditableText
+                    id="location.address.cep"
+                    defaultText={`CEP: ${SPA_BUSINESS_DATA.address.postalCode}`}
+                    as="p"
+                  >
+                    {`CEP: ${SPA_BUSINESS_DATA.address.postalCode}`}
+                  </EditableText>
+                </div>
               </div>
 
               {/* Footer Highlight */}
               <div className="pt-2 border-t border-[#F3EFE6]/10 mt-1 flex items-center">
-                <span className="text-[11px] text-[#D4AF37] font-sans">
+                <EditableText
+                  id="location.address.parking"
+                  defaultText="Estacionamento amplo e gratuito em frente à loja."
+                  as="span"
+                  className="text-[11px] text-[#D4AF37] font-sans"
+                >
                   Estacionamento amplo e gratuito em frente à loja.
-                </span>
+                </EditableText>
               </div>
             </div>
 
@@ -227,19 +335,28 @@ export const LocationAndFooterSection: React.FC = () => {
               {/* Header */}
               <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-[#F3EFE6]/10">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]">
-                    Horários de Funcionamento
-                  </span>
+                  <EditableIcon id="location.schedule.header.icon" defaultIcon="Clock" className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <EditableText
+                    id="location.schedule.header"
+                    defaultText="Horário de Funcionamento"
+                    as="span"
+                    className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
+                  >
+                    Horário de Funcionamento
+                  </EditableText>
                 </div>
                 {abertoAgora ? (
                   <span className="text-[10px] uppercase font-sans font-bold text-[#7A8B7B] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] animate-pulse" />
-                    Aberto agora
+                    <EditableText id="location.schedule.openNowBadge" defaultText="Aberto agora" as="span">
+                      Aberto agora
+                    </EditableText>
                   </span>
                 ) : (
                   <span className="text-[10px] uppercase font-sans font-medium text-[#F3EFE6]/60 px-2.5 py-0.5 rounded-full bg-[#121C16] border border-[#F3EFE6]/10">
-                    Fechado agora
+                    <EditableText id="location.schedule.closedNowBadge" defaultText="Fechado agora" as="span">
+                      Fechado agora
+                    </EditableText>
                   </span>
                 )}
               </div>
@@ -250,41 +367,82 @@ export const LocationAndFooterSection: React.FC = () => {
                 <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/50 border border-[#F3EFE6]/5 transition-all">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#F3EFE6]/25" />
-                    <span className="text-xs text-[#F3EFE6]/70 font-medium">Segunda-feira</span>
+                    <EditableText
+                      id="location.schedule.monday.label"
+                      defaultText="Segunda-feira"
+                      as="span"
+                      className="text-xs text-[#F3EFE6]/70 font-medium"
+                    >
+                      Segunda-feira
+                    </EditableText>
                   </div>
-                  <span className="text-[11px] font-sans font-medium text-[#F3EFE6]/40 px-2.5 py-0.5 rounded-full bg-[#121C16] border border-[#F3EFE6]/10">
+                  <EditableText
+                    id="location.schedule.monday.hours"
+                    defaultText={SPA_BUSINESS_DATA.schedule.monday}
+                    as="span"
+                    className="text-[11px] font-sans font-medium text-[#F3EFE6]/40 px-2.5 py-0.5 rounded-full bg-[#121C16] border border-[#F3EFE6]/10"
+                  >
                     {SPA_BUSINESS_DATA.schedule.monday}
-                  </span>
+                  </EditableText>
                 </div>
 
                 {/* Terça a Sábado */}
                 <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 border border-[#7A8B7B]/20 hover:border-[#7A8B7B]/35 transition-all shadow-sm">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B]" />
-                    <span className="text-xs text-[#F3EFE6] font-medium">Terça a Sábado</span>
+                    <EditableText
+                      id="location.schedule.tueSat.label"
+                      defaultText="Terça a Sábado"
+                      as="span"
+                      className="text-xs text-[#F3EFE6] font-medium"
+                    >
+                      Terça a Sábado
+                    </EditableText>
                   </div>
-                  <span className="text-[11px] font-sans font-semibold text-[#A3B899] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 tracking-wide">
+                  <EditableText
+                    id="location.schedule.tueSat.hours"
+                    defaultText={SPA_BUSINESS_DATA.schedule.tuesdayToSaturday.replace(/^De\s+/i, '')}
+                    as="span"
+                    className="text-[11px] font-sans font-semibold text-[#A3B899] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 tracking-wide"
+                  >
                     {SPA_BUSINESS_DATA.schedule.tuesdayToSaturday.replace(/^De\s+/i, '')}
-                  </span>
+                  </EditableText>
                 </div>
 
                 {/* Domingo */}
                 <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 border border-[#D4AF37]/20 hover:border-[#D4AF37]/35 transition-all shadow-sm">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-                    <span className="text-xs text-[#F3EFE6] font-medium">Domingo</span>
+                    <EditableText
+                      id="location.schedule.sunday.label"
+                      defaultText="Domingo"
+                      as="span"
+                      className="text-xs text-[#F3EFE6] font-medium"
+                    >
+                      Domingo
+                    </EditableText>
                   </div>
-                  <span className="text-[11px] font-sans font-semibold text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 tracking-wide">
+                  <EditableText
+                    id="location.schedule.sunday.hours"
+                    defaultText={SPA_BUSINESS_DATA.schedule.sunday.replace(/^De\s+/i, '')}
+                    as="span"
+                    className="text-[11px] font-sans font-semibold text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 tracking-wide"
+                  >
                     {SPA_BUSINESS_DATA.schedule.sunday.replace(/^De\s+/i, '')}
-                  </span>
+                  </EditableText>
                 </div>
               </div>
 
               {/* Footer Highlight: Aviso sobre feriados */}
               <div className="pt-2.5 border-t border-[#F3EFE6]/10 mt-1 flex items-center">
-                <span className="text-[11px] text-[#D4AF37] font-sans whitespace-nowrap">
+                <EditableText
+                  id="location.schedule.holidayNotice"
+                  defaultText="* Os horários podem sofrer alterações em feriados."
+                  as="span"
+                  className="text-[11px] text-[#D4AF37] font-sans whitespace-nowrap"
+                >
                   * Os horários podem sofrer alterações em feriados.
-                </span>
+                </EditableText>
               </div>
             </div>
           </div>
@@ -294,14 +452,24 @@ export const LocationAndFooterSection: React.FC = () => {
         <div className="py-14 border-t border-b border-[#F3EFE6]/10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-6 px-1">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90">
+              <EditableIcon id="location.channels.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <EditableText
+                id="location.channels.title"
+                defaultText="Canais Oficiais & Redes Sociais"
+                as="span"
+                className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90"
+              >
                 Canais Oficiais & Redes Sociais
-              </span>
+              </EditableText>
             </div>
-            <span className="text-xs font-serif italic text-[#7A8B7B]">
+            <EditableText
+              id="location.channels.subtitle"
+              defaultText="Conecte-se com o santuário e acompanhe nossos rituais diários"
+              as="span"
+              className="text-xs font-serif italic text-[#7A8B7B]"
+            >
               Conecte-se com o santuário e acompanhe nossos rituais diários
-            </span>
+            </EditableText>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -425,13 +593,32 @@ export const LocationAndFooterSection: React.FC = () => {
         {/* Bottom Bar: Copyright & Back to Top */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F3EFE6]/65">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2.5 gap-y-1">
-            <img
-              loading="lazy"
-              decoding="async"
-              src={logoMalivieWhite}
-              alt="Maliviê SPA"
-              className="h-7 w-auto object-contain opacity-90"
-            />
+            <div className="relative inline-flex items-center">
+              <button
+                id="footer-editor-logo"
+                type="button"
+                onClick={handleLogoTripleClick}
+                className={`focus:outline-none transition-all duration-300 cursor-pointer p-1 rounded-xl ${
+                  logoPulse ? 'scale-125 ring-2 ring-[#D4AF37] bg-[#D4AF37]/25' : 'hover:scale-105'
+                } ${
+                  isPasswordModalOpen || isEditorActive
+                    ? 'ring-2 ring-[#D4AF37] bg-[#D4AF37]/15 shadow-[0_0_15px_rgba(212,175,55,0.4)]'
+                    : ''
+                }`}
+                title="Maliviê SPA (Clique 3 vezes para ativar/desativar o Modo Editor de Textos)"
+              >
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  src={logoMalivieWhite}
+                  alt="Maliviê SPA"
+                  className="h-7 w-auto object-contain opacity-90"
+                />
+              </button>
+
+              {/* Balãozinho compacto de senha estilo popover com indicador */}
+              <PasswordModal />
+            </div>
             <span className="text-[#F3EFE6]/30">•</span>
             <span>© {new Date().getFullYear()} Todos os direitos reservados.</span>
             <span className="text-[#F3EFE6]/30">•</span>
@@ -450,7 +637,15 @@ export const LocationAndFooterSection: React.FC = () => {
           </div>
 
           <p className="font-serif italic text-sm text-[#D4AF37]/90 text-center">
-            "{SPA_BUSINESS_DATA.slogan}"
+            "
+            <EditableText
+              id="footer.slogan"
+              defaultText={SPA_BUSINESS_DATA.slogan}
+              as="span"
+            >
+              {SPA_BUSINESS_DATA.slogan}
+            </EditableText>
+            "
           </p>
 
           <button
@@ -458,7 +653,9 @@ export const LocationAndFooterSection: React.FC = () => {
             onClick={scrollToTop}
             className="inline-flex items-center gap-1.5 text-xs text-[#F3EFE6]/70 hover:text-[#D4AF37] transition-colors focus:outline-none cursor-pointer"
           >
-            <span>Voltar ao topo</span>
+            <EditableText id="footer.backToTop" defaultText="Voltar ao topo" as="span">
+              Voltar ao topo
+            </EditableText>
             <ArrowUp className="w-3.5 h-3.5" />
           </button>
         </div>
