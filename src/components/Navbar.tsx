@@ -52,11 +52,13 @@ export const Navbar: React.FC<NavbarProps> = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between">
-          {/* Official Brand Logo */}
+          {/* Official Brand Logo (No mobile, surge apenas ao rolar a tela para não duplicar com o Hero) */}
           <a
             href="#"
             onClick={(e) => handleLinkClick(e, '#root')}
-            className="group flex items-center gap-3 focus:outline-none"
+            className={`group flex items-center gap-3 focus:outline-none transition-all duration-500 ${
+              !isScrolled ? 'max-sm:opacity-0 max-sm:pointer-events-none max-sm:-translate-x-3' : 'opacity-100 translate-x-0'
+            }`}
             aria-label="Maliviê SPA - Página Inicial"
           >
             <img
