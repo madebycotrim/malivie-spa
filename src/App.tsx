@@ -8,6 +8,7 @@ import { HeadSpaSection } from './components/HeadSpaSection';
 import { ServicesMenuSection } from './components/ServicesMenuSection';
 import { ReviewsSection } from './components/ReviewsSection';
 import { GiftCardSection } from './components/GiftCardSection';
+import { FAQSection } from './components/FAQSection';
 import { LocationAndFooterSection } from './components/LocationAndFooterSection';
 import { AudioEqualizer } from './components/AudioEqualizer';
 import { MobileActionDock } from './components/MobileActionDock';
@@ -44,7 +45,10 @@ function App() {
         {/* SEÇÃO 6: GIFT CARD & PRESENTES DE AUTOCUIDADO */}
         <GiftCardSection />
 
-        {/* SEÇÃO 7: LOCALIZAÇÃO, HORÁRIOS & RODAPÉ PREMIUM */}
+        {/* SEÇÃO 7: PERGUNTAS FREQUENTES & PREPARO PARA A VISITA */}
+        <FAQSection />
+
+        {/* SEÇÃO 8: LOCALIZAÇÃO, HORÁRIOS & RODAPÉ PREMIUM */}
         <LocationAndFooterSection />
       </main>
 

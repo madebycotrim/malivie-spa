@@ -24,6 +24,14 @@ export interface ServiceItem {
   ritualSteps?: string[];
   therapists: string[];
   whatsappMessage: string;
+  priceHint?: string;
+}
+
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+  category: 'head-spa' | 'preparacao' | 'geral';
 }
 
 export interface ReviewItem {
@@ -84,6 +92,7 @@ export interface BusinessInfo {
     receptionUrl: string;
     formatServiceUrl: (serviceName: string) => string;
     giftCardUrl: (type?: string) => string;
+    pricingInquiryUrl?: (serviceName?: string) => string;
     createCustomUrl?: (message: string) => string;
   };
   rating: {

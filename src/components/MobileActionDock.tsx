@@ -24,7 +24,7 @@ export const MobileActionDock: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#121C16]/92 backdrop-blur-xl border-t border-[#F3EFE6]/15 px-3 py-2.5 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#121C16]/95 backdrop-blur-xl border-t border-[#F3EFE6]/15 px-3 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
       <div className="flex items-center justify-between gap-2 max-w-md mx-auto">
         {/* Agendamento Direct Action Button */}
         <a

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { SPA_BUSINESS_DATA } from '../data/spaData';
+import { FAQ_ITEMS, SPA_BUSINESS_DATA } from '../data/spaData';
 
 export const SEOHead: React.FC = () => {
   const schemaData = {
@@ -54,6 +54,19 @@ export const SEOHead: React.FC = () => {
     ],
   };
 
+  const faqSchemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <Helmet>
       <title>Maliviê SPA | Head SPA Coreano e Day SPA em Brasília</title>
@@ -93,6 +106,7 @@ export const SEOHead: React.FC = () => {
 
       {/* Schema.org Structured Data */}
       <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
+      <script type="application/ld+json">{JSON.stringify(faqSchemaData)}</script>
     </Helmet>
   );
 };

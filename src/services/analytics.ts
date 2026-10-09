@@ -16,6 +16,9 @@ export type OrigemWhatsApp =
   | 'servico_card'
   | 'servico_drawer'
   | 'gift_card'
+  | 'faq_recepcao'
+  | 'menu_tabela_valores'
+  | 'drawer_consultar_valores'
   | 'rodape_recepcao'
   | 'rodape_canais';
 

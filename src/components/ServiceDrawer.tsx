@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, Heart, Users, MessageCircle, Sparkles, Check, Coffee } from 'lucide-react';
+import { X, Clock, Heart, Users, MessageCircle, Sparkles, Check, Coffee, ArrowRight } from 'lucide-react';
 import { ServiceItem } from '../types';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { trackWhatsAppClick } from '../services/analytics';
@@ -147,6 +147,34 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
                 <span>
                   Ao término da sessão, você desfruta de um tempo livre na sala de relaxamento com chá artesanal digestivo e castanhas.
                 </span>
+              </div>
+
+              {/* Transparência de Investimento & Reserva */}
+              <div className="p-5 rounded-2xl bg-[#121C16]/80 border border-[#D4AF37]/30 space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Investimento & Condições
+                  </span>
+                  <span className="text-[11px] text-[#7A8B7B] font-mono">
+                    {service.priceHint || 'Valores sob consulta'}
+                  </span>
+                </div>
+                <p className="text-xs text-[#F3EFE6]/75 leading-relaxed font-sans">
+                  Sessão individual com sala exclusiva. O valor inclui todos os cosmecêuticos, toalhas aquecidas, secagem (no Head Spa), roupão e mimos de recepção. Parcelamento em até 3x ou condições especiais para pacotes e planos.
+                </p>
+                <div className="pt-1">
+                  <a
+                    href={SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl ? SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl(service.name) : SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
+                    onClick={() => trackWhatsAppClick('drawer_consultar_valores', service.name)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-medium"
+                  >
+                    <span>Consultar tabela de valores deste ritual</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </a>
+                </div>
               </div>
             </div>
 

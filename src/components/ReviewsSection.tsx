@@ -34,16 +34,7 @@ const GoogleLogoIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   </svg>
 );
 
-// Ícone de Local Guide do Google (Estrela Laranja de 6 pontas)
-const LocalGuideStarIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="#FF7A00" aria-hidden="true">
-    <path d="M12 2l2.4 6.6 7 .6-5.3 4.6 1.6 6.9-5.7-3.6-5.7 3.6 1.6-6.9-5.3-4.6 7-.6z" />
-  </svg>
-);
-
 export const ReviewsSection: React.FC = () => {
-  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
-
   // Configuração do Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'center', skipSnaps: false },
@@ -78,10 +69,6 @@ export const ReviewsSection: React.FC = () => {
       emblaApi.off('reInit', onInit);
     };
   }, [emblaApi, onSelect]);
-
-  const toggleExpand = (id: string) => {
-    setExpandedComments((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   return (
     <section id="depoimentos" className="relative py-24 sm:py-32 bg-[#121C16] text-[#F3EFE6] overflow-hidden">
@@ -132,8 +119,6 @@ export const ReviewsSection: React.FC = () => {
           <div className="overflow-hidden py-2" ref={emblaRef}>
             <div className="flex">
               {TESTIMONIALS.map((review: ReviewItem) => {
-                const isExpanded = !!expandedComments[review.id];
-
                 return (
                   <div key={review.id} className="flex-[0_0_100%] min-w-0 px-2 sm:px-4">
                     <div className="rounded-3xl bg-[#18261E] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/35 p-6 sm:p-9 shadow-lg flex flex-col justify-between overflow-hidden relative group transition-all duration-300">
@@ -142,57 +127,27 @@ export const ReviewsSection: React.FC = () => {
                       <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent pointer-events-none" />
 
                       {/* 1. CLIENTE NO TOPO (PADRÃO GOOGLE AVALIAÇÕES) */}
-                      <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#F3EFE6]/10">
-                        <div className="flex items-center gap-3.5">
-                          {/* Avatar com Badge de Local Guide se houver */}
-                          <div className="relative flex-shrink-0">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#7A8B7B] to-[#18251E] border border-[#D4AF37]/50 flex items-center justify-center font-serif text-lg text-[#F3EFE6] font-semibold shadow-inner">
-                              {review.avatarInitials}
-                            </div>
-                            {review.isLocalGuide && (
-                              <div
-                                className="absolute -bottom-1 -right-1 bg-[#121C16] p-0.5 rounded-full border border-[#FF7A00]"
-                                title="Google Local Guide"
-                              >
-                                <LocalGuideStarIcon className="w-3.5 h-3.5" />
-                              </div>
-                            )}
-                          </div>
-
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-sans font-semibold text-base sm:text-lg text-[#F3EFE6]">
-                                {review.author}
-                              </h4>
-                              {review.isLocalGuide && (
-                                <span className="inline-flex items-center gap-1 text-[11px] text-[#FF7A00] font-sans font-medium">
-                                  <LocalGuideStarIcon className="w-3 h-3" />
-                                  <span>Local Guide</span>
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-xs text-[#F3EFE6]/60 font-sans mt-0.5">
-                              {review.localGuideDetails || review.location}
-                            </p>
+                      {/* 1. CABEÇALHO DO CARD: AVATAR + NOME/CIDADE */}
+                      <div className="flex items-center gap-3.5">
+                        {/* Avatar */}
+                        <div className="relative flex-shrink-0">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#7A8B7B] to-[#18251E] border border-[#D4AF37]/50 flex items-center justify-center font-serif text-lg text-[#F3EFE6] font-semibold shadow-inner">
+                            {review.avatarInitials}
                           </div>
                         </div>
 
-                        {/* Link direto clicável para o Google Maps */}
-                        <a
-                          href={GOOGLE_REVIEWS_URLS.viewAll}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16] hover:bg-[#1f3026] border border-[#F3EFE6]/15 hover:border-[#4285F4]/60 text-[11px] text-[#F3EFE6]/80 hover:text-white transition-all flex-shrink-0 group/glink shadow-sm cursor-pointer"
-                          title="Ver avaliação e ficha oficial no Google Maps"
-                        >
-                          <GoogleLogoIcon className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline font-sans font-medium">Google Avaliações</span>
-                          <ExternalLink className="w-3 h-3 text-[#F3EFE6]/40 group-hover/glink:text-[#4285F4] transition-colors" />
-                        </a>
+                        <div>
+                          <h4 className="font-sans font-semibold text-base sm:text-lg text-[#F3EFE6]">
+                            {review.author}
+                          </h4>
+                          <p className="text-xs text-[#F3EFE6]/60 font-sans mt-0.5">
+                            {review.location}
+                          </p>
+                        </div>
                       </div>
 
                       {/* 2. ESTRELAS + DATA */}
-                      <div className="pt-3.5 flex items-center gap-2.5">
+                      <div className="pt-3 flex items-center gap-2.5">
                         <div className="flex items-center text-[#FBBC04] gap-0.5">
                           {[...Array(5)].map((_, i) => (
                             <Star
@@ -206,30 +161,11 @@ export const ReviewsSection: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* 3. CONTEÚDO DA AVALIAÇÃO (DESTAQUE + COMENTÁRIO + FOTOS + RESPOSTA) */}
-                      <div className="pt-4 space-y-4 flex-1">
-                        {/* Highlight Quote */}
-                        <blockquote className="font-serif italic text-lg sm:text-xl text-[#D4AF37] font-light leading-snug">
-                          "{review.highlight}"
-                        </blockquote>
-
-                        {/* Full / Truncated Comment */}
-                        <p className="font-sans text-sm sm:text-base text-[#F3EFE6]/85 leading-relaxed font-light">
-                          {isExpanded || review.comment.length <= 180
-                            ? review.comment
-                            : `${review.comment.slice(0, 180)}... `}
-                          {review.comment.length > 180 && (
-                            <button
-                              type="button"
-                              onClick={() => toggleExpand(review.id)}
-                              className="text-[#D4AF37] hover:underline font-semibold ml-1 cursor-pointer"
-                            >
-                              {isExpanded ? 'Menos' : 'Mais'}
-                            </button>
-                          )}
+                      {/* 3. CONTEÚDO DA AVALIAÇÃO INTEGRAL */}
+                      <div className="pt-4 flex-1">
+                        <p className="font-sans text-sm sm:text-base text-[#F3EFE6]/90 leading-relaxed font-normal">
+                          "{review.comment}"
                         </p>
-
-
                       </div>
 
                     </div>

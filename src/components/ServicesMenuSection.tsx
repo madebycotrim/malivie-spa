@@ -205,6 +205,12 @@ export const ServicesMenuSection: React.FC = () => {
                     <p className="font-serif italic text-sm text-[#7A8B7B] mt-1">
                       {service.tagline}
                     </p>
+                    {service.priceHint && (
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E8E0D5]/70 text-[#7A8B7B] text-[11px] font-sans font-medium mt-2">
+                        <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                        <span>{service.priceHint}</span>
+                      </div>
+                    )}
                     <p className="font-sans text-xs sm:text-sm text-[#555555] mt-3 line-clamp-3 leading-relaxed">
                       {service.description}
                     </p>
@@ -238,6 +244,33 @@ export const ServicesMenuSection: React.FC = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Banner de Transparência de Investimento & Acolhimento */}
+        <div className="mt-16 max-w-4xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#F0EAE1] border border-[#7A8B7B]/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+          <div className="space-y-1.5 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-semibold uppercase tracking-wider text-[#7A8B7B]">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Transparência & Acolhimento</span>
+            </div>
+            <h3 className="font-serif text-xl sm:text-2xl text-[#2C2C2C] font-light">
+              Expectativa de Valores & Tabela da Temporada
+            </h3>
+            <p className="text-xs text-[#555555] font-sans max-w-lg leading-relaxed">
+              Todas as sessões são individuais com as terapeutas Andressa e Luciana e já incluem Welcome Drink artesanal, toalhas aquecidas, roupão felpudo, secagem (no Head Spa) e ritual do chá. Solicite a tabela completa no WhatsApp sem compromisso.
+            </p>
+          </div>
+
+          <a
+            href={SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl ? SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl() : SPA_BUSINESS_DATA.whatsapp.defaultUrl}
+            onClick={() => trackWhatsAppClick('menu_tabela_valores')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[#F3EFE6] text-xs font-bold tracking-wide uppercase transition-all duration-300 shadow-md group cursor-pointer"
+          >
+            <MessageCircle className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+            <span>Receber Tabela no WhatsApp</span>
+          </a>
+        </div>
       </div>
 
       {/* Slide-Over Drawer Integration */}

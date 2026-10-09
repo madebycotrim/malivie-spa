@@ -1,4 +1,4 @@
-import { BusinessInfo, ReviewItem, RitualStep, ServiceItem } from '../types';
+import { BusinessInfo, FAQItem, ReviewItem, RitualStep, ServiceItem } from '../types';
 
 import acupunturaImg from '../assets/images/acupuntura.webp';
 import daySpaChaImg from '../assets/images/day-spa-cha.webp';
@@ -47,6 +47,12 @@ export const SPA_BUSINESS_DATA: BusinessInfo = {
       const text = type 
         ? `Olá! Gostaria de adquirir o Gift Card Maliviê para presentear (${type}) com autocuidado!`
         : 'Olá! Gostaria de adquirir o Gift Card Maliviê para presentear alguém especial com autocuidado!';
+      return `https://wa.me/5561999569214?text=${encodeURIComponent(text)}`;
+    },
+    pricingInquiryUrl: (serviceName?: string) => {
+      const text = serviceName
+        ? `Olá! Gostaria de consultar os valores e horários disponíveis para o ritual: ${serviceName} no Maliviê SPA.`
+        : 'Olá! Gostaria de receber a tabela de valores e pacotes da temporada do Maliviê SPA.';
       return `https://wa.me/5561999569214?text=${encodeURIComponent(text)}`;
     },
     createCustomUrl: (message: string) => {
@@ -201,7 +207,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Selagem das cutículas e finalização'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Head Spa Coreano Signature'
+    whatsappMessage: 'Head Spa Coreano Signature',
+    priceHint: 'Valores sob consulta · Sessões individuais e pacotes',
   },
   {
     id: 'head-spa-express',
@@ -221,7 +228,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Secagem natural e chá especial'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Head Spa Revitalizante Express'
+    whatsappMessage: 'Head Spa Revitalizante Express',
+    priceHint: 'Opção expressa · Sob consulta',
   },
   {
     id: 'massagem-pedras-quentes',
@@ -242,7 +250,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Chá herbal revigorante na sala de descanso'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Massagem Relaxante com Pedras Quentes'
+    whatsappMessage: 'Massagem Relaxante com Pedras Quentes',
+    priceHint: 'Sob consulta · Avulso ou com Day Spa',
   },
   {
     id: 'massagem-malivie-signature',
@@ -261,7 +270,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Toalhas quentes e compressas herbais aromáticas'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Massagem Maliviê Harmonia & Aromas'
+    whatsappMessage: 'Massagem Maliviê Harmonia & Aromas',
+    priceHint: 'Sob consulta · Sessões individuais',
   },
   {
     id: 'day-spa-renovacao',
@@ -285,7 +295,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Roupão felpudo e chinelos aveludados durante toda a estadia'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Day SPA Renovação & Harmonia'
+    whatsappMessage: 'Day SPA Renovação & Harmonia',
+    priceHint: 'Experiência completa 3h · Sob consulta',
   },
   {
     id: 'day-spa-express-pausa',
@@ -304,7 +315,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Momento do chá calmante'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Day SPA Momento Pausa & Serenidade'
+    whatsappMessage: 'Day SPA Momento Pausa & Serenidade',
+    priceHint: 'Experiência 2h · Sob consulta',
   },
   {
     id: 'plano-horas-essencial',
@@ -323,7 +335,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Mimos de recepção e ritual do chá inclusos em todas as sessões'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Plano de Horas Bem-Estar Recorrente'
+    whatsappMessage: 'Plano de Horas Bem-Estar Recorrente',
+    priceHint: 'Pacotes com valores e horas flexíveis',
   },
   {
     id: 'spa-dos-pes-esfoliacao',
@@ -342,7 +355,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Massagem relaxante nos pés e panturrilhas'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Spa dos Pés com Esfoliação & Hidratação'
+    whatsappMessage: 'Spa dos Pés com Esfoliação & Hidratação',
+    priceHint: 'Sessão individual · Sob consulta',
   },
   {
     id: 'acupuntura-terapeutica',
@@ -361,7 +375,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       'Sala silenciosa com aromaterapia e cromoterapia aconchegante'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Acupuntura Tradicional & Reequilíbrio'
+    whatsappMessage: 'Acupuntura Tradicional & Reequilíbrio',
+    priceHint: 'Sessão individual · Sob consulta',
   }
 ];
 
@@ -449,6 +464,78 @@ export const TESTIMONIALS: ReviewItem[] = [
     highlight: 'Ambiente lindo, acolhedor e calmante. Luz baixa e aromaterapia que silenciam a mente.',
     avatarInitials: 'PD',
     likesCount: 5,
+  },
+  {
+    id: 'rev-google-camila',
+    author: 'Camila Fernandes Ribeiro',
+    location: 'Núcleo Bandeirante, DF',
+    rating: 5.0,
+    date: 'há 2 semanas',
+    tags: ['cozy place', 'fairy hands'],
+    comment: 'Lugar impecável! Sala com iluminação âmbar tão gostosa, toalhas sempre aquecidas e as terapeutas têm mãos de fada. Fiz a massagem com pedras quentes e o ritual do chá ao final com biscoitinhos foi a cereja do bolo. Recomendo de olhos fechados!',
+    highlight: 'Mãos de fada e ambiente impecável. Recomendo de olhos fechados!',
+    avatarInitials: 'CR',
+    likesCount: 5,
+  },
+  {
+    id: 'rev-google-rodrigo',
+    author: 'Rodrigo M. Albuquerque',
+    location: 'Park Way / Brasília',
+    rating: 5.0,
+    date: 'há 1 mês',
+    tags: ['foot spa', 'cozy place'],
+    comment: 'Sofria com tensão cervical crônica por causa do trabalho no computador. A combinação do Head Spa com o Spa dos Pés e acupuntura aliviou minha dor de cabeça no mesmo dia. Ambiente super discreto, cheiroso e com estacionamento fácil no Bandeirante. Nota 10.',
+    highlight: 'Aliviou minha dor de cabeça no mesmo dia. Ambiente super discreto e impecável.',
+    avatarInitials: 'RA',
+    likesCount: 4,
+  },
+  {
+    id: 'rev-google-amanda',
+    author: 'Amanda Beatriz Ferreira',
+    location: 'Guará / Brasília, DF',
+    rating: 5.0,
+    date: 'há 3 semanas',
+    tags: ['fairy hands', 'cozy place'],
+    comment: 'O Head Spa Coreano com cascata de água é simplesmente divino! A massagem capilar profunda e o barulhinho de água corrente me fizeram relaxar de um jeito que há muito tempo eu não conseguia. A Andressa é super atenciosa e delicada.',
+    highlight: 'O Head Spa Coreano é simplesmente divino! Relaxamento que há muito tempo eu não conseguia.',
+    avatarInitials: 'AF',
+    likesCount: 6,
+  },
+  {
+    id: 'rev-google-mariana',
+    author: 'Mariana Lemos Santos',
+    location: 'Asa Sul, Brasília',
+    rating: 5.0,
+    date: 'há 2 meses',
+    tags: ['cozy place', 'massage therapist'],
+    comment: 'Fiz o Day Spa de 3 horas com minha mãe para comemorar o aniversário dela e foi inesquecível! Desde a recepção com a taça de boas-vindas até o escalda-pés e a massagem com pedras quentes. O cuidado e o carinho com que fomos tratadas não tem preço.',
+    highlight: 'Fiz o Day Spa de 3 horas com minha mãe e foi inesquecível! Cuidado e carinho sem preço.',
+    avatarInitials: 'ML',
+    likesCount: 7,
+  },
+  {
+    id: 'rev-google-juliana',
+    author: 'Juliana Sampaio',
+    location: 'Águas Claras, DF',
+    rating: 5.0,
+    date: 'há 3 meses',
+    tags: ['fairy hands', 'cozy place'],
+    comment: 'Ambiente aconchegante, cheirinho maravilhoso assim que você entra e atendimento nota mil da Luciana. Fiz a massagem com pedras quentes e saí leve, sem nenhuma dor nas costas. Super recomendo a experiência!',
+    highlight: 'Ambiente aconchegante e atendimento nota mil da Luciana. Saí leve e sem dores!',
+    avatarInitials: 'JS',
+    likesCount: 4,
+  },
+  {
+    id: 'rev-google-gabriel',
+    author: 'Gabriel Pires',
+    location: 'Sudoeste / Brasília',
+    rating: 5.0,
+    date: 'há 4 meses',
+    tags: ['massage therapist', 'cozy place'],
+    comment: 'Espaço excelente e atendimento de primeira. Fiz massagem relaxante e head spa para aliviar o estresse acumulado da semana. Lugar silencioso, muito limpo e profissionais de altíssimo nível. Já virei cliente fixo.',
+    highlight: 'Lugar silencioso, muito limpo e profissionais de altíssimo nível. Já virei cliente fixo.',
+    avatarInitials: 'GP',
+    likesCount: 5,
   }
 ];
 
@@ -473,4 +560,43 @@ export const WELCOME_RITUAL_STEPS = [
     description: 'Luzes indiretas aquecidas a 3000K, aromas botânicos de sálvia e lavanda e o murmúrio suave de água corrente preparam o corpo para relaxar.',
     icon: 'light'
   }
+];
+
+export const FAQ_ITEMS: FAQItem[] = [
+  {
+    id: 'faq-quimica',
+    category: 'head-spa',
+    question: 'Quem tem química, coloração, luzes ou progressiva pode fazer o Head Spa?',
+    answer: 'Sim, perfeitamente! Nossos cosmecêuticos e tônicos capilares são fórmulas botânicas suaves, biocompatíveis e livres de sulfatos agressivos ou petrolatos. Caso você tenha realizado coloração, descoloração ou alisamento recente (menos de 7 dias), nossa terapeuta ajusta os ativos para focar em nutrição profunda e equilíbrio do couro cabeludo, sem interferir na durabilidade da sua química.',
+  },
+  {
+    id: 'faq-cabelo-seco',
+    category: 'head-spa',
+    question: 'O cabelo sai seco e finalizado ao término da sessão?',
+    answer: 'Sim! Você não precisa se preocupar em sair com os fios molhados. Todas as modalidades do nosso Head Spa (Signature de 80 min e Express de 50 min) incluem secagem delicada com aplicação de leave-in botânico termoprotetor e alinhamento suave dos fios, para você seguir seu dia ou compromissos com conforto absoluto.',
+  },
+  {
+    id: 'faq-homens-gestantes',
+    category: 'geral',
+    question: 'Homens e gestantes podem realizar os rituais?',
+    answer: 'Com certeza! O Maliviê SPA é um espaço unissex e acolhedor. O Head Spa Coreano, as massagens relaxantes corporais e o Spa dos Pés são amplamente procurados pelo público masculino para descompressão de estresse, bruxismo e desintoxicação capilar. Para gestantes, atendemos com carinho a partir do segundo trimestre (12ª semana) com manobras adaptadas, drenagem e óleos seguros, mediante liberação médica prévia.',
+  },
+  {
+    id: 'faq-o-que-levar',
+    category: 'preparacao',
+    question: 'Preciso levar algo no dia do meu atendimento (roupão, toalha, secador)?',
+    answer: 'Não precisa levar nada! O Maliviê providencia toda a estrutura de acolhimento: roupões felpudos aconchegantes, chinelos aveludados descartáveis, toalhas aquecidas, secador e cosméticos para retoque. Você também desfruta do Welcome Drink artesanal na chegada e do cerimonial do chá ao término. Apenas venha pronto(a) para desacelerar.',
+  },
+  {
+    id: 'faq-agendamento-sinal',
+    category: 'preparacao',
+    question: 'Como funciona o agendamento e a confirmação de horário?',
+    answer: 'Os agendamentos são realizados de forma humanizada e personalizada pelo nosso WhatsApp oficial. Para assegurar a exclusividade da sala e a dedicação 1:1 das terapeutas Andressa e Luciana, solicitamos um pequeno sinal de reserva no momento do agendamento, que é integralmente abatido do valor da sua sessão no dia. Caso precise remarcar, basta avisar com antecedência mínima de 24h sem custo.',
+  },
+  {
+    id: 'faq-como-escolher',
+    category: 'geral',
+    question: 'Não sei qual ritual escolher. Como decidir o melhor para mim?',
+    answer: 'Nossa equipe está à disposição para guiar sua escolha! Basta nos chamar no WhatsApp contando o que você está sentindo — se a prioridade é aliviar tensão na nuca e cabeça (Head Spa), desmanchar nós musculares e cansaço físico (Pedras Quentes), ou viver uma pausa prolongada de renovação (Day Spa). Teremos prazer em indicar o ritual perfeito.',
+  },
 ];

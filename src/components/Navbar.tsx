@@ -12,12 +12,24 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Links essenciais e limpos, removendo os botões desnecessários
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Links essenciais e limpos, incluindo Dúvidas/FAQ
   const navLinks = [
     { label: 'Head Spa', href: '#head-spa' },
     { label: 'Rituais', href: '#menu-rituais' },
     { label: 'Avaliações', href: '#depoimentos' },
     { label: 'Gift Card', href: '#gift-card' },
+    { label: 'Dúvidas', href: '#faq' },
   ];
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -31,8 +43,14 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
   return (
     <>
-      {/* Header estático no topo (absolute, sem acompanhar o scroll da página) */}
-      <header className="absolute top-0 left-0 right-0 z-50 py-6 sm:py-8 bg-transparent">
+      {/* Header Dinâmico / Flutuante inteligente com Glassmorphism ao rolar a página */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isScrolled
+            ? 'py-3 sm:py-3.5 bg-[#121C16]/90 backdrop-blur-xl border-b border-[#F3EFE6]/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+            : 'py-6 sm:py-8 bg-transparent border-b border-transparent'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between">
           {/* Official Brand Logo */}
           <a
@@ -44,12 +62,14 @@ export const Navbar: React.FC<NavbarProps> = () => {
             <img
               src={logoMalivieWhite}
               alt="Maliviê SPA Logotipo"
-              className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]"
+              className={`w-auto object-contain transition-all duration-300 group-hover:scale-105 filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] ${
+                isScrolled ? 'h-8 sm:h-9' : 'h-10 sm:h-12'
+              }`}
             />
           </a>
 
           {/* Desktop Navigation Links (Apenas os essenciais) */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-7 lg:gap-8">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -70,7 +90,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
               onClick={() => trackWhatsAppClick('navbar')}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider text-[#121C16] bg-[#7A8B7B] hover:bg-[#94A595] transition-all duration-300 shadow-[0_4px_20px_rgba(122,139,123,0.35)] hover:shadow-[0_6px_25px_rgba(122,139,123,0.5)] group overflow-hidden cursor-pointer"
+              className={`relative inline-flex items-center gap-2 rounded-full text-xs font-medium uppercase tracking-wider text-[#121C16] bg-[#7A8B7B] hover:bg-[#94A595] transition-all duration-300 shadow-[0_4px_20px_rgba(122,139,123,0.35)] hover:shadow-[0_6px_25px_rgba(122,139,123,0.5)] group overflow-hidden cursor-pointer ${
+                isScrolled ? 'px-4 py-2 text-[11px]' : 'px-5 py-2.5 text-xs'
+              }`}
             >
               <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
               <MessageCircle className="w-3.5 h-3.5 text-[#121C16] relative z-10" />
