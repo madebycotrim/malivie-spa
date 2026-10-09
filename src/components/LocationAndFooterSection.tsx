@@ -8,13 +8,19 @@ import {
   Navigation,
   Compass,
   ArrowUp,
+  ArrowUpRight,
+  Sparkles,
 } from 'lucide-react';
 import { InstagramIcon, FacebookIcon, TikTokIcon } from './SocialIcons';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
+import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
+import { isAbertoAgora } from '../utils/businessHours';
+import { trackWhatsAppClick } from '../services/analytics';
 import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
 import fachadaImg from '../assets/images/malivie-fachada-oficial.webp';
 
 export const LocationAndFooterSection: React.FC = () => {
+  const abertoAgora = isAbertoAgora();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -31,7 +37,7 @@ export const LocationAndFooterSection: React.FC = () => {
 
   return (
     <footer id="localizacao" className="relative bg-[#121C16] text-[#F3EFE6] pt-28 pb-16 overflow-hidden border-t border-[#F3EFE6]/10">
-      {/* Botanical ambient gradient aura */}
+      {/* Botanical ambient gradient aura com respiração suave */}
       <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-[#7A8B7B]/10 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
@@ -40,21 +46,33 @@ export const LocationAndFooterSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <Compass className="w-3.5 h-3.5 text-[#7A8B7B]" />
             Visite Nosso Santuário
           </motion.div>
 
-          <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight">
+          <motion.h2
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
+            className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight"
+          >
             Localização & <span className="italic font-normal text-[#D4AF37]">Horários</span>
-          </h2>
+          </motion.h2>
 
-          <p className="mt-4 text-xs sm:text-sm text-[#F3EFE6]/70 font-sans max-w-xl mx-auto leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
+            className="mt-4 text-xs sm:text-sm text-[#F3EFE6]/70 font-sans max-w-xl mx-auto leading-relaxed"
+          >
             Fácil acesso e conveniência no coração do Núcleo Bandeirante, com tranquilidade e discrição garantidas.
-          </p>
+          </motion.p>
         </div>
 
         {/* 3-Column Luxury Matrix: Real Facade, Interactive Map, Address & Official Schedule */}
@@ -79,6 +97,8 @@ export const LocationAndFooterSection: React.FC = () => {
             {/* Photo Viewport - Fills full card height down to bottom padding, showing sidewalk and cutting off parking lot */}
             <div className="relative w-full flex-1 min-h-[320px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group">
               <img
+                loading="lazy"
+                decoding="async"
                 src={fachadaImg}
                 alt="Fachada do Maliviê SPA no Núcleo Bandeirante, Brasília"
                 style={{ objectPosition: 'center 60%' }}
@@ -147,7 +167,7 @@ export const LocationAndFooterSection: React.FC = () => {
               >
                 <Navigation className="w-3.5 h-3.5 text-[#7A8B7B] group-hover:text-[#D4AF37] transition-colors" />
                 <span>Abrir no Maps</span>
-                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/50" />
+                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65" />
               </a>
 
               <a
@@ -158,7 +178,7 @@ export const LocationAndFooterSection: React.FC = () => {
               >
                 <Navigation className="w-3.5 h-3.5 text-[#D4AF37] group-hover:text-[#7A8B7B] transition-colors" />
                 <span>Traçar no Waze</span>
-                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/50" />
+                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65" />
               </a>
             </div>
           </div>
@@ -221,16 +241,23 @@ export const LocationAndFooterSection: React.FC = () => {
                     Horários de Funcionamento
                   </span>
                 </div>
-                <span className="text-[10px] uppercase font-sans font-bold text-[#D4AF37] px-2 py-0.5 rounded-full bg-[#D4AF37]/15">
-                  Oficial
-                </span>
+                {abertoAgora ? (
+                  <span className="text-[10px] uppercase font-sans font-bold text-[#7A8B7B] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] animate-pulse" />
+                    Aberto agora
+                  </span>
+                ) : (
+                  <span className="text-[10px] uppercase font-sans font-medium text-[#F3EFE6]/60 px-2.5 py-0.5 rounded-full bg-[#121C16] border border-[#F3EFE6]/10">
+                    Fechado agora
+                  </span>
+                )}
               </div>
 
               {/* Schedule Rows */}
               <div className="space-y-2 py-1.5">
                 <div className="flex items-center justify-between py-1 border-b border-[#F3EFE6]/5 text-xs">
                   <span className="text-[#F3EFE6]/80 font-medium">Segunda-feira</span>
-                  <span className="text-[#D3B8AA] font-serif italic text-xs px-2.5 py-0.5 rounded bg-[#D3B8AA]/10">
+                  <span className="text-[#D3B8AA] font-bold font-sans text-xs px-2.5 py-0.5 rounded bg-[#D3B8AA]/10">
                     {SPA_BUSINESS_DATA.schedule.monday}
                   </span>
                 </div>
@@ -254,10 +281,11 @@ export const LocationAndFooterSection: React.FC = () => {
                   Dúvidas ou agendamento? Fale com a recepção
                 </span>
                 <a
-                  href={SPA_BUSINESS_DATA.social.linktree}
+                  href={SPA_BUSINESS_DATA.whatsapp.receptionUrl}
+                  onClick={() => trackWhatsAppClick('rodape_recepcao')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-full bg-[#7A8B7B] hover:bg-[#687969] text-[#121C16] text-xs font-bold transition-all shadow-md group"
+                  className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-full bg-[#7A8B7B] hover:bg-[#687969] text-[#121C16] text-xs font-bold transition-all shadow-md group cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5 text-[#121C16]" />
                   <span>Agendar um horário!</span>
@@ -268,53 +296,138 @@ export const LocationAndFooterSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Social Media Links Matrix */}
-        <div className="py-12 border-t border-b border-[#F3EFE6]/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <a
-            href={SPA_BUSINESS_DATA.social.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2.5 p-4 rounded-2xl bg-[#18251E]/60 hover:bg-[#18251E] border border-[#F3EFE6]/5 hover:border-[#D4AF37]/30 transition-all text-xs font-medium text-[#F3EFE6]/80 hover:text-[#D4AF37] group"
-          >
-            <InstagramIcon className="w-4 h-4 text-[#7A8B7B] group-hover:text-[#D4AF37]" />
-            <span>{SPA_BUSINESS_DATA.social.instagramHandle}</span>
-          </a>
+        {/* Social Media & Official Channels Showcase */}
+        <div className="py-14 border-t border-b border-[#F3EFE6]/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-6 px-1">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90">
+                Canais Oficiais & Redes Sociais
+              </span>
+            </div>
+            <span className="text-xs font-serif italic text-[#7A8B7B]">
+              Conecte-se com o santuário e acompanhe nossos rituais diários
+            </span>
+          </div>
 
-          <a
-            href={SPA_BUSINESS_DATA.social.linktree}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2.5 p-4 rounded-2xl bg-[#18251E]/60 hover:bg-[#18251E] border border-[#F3EFE6]/5 hover:border-[#D4AF37]/30 transition-all text-xs font-medium text-[#F3EFE6]/80 hover:text-[#D4AF37] group"
-          >
-            <ExternalLink className="w-4 h-4 text-[#7A8B7B] group-hover:text-[#D4AF37]" />
-            <span>Linktree Oficial</span>
-          </a>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                id: 'instagram',
+                name: 'Instagram',
+                handle: SPA_BUSINESS_DATA.social.instagramHandle,
+                desc: 'Fotos, rituais e autocuidado',
+                href: SPA_BUSINESS_DATA.social.instagram,
+                icon: <InstagramIcon className="w-5 h-5" />,
+                badge: null,
+                highlight: false,
+                onClick: undefined,
+              },
+              {
+                id: 'whatsapp',
+                name: 'WhatsApp Oficial',
+                handle: SPA_BUSINESS_DATA.whatsapp.formattedDisplay,
+                desc: abertoAgora ? 'Atendimento e recepção direta' : 'Mensagens 24h • Retorno no expediente',
+                href: SPA_BUSINESS_DATA.whatsapp.defaultUrl,
+                icon: <MessageCircle className="w-5 h-5 text-[#D4AF37]" />,
+                badge: abertoAgora ? (
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 text-[10px] text-[#F3EFE6] font-sans font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] animate-pulse" />
+                    <span>Atendimento agora</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/15 text-[10px] text-[#F3EFE6]/70 font-sans font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]/60" />
+                    <span>Mensagens 24h</span>
+                  </div>
+                ),
+                highlight: true,
+                onClick: () => trackWhatsAppClick('rodape_canais'),
+              },
+              {
+                id: 'facebook',
+                name: 'Facebook',
+                handle: 'Facebook Maliviê',
+                desc: 'Publicações e novidades',
+                href: SPA_BUSINESS_DATA.social.facebook,
+                icon: <FacebookIcon className="w-5 h-5" />,
+                badge: null,
+                highlight: false,
+                onClick: undefined,
+              },
+              {
+                id: 'tiktok',
+                name: 'TikTok',
+                handle: SPA_BUSINESS_DATA.social.tiktokHandle,
+                desc: 'Vídeos ASMR e experiências',
+                href: SPA_BUSINESS_DATA.social.tiktok,
+                icon: <TikTokIcon className="w-5 h-5" />,
+                badge: null,
+                highlight: false,
+                onClick: undefined,
+              },
+            ].map((channel) => (
+              <a
+                key={channel.id}
+                href={channel.href}
+                onClick={channel.onClick}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`relative p-5 rounded-2xl border shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:-translate-y-1 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group flex flex-col justify-between overflow-hidden cursor-pointer ${
+                  channel.highlight
+                    ? 'bg-gradient-to-br from-[#1C2C22] to-[#121C16] border-[#7A8B7B]/40 hover:border-[#D4AF37]/80 hover:shadow-[0_15px_40px_rgba(0,0,0,0.5),_0_0_25px_rgba(122,139,123,0.2)]'
+                    : 'bg-gradient-to-br from-[#18251E] to-[#121C16] border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:shadow-[0_15px_40px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.1)]'
+                }`}
+              >
+                <span
+                  className={`absolute inset-0 w-full h-full bg-gradient-to-r -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none ${
+                    channel.highlight ? 'from-transparent via-[#D4AF37]/10 to-transparent' : 'from-transparent via-white/5 to-transparent'
+                  }`}
+                />
 
-          <a
-            href={SPA_BUSINESS_DATA.social.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2.5 p-4 rounded-2xl bg-[#18251E]/60 hover:bg-[#18251E] border border-[#F3EFE6]/5 hover:border-[#D4AF37]/30 transition-all text-xs font-medium text-[#F3EFE6]/80 hover:text-[#D4AF37] group"
-          >
-            <FacebookIcon className="w-4 h-4 text-[#7A8B7B] group-hover:text-[#D4AF37]" />
-            <span>Facebook Maliviê</span>
-          </a>
+                <div className="flex items-start justify-between mb-4">
+                  <div
+                    className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                      channel.highlight
+                        ? 'bg-[#7A8B7B]/20 border-[#7A8B7B]/50 text-[#D4AF37]'
+                        : 'bg-[#1F3026] border-[#7A8B7B]/30 text-[#7A8B7B] group-hover:text-[#D4AF37] group-hover:border-[#D4AF37]/50'
+                    }`}
+                  >
+                    {channel.icon}
+                  </div>
+                  {channel.badge ? (
+                    channel.badge
+                  ) : (
+                    <ArrowUpRight className="w-4 h-4 text-[#F3EFE6]/60 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                  )}
+                </div>
 
-          <a
-            href={SPA_BUSINESS_DATA.social.tiktok}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2.5 p-4 rounded-2xl bg-[#18251E]/60 hover:bg-[#18251E] border border-[#F3EFE6]/5 hover:border-[#D4AF37]/30 transition-all text-xs font-medium text-[#F3EFE6]/80 hover:text-[#D4AF37] group"
-          >
-            <TikTokIcon className="w-4 h-4 text-[#7A8B7B] group-hover:text-[#D4AF37]" />
-            <span>TikTok {SPA_BUSINESS_DATA.social.tiktokHandle}</span>
-          </a>
+                <div>
+                  <span
+                    className={`text-[10px] uppercase font-sans tracking-[0.2em] font-semibold block mb-0.5 ${
+                      channel.highlight ? 'text-[#D4AF37]' : 'text-[#7A8B7B]'
+                    }`}
+                  >
+                    {channel.name}
+                  </span>
+                  <h4 className="font-serif text-base sm:text-lg text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug font-normal">
+                    {channel.handle}
+                  </h4>
+                  <p className="text-[11px] text-[#F3EFE6]/65 font-sans mt-1">
+                    {channel.desc}
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* Bottom Bar: Copyright & Back to Top */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F3EFE6]/50">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F3EFE6]/65">
           <div className="flex items-center gap-3">
             <img
+              loading="lazy"
+              decoding="async"
               src={logoMalivieWhite}
               alt="Maliviê SPA"
               className="h-7 w-auto object-contain opacity-90"

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { GlassWater, Sparkles, Lamp, CheckCircle2 } from 'lucide-react';
 import { OFFICIAL_COPIES, WELCOME_RITUAL_STEPS } from '../data/spaData';
+import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import ritualBoasVindasImg from '../assets/images/ritual-boas-vindas.webp';
 import ritualToalhaImg from '../assets/images/malivie-bandeja-reflexao.webp';
 import roupaoChinelosImg from '../assets/images/malivie-roupao-chinelos.webp';
@@ -9,7 +10,7 @@ import roupaoChinelosImg from '../assets/images/malivie-roupao-chinelos.webp';
 export const ManifestoSection: React.FC = () => {
   return (
     <section id="manifesto" className="relative py-28 sm:py-36 bg-[#FBF9F6] text-[#2C2C2C] overflow-hidden">
-      {/* Decorative ambient silk glow */}
+      {/* Decorative ambient silk glow com respiração zen */}
       <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-[#F0EAE1]/80 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-[#D3B8AA]/25 rounded-full blur-[120px] pointer-events-none" />
 
@@ -19,8 +20,8 @@ export const ManifestoSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#7A8B7B] border border-[#7A8B7B]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -28,10 +29,10 @@ export const ManifestoSection: React.FC = () => {
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-[1.15]"
           >
             "Aqui, você é recebido(a) com <span className="italic font-normal text-[#7A8B7B]">calma</span>."
@@ -40,8 +41,8 @@ export const ManifestoSection: React.FC = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 text-base sm:text-lg text-[#555555] font-sans font-normal leading-relaxed"
           >
             {OFFICIAL_COPIES.welcome}
@@ -54,8 +55,8 @@ export const ManifestoSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 1, ease: EASE_LUXURY }}
             className="lg:col-span-5 relative"
           >
             <div className="relative mx-auto max-w-md lg:max-w-none">
@@ -64,6 +65,8 @@ export const ManifestoSection: React.FC = () => {
               
               <div className="relative overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(18,28,22,0.15)] aspect-[4/5] bg-[#121C16]">
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={ritualBoasVindasImg}
                   alt="Ritual de boas-vindas Maliviê SPA com escalda-pés em bacia de madeira e welcome drink em cristal"
                   className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700 ease-out"
@@ -123,10 +126,10 @@ export const ManifestoSection: React.FC = () => {
                 {WELCOME_RITUAL_STEPS.map((step, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#7A8B7B]/50 transition-colors shadow-sm flex flex-col gap-2"
+                    className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#7A8B7B]/60 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(18,28,22,0.06)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col gap-2 group cursor-default"
                   >
-                    <div className="flex items-center gap-2 text-[#7A8B7B]">
-                      <CheckCircle2 className="w-4 h-4 text-[#7A8B7B]" />
+                    <div className="flex items-center gap-2 text-[#7A8B7B] group-hover:text-[#677868] transition-colors">
+                      <CheckCircle2 className="w-4 h-4 text-[#7A8B7B] group-hover:scale-110 transition-transform duration-300" />
                       <h4 className="font-sans font-semibold text-sm text-[#2C2C2C]">
                         {step.title}
                       </h4>
@@ -162,6 +165,8 @@ export const ManifestoSection: React.FC = () => {
           <div className="lg:col-span-6 grid grid-cols-2 gap-4">
             <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/5] bg-[#121C16] group">
               <img
+                loading="lazy"
+                decoding="async"
                 src={roupaoChinelosImg}
                 alt="Roupão e chinelos aveludados com bordado dourado Maliviê SPA sobre a maca de massagem"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
@@ -174,6 +179,8 @@ export const ManifestoSection: React.FC = () => {
 
             <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/5] bg-[#121C16] group">
               <img
+                loading="lazy"
+                decoding="async"
                 src={ritualToalhaImg}
                 alt="Bandeja de madeira com pedras vulcânicas e toalha bordada Maliviê SPA"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"

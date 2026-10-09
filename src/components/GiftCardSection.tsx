@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Gift, Heart, Sparkles, MessageCircle, Check } from 'lucide-react';
 import { OFFICIAL_COPIES, SPA_BUSINESS_DATA } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
+import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
+import { trackWhatsAppClick } from '../services/analytics';
 import giftCardImg from '../assets/images/malivie-gift-card-instagram.webp';
 
 export const GiftCardSection: React.FC = () => {
+  const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
   return (
     <section id="gift-card" className="relative py-28 sm:py-36 bg-[#FBF9F6] text-[#2C2C2C] overflow-hidden">
-      {/* Rose & Nude Terracotta Ambient Glows */}
+      {/* Rose & Nude Terracotta Ambient Glows com respiração suave */}
       <div className="absolute top-1/3 right-0 w-[550px] h-[550px] bg-[#D3B8AA]/25 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-[#F0EAE1] rounded-full blur-[120px] pointer-events-none" />
 
@@ -18,8 +21,8 @@ export const GiftCardSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D3B8AA]/20 text-[#2C2C2C] border border-[#D3B8AA]/40 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <Gift className="w-3.5 h-3.5 text-[#B99887]" />
@@ -27,10 +30,10 @@ export const GiftCardSection: React.FC = () => {
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-tight"
           >
             {OFFICIAL_COPIES.giftCardTitle}
@@ -39,8 +42,8 @@ export const GiftCardSection: React.FC = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 font-serif italic text-lg sm:text-2xl text-[#7A8B7B] max-w-2xl mx-auto leading-relaxed"
           >
             "{OFFICIAL_COPIES.giftCardTagline}"
@@ -53,8 +56,8 @@ export const GiftCardSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 1, ease: EASE_LUXURY }}
             className="lg:col-span-5 relative"
           >
             <div className="relative mx-auto max-w-md">
@@ -63,6 +66,8 @@ export const GiftCardSection: React.FC = () => {
 
               <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(211,184,170,0.35)] bg-[#121C16] border border-[#D3B8AA]/30 group">
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={giftCardImg}
                   alt="Gift Card Maliviê SPA - O presente que não ocupa espaço na prateleira, mas sim no coração"
                   className="w-full h-auto object-cover group-hover:scale-103 transition-transform duration-700 ease-out"
@@ -118,34 +123,79 @@ export const GiftCardSection: React.FC = () => {
               </h3>
             </div>
 
-            {/* The 3 Personas */}
+            {/* The 3 Personas - Interativas */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] shadow-xs flex flex-col justify-between space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#7A8B7B] font-sans">
-                  A Amiga
-                </span>
+              <button
+                type="button"
+                onClick={() => setSelectedPersona(prev => prev === 'A Amiga' ? null : 'A Amiga')}
+                className={`p-4 rounded-2xl bg-white text-left transition-all duration-300 shadow-xs flex flex-col justify-between space-y-2 cursor-pointer border ${
+                  selectedPersona === 'A Amiga'
+                    ? 'border-[#7A8B7B] ring-2 ring-[#7A8B7B]/30 shadow-md bg-[#F4F6F4]'
+                    : 'border-[#E8E0D5] hover:border-[#7A8B7B]/50 hover:-translate-y-1'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#7A8B7B] font-sans">
+                    A Amiga
+                  </span>
+                  {selectedPersona === 'A Amiga' && (
+                    <span className="text-[10px] bg-[#7A8B7B] text-white px-2 py-0.5 rounded-full font-bold">
+                      Selecionado
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
                   "{OFFICIAL_COPIES.giftCardPersonaAmiga}"
                 </p>
-              </div>
+              </button>
 
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] shadow-xs flex flex-col justify-between space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#B99887] font-sans">
-                  A Mãe
-                </span>
+              <button
+                type="button"
+                onClick={() => setSelectedPersona(prev => prev === 'A Mãe' ? null : 'A Mãe')}
+                className={`p-4 rounded-2xl bg-white text-left transition-all duration-300 shadow-xs flex flex-col justify-between space-y-2 cursor-pointer border ${
+                  selectedPersona === 'A Mãe'
+                    ? 'border-[#B99887] ring-2 ring-[#B99887]/30 shadow-md bg-[#FAF6F4]'
+                    : 'border-[#E8E0D5] hover:border-[#B99887]/60 hover:-translate-y-1'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#B99887] font-sans">
+                    A Mãe
+                  </span>
+                  {selectedPersona === 'A Mãe' && (
+                    <span className="text-[10px] bg-[#B99887] text-white px-2 py-0.5 rounded-full font-bold">
+                      Selecionado
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
                   "{OFFICIAL_COPIES.giftCardPersonaMae}"
                 </p>
-              </div>
+              </button>
 
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] shadow-xs flex flex-col justify-between space-y-2 sm:col-span-1">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] font-sans">
-                  A Mulher Que Você Admira
-                </span>
+              <button
+                type="button"
+                onClick={() => setSelectedPersona(prev => prev === 'A Mulher Que Você Admira' ? null : 'A Mulher Que Você Admira')}
+                className={`p-4 rounded-2xl bg-white text-left transition-all duration-300 shadow-xs flex flex-col justify-between space-y-2 sm:col-span-1 cursor-pointer border ${
+                  selectedPersona === 'A Mulher Que Você Admira'
+                    ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-md bg-[#FCFAF2]'
+                    : 'border-[#E8E0D5] hover:border-[#D4AF37]/60 hover:-translate-y-1'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] font-sans">
+                    A Mulher Admirada
+                  </span>
+                  {selectedPersona === 'A Mulher Que Você Admira' && (
+                    <span className="text-[10px] bg-[#D4AF37] text-[#121C16] px-2 py-0.5 rounded-full font-bold">
+                      Selecionado
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
                   "{OFFICIAL_COPIES.giftCardPersonaMulher}"
                 </p>
-              </div>
+              </button>
             </div>
 
             {/* Core Message Card */}
@@ -187,7 +237,8 @@ export const GiftCardSection: React.FC = () => {
             {/* CTA Button */}
             <div className="pt-1 flex flex-col sm:flex-row items-center gap-4">
               <MagneticButton
-                href={SPA_BUSINESS_DATA.social.linktree}
+                href={SPA_BUSINESS_DATA.whatsapp.giftCardUrl(selectedPersona || undefined)}
+                onClick={() => trackWhatsAppClick('gift_card', selectedPersona || 'geral')}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="rose"
@@ -195,7 +246,11 @@ export const GiftCardSection: React.FC = () => {
                 className="w-full sm:w-auto"
               >
                 <MessageCircle className="w-5 h-5 text-[#121C16]" />
-                <span>Presentear com Gift Card</span>
+                <span>
+                  {selectedPersona
+                    ? `Presentear ${selectedPersona} com Gift Card`
+                    : 'Presentear com Gift Card'}
+                </span>
               </MagneticButton>
             </div>
           </motion.div>

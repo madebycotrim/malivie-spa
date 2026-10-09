@@ -11,7 +11,7 @@ export const SEOHead: React.FC = () => {
     url: 'https://maliviespa.com.br',
     telephone: '+5561999569214',
     priceRange: '$$',
-    image: 'https://maliviespa.com.br/assets/images/head-spa-claro.webp',
+    image: 'https://maliviespa.com.br/og-malivie.webp',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '3ª Avenida, 1124 - lote 1208-A, Loja 3',
@@ -56,25 +56,40 @@ export const SEOHead: React.FC = () => {
 
   return (
     <Helmet>
-      <title>Maliviê SPA | O lugar ideal para renovar suas energias! • Núcleo Bandeirante, Brasília</title>
+      <title>Maliviê SPA | Head SPA Coreano e Day SPA em Brasília</title>
+      <link rel="canonical" href="https://maliviespa.com.br/" />
       <meta
         name="description"
-        content="Maliviê SPA — O lugar ideal para renovar suas energias! 3ª Avenida, 1124 - lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, 71720-565. Head SPA, Massagens Relaxantes e Rituais de Day SPA."
+        content="Head SPA Coreano, massagens relaxantes e Day SPA no Núcleo Bandeirante, Brasília. Desacelere e renove suas energias no Maliviê SPA. Agende seu horário!"
       />
       <meta
         name="keywords"
-        content="Head Spa Brasília, Massagem Núcleo Bandeirante, Day Spa DF, Gift Card Spa Brasília, Maliviê SPA, Massagem Relaxante DF, Acupuntura Brasília"
+        content="Head Spa Brasília, Massagem Núcleo Bandeirante, Day Spa DF, Gift Card Spa Brasília, Maliviê SPA, Massagem Relaxante DF, Acupuntura Brasília, Spa DF"
       />
       <meta name="author" content="Maliviê SPA" />
 
       {/* Open Graph / Facebook / WhatsApp */}
+      <meta property="og:site_name" content="Maliviê SPA" />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="Maliviê SPA | O lugar ideal para renovar suas energias!" />
+      <meta property="og:locale" content="pt_BR" />
+      <meta property="og:title" content="Maliviê SPA | Head SPA Coreano e Day SPA em Brasília" />
       <meta
         property="og:description"
-        content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, hidroterapia, massagens relaxantes e gift cards."
+        content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, Rituais Day SPA, Gift Cards e experiências sensoriais."
       />
-      <meta property="og:image" content="/assets/images/hero-head-spa.webp" />
+      <meta property="og:image" content="https://maliviespa.com.br/og-malivie.webp" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="Maliviê SPA — Head SPA Coreano e Rituais de Bem-Estar no Núcleo Bandeirante, Brasília" />
+
+      {/* Twitter Cards */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="Maliviê SPA | Head SPA Coreano e Day SPA em Brasília" />
+      <meta
+        name="twitter:description"
+        content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, Rituais Day SPA e experiências sensoriais."
+      />
+      <meta name="twitter:image" content="https://maliviespa.com.br/og-malivie.webp" />
 
       {/* Schema.org Structured Data */}
       <script type="application/ld+json">{JSON.stringify(schemaData)}</script>

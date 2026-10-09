@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX, Sparkles } from 'lucide-react';
 import { asmrEngine } from '../services/soundEngine';
+import { EASE_ORGANIC } from '../utils/motionTransitions';
 
 export const AudioEqualizer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -79,7 +80,7 @@ export const AudioEqualizer: React.FC = () => {
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
-            transition={{ delay: 2.5, duration: 0.6 }}
+            transition={{ delay: 2.2, duration: 0.7, ease: EASE_ORGANIC }}
             className="mb-3 px-3.5 py-1.5 rounded-full bg-[#18251E]/95 border border-[#D4AF37]/30 text-xs text-[#F3EFE6] shadow-[0_10px_25px_rgba(0,0,0,0.4)] backdrop-blur-md flex items-center gap-2 pointer-events-none"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
@@ -94,22 +95,22 @@ export const AudioEqualizer: React.FC = () => {
         onClick={handleToggle}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.96 }}
         aria-label={isPlaying ? 'Pausar áudio ASMR relaxante' : 'Ouvir áudio ambiente ASMR do Head Spa'}
-        className={`group relative flex items-center gap-3 px-4 py-3 rounded-full backdrop-blur-xl transition-all duration-500 border ${
+        className={`group relative flex items-center gap-3 px-4 py-3 rounded-full backdrop-blur-xl transition-all duration-500 border cursor-pointer ${
           isPlaying
             ? 'bg-[#18251E]/90 border-[#7A8B7B] shadow-[0_0_30px_rgba(122,139,123,0.35)] ring-1 ring-[#7A8B7B]/40'
             : 'bg-[#121C16]/80 hover:bg-[#18251E] border-[#F3EFE6]/15 hover:border-[#D4AF37]/40 shadow-[0_8px_32px_rgba(0,0,0,0.35)]'
         }`}
       >
-        {/* Glow ambient background aura */}
+        {/* Glow ambient background aura com respiração suave */}
         {isPlaying && (
           <motion.div
             layoutId="equalizer-glow"
-            className="absolute inset-0 rounded-full bg-[#7A8B7B]/20 blur-md pointer-events-none"
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
-            transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+            className="absolute inset-0 rounded-full bg-[#7A8B7B]/25 blur-md pointer-events-none"
+            animate={{ opacity: [0.35, 0.75, 0.35] }}
+            transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
           />
         )}
 
@@ -118,7 +119,7 @@ export const AudioEqualizer: React.FC = () => {
           {frequencies.map((height, i) => (
             <motion.span
               key={i}
-              className={`w-[3px] rounded-full transition-all duration-100 ${
+              className={`w-[3px] rounded-full transition-all duration-150 ease-out ${
                 isPlaying
                   ? 'bg-gradient-to-t from-[#7A8B7B] to-[#D4AF37]'
                   : 'bg-[#F3EFE6]/40 group-hover:bg-[#F3EFE6]/70'
@@ -136,7 +137,7 @@ export const AudioEqualizer: React.FC = () => {
             {isPlaying ? (
               <Volume2 className="w-3.5 h-3.5 text-[#7A8B7B]" />
             ) : (
-              <VolumeX className="w-3.5 h-3.5 text-[#F3EFE6]/50 group-hover:text-[#F3EFE6]/80" />
+              <VolumeX className="w-3.5 h-3.5 text-[#F3EFE6]/65 group-hover:text-[#F3EFE6]/80" />
             )}
             <span className="text-[11px] font-sans uppercase tracking-widest font-semibold text-[#F3EFE6]">
               {isPlaying ? 'ASMR Ativo' : 'ASMR Head Spa'}

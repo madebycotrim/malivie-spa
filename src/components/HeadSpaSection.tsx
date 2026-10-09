@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones } from 'lucide-react';
+import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones, Star } from 'lucide-react';
 import { HEAD_SPA_STEPS, SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
+import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
+import { trackWhatsAppClick } from '../services/analytics';
 import headSpaTerapeutaImg from '../assets/images/head-spa-terapeuta-acolhimento.webp';
 import headSpaJatosImg from '../assets/images/head-spa-jatos-agua.webp';
 import headSpaArcoDouradoImg from '../assets/images/head-spa-arco-dourado.webp';
@@ -27,12 +29,25 @@ export const HeadSpaSection: React.FC = () => {
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -7;
-    const rotateY = ((x - centerX) / centerX) * 7;
+    const rotateX = ((y - centerY) / centerY) * -5.5;
+    const rotateY = ((x - centerX) / centerX) * 5.5;
     setTiltStyle({ rotateX, rotateY });
   };
 
-  const handleMouseLeave = () => {
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!tiltCardRef.current || !e.touches[0]) return;
+    const touch = e.touches[0];
+    const rect = tiltCardRef.current.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -5.5;
+    const rotateY = ((x - centerX) / centerX) * 5.5;
+    setTiltStyle({ rotateX, rotateY });
+  };
+
+  const handleResetTilt = () => {
     setTiltStyle({ rotateX: 0, rotateY: 0 });
   };
 
@@ -50,8 +65,8 @@ export const HeadSpaSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <Droplets className="w-3.5 h-3.5 text-[#7A8B7B]" />
@@ -59,10 +74,10 @@ export const HeadSpaSection: React.FC = () => {
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight"
           >
             {OFFICIAL_COPIES.headSpaTitle}
@@ -71,8 +86,8 @@ export const HeadSpaSection: React.FC = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 text-base sm:text-lg text-[#D4AF37]/90 font-serif italic max-w-2xl mx-auto leading-relaxed"
           >
             "{OFFICIAL_COPIES.headSpaSubtitle}"
@@ -81,8 +96,8 @@ export const HeadSpaSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.3, ease: EASE_ORGANIC }}
             className="mt-6 p-5 rounded-2xl bg-[#18251E]/90 border border-[#7A8B7B]/30 text-xs sm:text-sm text-[#F3EFE6]/90 max-w-3xl mx-auto leading-relaxed flex items-start gap-3 text-left shadow-lg"
           >
             <Headphones className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
@@ -98,17 +113,19 @@ export const HeadSpaSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 1, ease: EASE_LUXURY }}
             className="lg:col-span-5"
           >
             <div
               ref={tiltCardRef}
               onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={handleResetTilt}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleResetTilt}
               style={{
                 transform: `perspective(1000px) rotateX(${tiltStyle.rotateX}deg) rotateY(${tiltStyle.rotateY}deg)`,
-                transition: 'transform 0.15s ease-out',
+                transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
               className="relative rounded-3xl overflow-hidden bg-[#18251E] border border-[#F3EFE6]/10 p-3 shadow-[0_25px_60px_rgba(0,0,0,0.5)] group"
             >
@@ -118,10 +135,10 @@ export const HeadSpaSection: React.FC = () => {
                     key={activeStep}
                     src={stepImages[activeStep] || headSpaTerapeutaImg}
                     alt={`Head Spa Coreano Maliviê SPA - ${HEAD_SPA_STEPS[activeStep]?.title || 'Ritual'}`}
-                    initial={{ opacity: 0, scale: 1.04 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.45, ease: 'easeOut' }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.65, ease: EASE_ORGANIC }}
                     className="w-full h-full object-cover object-center filter contrast-105"
                   />
                 </AnimatePresence>
@@ -153,19 +170,34 @@ export const HeadSpaSection: React.FC = () => {
 
               {/* Physical interaction hint */}
               <div className="pt-3 pb-1 text-center">
-                <span className="text-[10px] uppercase tracking-widest text-[#F3EFE6]/40 font-sans">
-                  Passe o mouse ou toque para inclinar em 3D
+                <span className="text-[10px] uppercase tracking-widest text-[#F3EFE6]/60 font-sans">
+                  Incline com o mouse ou deslize o dedo para efeito 3D
                 </span>
               </div>
             </div>
 
-            {/* Micro Benefits Badge */}
-            <div className="mt-6 p-4 rounded-2xl bg-[#18251E]/50 border border-[#F3EFE6]/10 flex items-center justify-between text-xs text-[#F3EFE6]/80">
+            {/* Micro Benefits Badge (Regulatório Seguro) */}
+            <div className="mt-4 p-3.5 rounded-2xl bg-[#18251E]/60 border border-[#F3EFE6]/10 flex items-center justify-between text-xs text-[#F3EFE6]/85">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-[#7A8B7B]" />
-                <span>Alívio de enxaquecas, bruxismo e tensão ocular</span>
+                <span>Alívio de tensões na cabeça, estresse e fadiga mental</span>
               </div>
-              <span className="text-[#D4AF37] font-semibold">100% relaxante</span>
+              <span className="text-[#D4AF37] font-semibold text-[11px] whitespace-nowrap ml-2">Puro bem-estar</span>
+            </div>
+
+            {/* Prova Social em Destaque do Head Spa */}
+            <div className="mt-3 p-4 rounded-2xl bg-[#18251E]/40 border border-[#7A8B7B]/20 text-xs">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1 text-[#FBBC04]">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3 h-3 fill-[#FBBC04] text-[#FBBC04]" />
+                  ))}
+                </div>
+                <span className="text-[10px] text-[#7A8B7B] font-sans">Fernanda Costa · Google 5.0</span>
+              </div>
+              <p className="text-[#F3EFE6]/80 font-serif italic text-xs leading-relaxed">
+                "Fiz o Head Spa Coreano com cascata de água e saí em outro estado de espírito. O barulho da água correndo e a massagem capilar profunda silenciam qualquer cansaço."
+              </p>
             </div>
           </motion.div>
 
@@ -226,8 +258,8 @@ export const HeadSpaSection: React.FC = () => {
                     </div>
 
                     <div
-                      className={`p-2 rounded-full transition-transform duration-300 ${
-                        isOpen ? 'rotate-180 bg-[#7A8B7B]/20 text-[#D4AF37]' : 'text-[#F3EFE6]/40'
+                      className={`p-2 rounded-full transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        isOpen ? 'rotate-180 bg-[#7A8B7B]/20 text-[#D4AF37]' : 'text-[#F3EFE6]/60'
                       }`}
                     >
                       <ChevronDown className="w-4 h-4" />
@@ -240,7 +272,7 @@ export const HeadSpaSection: React.FC = () => {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                        transition={{ duration: 0.45, ease: EASE_LUXURY }}
                       >
                         <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-[#F3EFE6]/10 text-sm text-[#F3EFE6]/80 space-y-4">
                           <p className="leading-relaxed font-sans text-xs sm:text-sm text-[#F3EFE6]/90">
@@ -277,7 +309,8 @@ export const HeadSpaSection: React.FC = () => {
             {/* Direct Official Booking CTA for Head Spa */}
             <div className="pt-6 flex flex-col sm:flex-row items-center gap-4">
               <MagneticButton
-                href={SPA_BUSINESS_DATA.social.linktree}
+                href={SPA_BUSINESS_DATA.whatsapp.headSpaUrl}
+                onClick={() => trackWhatsAppClick('head_spa')}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="sage"

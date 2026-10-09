@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, ArrowRight, Sparkles, MessageCircle, Star } from 'lucide-react';
 import { ServiceCategory, ServiceItem } from '../types';
 import { SERVICES_LIST, SPA_BUSINESS_DATA } from '../data/spaData';
+import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
+import { trackWhatsAppClick } from '../services/analytics';
 import { ServiceDrawer } from './ServiceDrawer';
 
 export const ServicesMenuSection: React.FC = () => {
@@ -43,8 +45,8 @@ export const ServicesMenuSection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease: EASE_ORGANIC }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#7A8B7B] border border-[#7A8B7B]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -52,10 +54,10 @@ export const ServicesMenuSection: React.FC = () => {
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-tight"
           >
             Menu de <span className="italic font-normal text-[#7A8B7B]">Rituais & Cuidados</span>
@@ -64,8 +66,8 @@ export const ServicesMenuSection: React.FC = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
             className="mt-4 text-sm sm:text-base text-[#555555] font-sans max-w-xl mx-auto leading-relaxed"
           >
             "Reservar um tempo pra você também é uma forma de cuidado. Permita-se viver cada minuto desse cuidado!"
@@ -91,7 +93,7 @@ export const ServicesMenuSection: React.FC = () => {
                   <motion.span
                     layoutId="activeFilterPill"
                     className="absolute inset-0 rounded-full border border-[#D4AF37]/50 pointer-events-none"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                    transition={{ type: 'spring', stiffness: 120, damping: 20 }}
                   />
                 )}
                 <span>{cat.label}</span>
@@ -152,20 +154,22 @@ export const ServicesMenuSection: React.FC = () => {
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {filteredServices.map((service) => (
               <motion.article
                 layout
                 key={service.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
-                className="group relative rounded-3xl bg-[#F0EAE1]/60 hover:bg-[#F0EAE1] border border-[#E8E0D5] hover:border-[#7A8B7B]/50 transition-all duration-500 shadow-sm hover:shadow-[0_20px_45px_rgba(18,28,22,0.08)] flex flex-col justify-between overflow-hidden"
+                initial={{ opacity: 0, scale: 0.96, y: 14 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                transition={{ duration: 0.5, ease: EASE_ORGANIC }}
+                className="group relative rounded-3xl bg-[#F0EAE1]/60 hover:bg-[#F0EAE1] border border-[#E8E0D5] hover:border-[#7A8B7B]/50 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(18,28,22,0.1)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-hidden"
               >
                 {/* Image Section */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-[#18251E]">
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={service.image}
                     alt={service.name}
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -211,17 +215,18 @@ export const ServicesMenuSection: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleOpenDetails(service)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#121C16] hover:bg-[#18251E] text-[#F3EFE6] text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm cursor-pointer group/btn"
+                      className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#121C16] hover:bg-[#18251E] text-[#F3EFE6] text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm cursor-pointer group/btn active:scale-98"
                     >
                       <span>Ver Detalhes</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37] group-hover/btn:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37] group-hover/btn:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" />
                     </button>
 
                     <a
                       href={SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
+                      onClick={() => trackWhatsAppClick('servico_card', service.name)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 rounded-full bg-[#7A8B7B] hover:bg-[#677868] text-[#F3EFE6] transition-colors shadow-sm cursor-pointer"
+                      className="p-3 rounded-full bg-[#7A8B7B] hover:bg-[#677868] text-[#F3EFE6] transition-all duration-300 shadow-sm cursor-pointer active:scale-95 hover:shadow-md"
                       title={`Agendar ${service.name} no WhatsApp`}
                       aria-label={`Agendar ${service.name} no WhatsApp`}
                     >

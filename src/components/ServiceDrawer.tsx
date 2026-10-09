@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Clock, Heart, Users, MessageCircle, Sparkles, Check, Coffee } from 'lucide-react';
 import { ServiceItem } from '../types';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
+import { trackWhatsAppClick } from '../services/analytics';
 
 interface ServiceDrawerProps {
   service: ServiceItem | null;
@@ -43,9 +44,9 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-[#121C16]/75 backdrop-blur-md cursor-pointer"
+            className="fixed inset-0 z-50 bg-[#121C16]/80 backdrop-blur-md cursor-pointer"
           />
 
           {/* Slide-Over Drawer Container */}
@@ -54,7 +55,7 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+            transition={{ type: 'spring', damping: 32, stiffness: 220, mass: 0.8 }}
             className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-xl bg-[#18251E] text-[#F3EFE6] border-l border-[#F3EFE6]/15 shadow-[-20px_0_50px_rgba(0,0,0,0.6)] flex flex-col justify-between overflow-hidden overscroll-contain"
           >
             {/* Drawer Header */}
@@ -86,6 +87,8 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
               {/* Photo Showcase */}
               <div className="relative rounded-2xl overflow-hidden aspect-[16/9] shadow-lg border border-[#F3EFE6]/10">
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={service.image}
                   alt={service.name}
                   className="w-full h-full object-cover object-center"
@@ -151,6 +154,7 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
             <div className="p-6 sm:p-8 border-t border-[#F3EFE6]/10 bg-[#121C16]/90 backdrop-blur-md space-y-3">
               <a
                 href={whatsappBookingUrl}
+                onClick={() => trackWhatsAppClick('servico_drawer', service?.name)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-[#7A8B7B] hover:bg-[#677868] text-[#F3EFE6] font-semibold text-sm tracking-wide transition-all duration-300 shadow-[0_10px_25px_rgba(122,139,123,0.35)] hover:shadow-[0_14px_30px_rgba(122,139,123,0.5)] group"
@@ -159,15 +163,16 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
                 <span className="text-[#121C16] font-bold">Agendar este Ritual via WhatsApp</span>
               </a>
 
-              <p className="text-[11px] text-center text-[#F3EFE6]/50 font-sans">
-                Atendimento direto pelo canal do Maliviê SPA •{' '}
+              <p className="text-[11px] text-center text-[#F3EFE6]/65 font-sans">
+                Atendimento direto pelo canal oficial do Maliviê SPA •{' '}
                 <a
-                  href={SPA_BUSINESS_DATA.social.linktree}
+                  href={SPA_BUSINESS_DATA.whatsapp.defaultUrl}
+                  onClick={() => trackWhatsAppClick('servico_drawer', 'geral')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#7A8B7B] hover:text-[#D4AF37] underline transition-colors"
+                  className="text-[#7A8B7B] hover:text-[#D4AF37] underline transition-colors cursor-pointer"
                 >
-                  Linktree
+                  WhatsApp
                 </a>
               </p>
             </div>

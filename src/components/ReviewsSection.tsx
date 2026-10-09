@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Star, 
   ChevronLeft, 
   ChevronRight, 
-  X 
+  ExternalLink
 } from 'lucide-react';
-import { TESTIMONIALS } from '../data/spaData';
+import { TESTIMONIALS, GOOGLE_REVIEW_TAGS, GOOGLE_REVIEWS_URLS } from '../data/spaData';
 import { ReviewItem } from '../types';
+import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 
 // Ícone Multicolorido do Google "G"
 const GoogleLogoIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
@@ -42,7 +43,6 @@ const LocalGuideStarIcon = ({ className = "w-3.5 h-3.5" }: { className?: string 
 
 export const ReviewsSection: React.FC = () => {
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
-  const [selectedModalImage, setSelectedModalImage] = useState<string | null>(null);
 
   // Configuração do Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -88,14 +88,27 @@ export const ReviewsSection: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* ========================================================================= */}
-        {/* CABEÇALHO                                                         */}
+        {/* CABEÇALHO COM SELO OFICIAL GOOGLE MAPS                                   */}
         {/* ========================================================================= */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.7, ease: EASE_ORGANIC }}
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#18261E] border border-[#D4AF37]/35 text-xs sm:text-sm text-[#F3EFE6] mb-5 shadow-sm"
+          >
+            <GoogleLogoIcon className="w-4 h-4" />
+            <span className="font-semibold text-[#FBBC04]">5.0 ★★★★★</span>
+            <span className="text-[#F3EFE6]/40">·</span>
+            <span className="text-[#F3EFE6]/85 font-sans">117+ avaliações reais no Google Maps</span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.9, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight"
           >
             Relatos de quem se permitiu <span className="italic font-normal text-[#D4AF37]">desacelerar</span>
@@ -104,11 +117,11 @@ export const ReviewsSection: React.FC = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.15, ease: EASE_ORGANIC }}
             className="mt-4 text-xs sm:text-sm text-[#F3EFE6]/75 font-sans max-w-xl mx-auto leading-relaxed"
           >
-            "Sabe aquele lembrete de que a vida não precisa ser uma corrida o tempo todo? Conheça a experiência de quem encontrou no Maliviê o lugar ideal para renovar suas energias."
+            Depoimentos 100% autênticos extraídos diretamente da ficha oficial do Google Maps de clientes que viveram a experiência Maliviê.
           </motion.p>
         </div>
 
@@ -164,11 +177,18 @@ export const ReviewsSection: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Selo discreto do Google no canto superior direito */}
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#121C16] border border-[#F3EFE6]/10 text-[11px] text-[#F3EFE6]/75 flex-shrink-0">
+                        {/* Link direto clicável para o Google Maps */}
+                        <a
+                          href={GOOGLE_REVIEWS_URLS.viewAll}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16] hover:bg-[#1f3026] border border-[#F3EFE6]/15 hover:border-[#4285F4]/60 text-[11px] text-[#F3EFE6]/80 hover:text-white transition-all flex-shrink-0 group/glink shadow-sm cursor-pointer"
+                          title="Ver avaliação e ficha oficial no Google Maps"
+                        >
                           <GoogleLogoIcon className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">Google Avaliações</span>
-                        </div>
+                          <span className="hidden sm:inline font-sans font-medium">Google Avaliações</span>
+                          <ExternalLink className="w-3 h-3 text-[#F3EFE6]/40 group-hover/glink:text-[#4285F4] transition-colors" />
+                        </a>
                       </div>
 
                       {/* 2. ESTRELAS + DATA */}
@@ -186,7 +206,7 @@ export const ReviewsSection: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* 3. CONTEÚDO DA AVALIAÇÃO (DESTAQUE + COMENTÁRIO + FOTOS) */}
+                      {/* 3. CONTEÚDO DA AVALIAÇÃO (DESTAQUE + COMENTÁRIO + FOTOS + RESPOSTA) */}
                       <div className="pt-4 space-y-4 flex-1">
                         {/* Highlight Quote */}
                         <blockquote className="font-serif italic text-lg sm:text-xl text-[#D4AF37] font-light leading-snug">
@@ -209,31 +229,7 @@ export const ReviewsSection: React.FC = () => {
                           )}
                         </p>
 
-                        {/* Customer Photos if present */}
-                        {review.photos && review.photos.length > 0 && (
-                          <div className="pt-1">
-                            <span className="text-[11px] text-[#F3EFE6]/50 uppercase tracking-wider block mb-2 font-sans font-medium">
-                              Fotos publicadas pelo cliente:
-                            </span>
-                            <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
-                              {review.photos.map((photoUrl, pIdx) => (
-                                <button
-                                  key={pIdx}
-                                  type="button"
-                                  onClick={() => setSelectedModalImage(photoUrl)}
-                                  className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-[#F3EFE6]/20 hover:border-[#D4AF37] transition-all group cursor-pointer flex-shrink-0 shadow-md"
-                                >
-                                  <img
-                                    src={photoUrl}
-                                    alt={`Foto de avaliação de ${review.author}`}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                  />
-                                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+
                       </div>
 
                     </div>
@@ -280,44 +276,70 @@ export const ReviewsSection: React.FC = () => {
             ))}
           </div>
         </div>
-      </div>
 
-      {/* ========================================================================= */}
-      {/* MODAL LIGHTBOX PARA FOTOS DO CLIENTE                                      */}
-      {/* ========================================================================= */}
-      <AnimatePresence>
-        {selectedModalImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
-            onClick={() => setSelectedModalImage(null)}
-          >
-            <div
-              className="relative max-w-3xl w-full max-h-[85vh] rounded-2xl overflow-hidden bg-[#18261E] border border-[#D4AF37]/40 shadow-2xl p-2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedModalImage(null)}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors cursor-pointer"
-                aria-label="Fechar foto"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <img
-                src={selectedModalImage}
-                alt="Foto em tamanho ampliado da avaliação do Google"
-                className="w-full h-auto max-h-[80vh] object-contain rounded-xl mx-auto"
-              />
-              <div className="p-3 text-center text-xs text-[#F3EFE6]/80 font-sans">
-                Foto autêntica postada por cliente na avaliação do Google Maps
+        {/* ========================================================================= */}
+        {/* BARRA DE PROVA SOCIAL & LINK OFICIAL GOOGLE MAPS                          */}
+        {/* ========================================================================= */}
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.8, ease: EASE_ORGANIC }}
+          className="mt-14 max-w-4xl mx-auto rounded-3xl bg-[#18261E] border border-[#D4AF37]/25 p-6 sm:p-8 shadow-xl relative overflow-hidden"
+        >
+          <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />
+          
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#121C16] border border-[#F3EFE6]/15 flex items-center justify-center flex-shrink-0 shadow-inner">
+                <GoogleLogoIcon className="w-7 h-7" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 justify-center md:justify-start">
+                  <span className="font-serif text-2xl font-semibold text-[#F3EFE6]">5.0</span>
+                  <div className="flex items-center text-[#FBBC04]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-[#FBBC04] text-[#FBBC04]" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-xs sm:text-sm text-[#F3EFE6]/75 font-sans mt-0.5">
+                  Classificação máxima com mais de <strong>117 avaliações reais</strong> no Google Maps
+                </p>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            {/* Botão de ação oficial */}
+            <a
+              href={GOOGLE_REVIEWS_URLS.viewAll}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#121C16] font-sans font-semibold text-xs sm:text-sm tracking-wide shadow-lg hover:shadow-[#D4AF37]/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
+            >
+              <span>Ver todas as avaliações no Google Maps</span>
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
+
+          {/* Tags reais mais citadas pelos clientes no Google Maps */}
+          <div className="mt-6 pt-5 border-t border-[#F3EFE6]/10 flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-2.5 text-xs font-sans text-[#F3EFE6]/70">
+            <span className="text-[#D4AF37] font-medium mr-1 text-[11px] sm:text-xs">
+              Destaques dos clientes no Google:
+            </span>
+            {GOOGLE_REVIEW_TAGS.map((tag, tIdx) => (
+              <span
+                key={tIdx}
+                className="px-3 py-1 rounded-full bg-[#121C16] border border-[#F3EFE6]/10 text-[11px] text-[#F3EFE6]/80 flex items-center gap-1.5"
+              >
+                <span>{tag.label}</span>
+                <span className="text-[#D4AF37] font-semibold">({tag.count})</span>
+              </span>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+
     </section>
   );
 };

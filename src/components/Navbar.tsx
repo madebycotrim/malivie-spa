@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
+import { trackWhatsAppClick } from '../services/analytics';
 import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
 
 interface NavbarProps {
@@ -65,10 +66,11 @@ export const Navbar: React.FC<NavbarProps> = () => {
           {/* Actions & Official CTA */}
           <div className="hidden sm:flex items-center gap-4">
             <a
-              href={SPA_BUSINESS_DATA.social.linktree}
+              href={SPA_BUSINESS_DATA.whatsapp.navUrl}
+              onClick={() => trackWhatsAppClick('navbar')}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider text-[#121C16] bg-[#7A8B7B] hover:bg-[#94A595] transition-all duration-300 shadow-[0_4px_20px_rgba(122,139,123,0.35)] hover:shadow-[0_6px_25px_rgba(122,139,123,0.5)] group overflow-hidden"
+              className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider text-[#121C16] bg-[#7A8B7B] hover:bg-[#94A595] transition-all duration-300 shadow-[0_4px_20px_rgba(122,139,123,0.35)] hover:shadow-[0_6px_25px_rgba(122,139,123,0.5)] group overflow-hidden cursor-pointer"
             >
               <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
               <MessageCircle className="w-3.5 h-3.5 text-[#121C16] relative z-10" />
@@ -132,10 +134,11 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
             <div className="space-y-4 pt-6 border-t border-[#F3EFE6]/10">
               <a
-                href={SPA_BUSINESS_DATA.social.linktree}
+                href={SPA_BUSINESS_DATA.whatsapp.navUrl}
+                onClick={() => trackWhatsAppClick('navbar_mobile')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#7A8B7B] text-[#121C16] font-semibold text-sm tracking-wide shadow-lg"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#7A8B7B] text-[#121C16] font-semibold text-sm tracking-wide shadow-lg cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Agendar um horário!</span>

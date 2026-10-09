@@ -1,0 +1,37 @@
+# Maliviê SPA — Robots.txt
+# Permitir rastreamento por motores de busca principais e crawlers de IA (SGE)
+
+User-agent: *
+Allow: /
+
+# Motores de Busca Principais
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Rasteadores de IA e Mecanismos Conversacionais (SGE / SearchGPT / Perplexity / Gemini)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Localização do Sitemap e LLMs Context
+Sitemap: https://maliviespa.com.br/sitemap.xml

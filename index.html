@@ -4,20 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     
+    <!-- Canonical & Robots -->
+    <link rel="canonical" href="https://maliviespa.com.br/" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Content Security Policy (Defense-in-depth) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.google-analytics.com https://plausible.io; media-src 'self' blob: data:; frame-src 'self' https://www.google.com; object-src 'none'; base-uri 'self';" />
+
     <!-- Primary Meta Tags -->
-    <title>Maliviê SPA | O lugar ideal para renovar suas energias! • Núcleo Bandeirante, Brasília</title>
-    <meta name="title" content="Maliviê SPA | O lugar ideal para renovar suas energias! • Núcleo Bandeirante, Brasília" />
-    <meta name="description" content="Maliviê SPA — O lugar ideal para renovar suas energias! 3ª Avenida, 1124, Núcleo Bandeirante, Brasília - DF. Head SPA, Massagens Relaxantes e Rituais de Day SPA." />
-    <meta name="keywords" content="Head Spa Brasília, Massagem Núcleo Bandeirante, Day Spa DF, Gift Card Spa Brasília, Maliviê SPA, Massagem Relaxante DF, Acupuntura Brasília" />
+    <title>Maliviê SPA | Head SPA Coreano e Day SPA em Brasília</title>
+    <meta name="title" content="Maliviê SPA | Head SPA Coreano e Day SPA em Brasília" />
+    <meta name="description" content="Head SPA Coreano, massagens relaxantes e Day SPA no Núcleo Bandeirante, Brasília. Desacelere e renove suas energias no Maliviê SPA. Agende seu horário!" />
+    <meta name="keywords" content="Head Spa Brasília, Massagem Núcleo Bandeirante, Day Spa DF, Gift Card Spa Brasília, Maliviê SPA, Massagem Relaxante DF, Acupuntura Brasília, Spa DF" />
     <meta name="author" content="Maliviê SPA" />
     <meta name="theme-color" content="#121C16" />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:site_name" content="Maliviê SPA" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
     <meta property="og:url" content="https://maliviespa.com.br/" />
-    <meta property="og:title" content="Maliviê SPA | O lugar ideal para renovar suas energias" />
+    <meta property="og:title" content="Maliviê SPA | Head SPA Coreano e Day SPA em Brasília" />
     <meta property="og:description" content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, Rituais Day SPA, Gift Cards e experiências sensoriais." />
-    <meta property="og:image" content="/og-malivie.webp" />
+    <meta property="og:image" content="https://maliviespa.com.br/og-malivie.webp" />
+    <meta property="og:image:secure_url" content="https://maliviespa.com.br/og-malivie.webp" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Maliviê SPA — Head SPA Coreano e Rituais de Bem-Estar no Núcleo Bandeirante, Brasília" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Maliviê SPA | Head SPA Coreano e Day SPA em Brasília" />
+    <meta name="twitter:description" content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, Rituais Day SPA e experiências sensoriais." />
+    <meta name="twitter:image" content="https://maliviespa.com.br/og-malivie.webp" />
+    <meta name="twitter:image:alt" content="Maliviê SPA — Head SPA Coreano e Rituais de Bem-Estar em Brasília" />
 
     <!-- Google Fonts Preconnect & Stylesheet -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,49 +48,145 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
 
-    <!-- Schema.org LocalBusiness Structured Data -->
+    <!-- Schema.org Comprehensive Structured Data (@graph) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "DaySpa",
-      "name": "Maliviê SPA",
-      "slogan": "O lugar ideal para renovar suas energias!",
-      "image": "https://instagram.com/maliviespa",
-      "telephone": "+5561999569214",
-      "url": "https://maliviespa.com.br",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "3ª Avenida, 1124 - Lote 1208-A, Loja 3",
-        "addressLocality": "Núcleo Bandeirante",
-        "addressRegion": "DF",
-        "postalCode": "71720-565",
-        "addressCountry": "BR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": -15.8697,
-        "longitude": -47.9689
-      },
-      "openingHoursSpecification": [
+      "@graph": [
         {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-          "opens": "08:00",
-          "closes": "20:00"
+          "@type": "DaySpa",
+          "@id": "https://maliviespa.com.br/#spa",
+          "name": "Maliviê SPA",
+          "alternateName": "Malivie SPA Brasília",
+          "slogan": "O lugar ideal para renovar suas energias!",
+          "description": "Santuário de bem-estar especializado em Head SPA Coreano com arco hídrico circular, massagens relaxantes com pedras quentes, acupuntura e Day SPA no Núcleo Bandeirante, Brasília - DF.",
+          "image": "https://maliviespa.com.br/og-malivie.webp",
+          "telephone": "+5561999569214",
+          "url": "https://maliviespa.com.br",
+          "priceRange": "$$",
+          "currenciesAccepted": "BRL",
+          "paymentAccepted": "Pix, Credit Card, Debit Card, Cash",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "3ª Avenida, 1124 - Lote 1208-A, Loja 3",
+            "addressLocality": "Núcleo Bandeirante",
+            "addressRegion": "DF",
+            "postalCode": "71720-565",
+            "addressCountry": "BR"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -15.8697,
+            "longitude": -47.9689
+          },
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              "opens": "08:00",
+              "closes": "20:00"
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": "Sunday",
+              "opens": "08:00",
+              "closes": "13:00"
+            }
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5.0",
+            "reviewCount": "128",
+            "bestRating": "5.0",
+            "worstRating": "1.0"
+          },
+          "sameAs": [
+            "https://www.instagram.com/maliviespa/",
+            "https://linktr.ee/malivie",
+            "https://www.facebook.com/maliviespa/",
+            "https://www.tiktok.com/@maliviespa"
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Cardápio de Rituais e Terapias do Maliviê SPA",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Head SPA Coreano Signature",
+                  "description": "Ritual hídrico completo com diagnóstico por microcâmera, espuma botânica, arco de hidroterapia ASMR morno e massagem craniana.",
+                  "offers": { "@type": "Offer", "priceCurrency": "BRL", "availability": "https://schema.org/InStock" }
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Massagem Relaxante com Pedras Quentes",
+                  "description": "Termoterapia profunda com pedras vulcânicas aquecidas e óleos nobres 100% vegetais para relaxamento muscular.",
+                  "offers": { "@type": "Offer", "priceCurrency": "BRL", "availability": "https://schema.org/InStock" }
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Day SPA Renovação & Harmonia",
+                  "description": "Imersão de 3 horas com Welcome drink, escalda-pés botânico, Head Spa Coreano, pedras quentes, spa dos pés e cerimonial do chá.",
+                  "offers": { "@type": "Offer", "priceCurrency": "BRL", "availability": "https://schema.org/InStock" }
+                }
+              }
+            ]
+          }
         },
         {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Sunday",
-          "opens": "08:00",
-          "closes": "13:00"
+          "@type": "WebSite",
+          "@id": "https://maliviespa.com.br/#website",
+          "url": "https://maliviespa.com.br/",
+          "name": "Maliviê SPA",
+          "description": "O lugar ideal para renovar suas energias em Brasília - DF",
+          "inLanguage": "pt-BR"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://maliviespa.com.br/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "É necessário lavar o cabelo antes do Head SPA?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Não é necessário. O ritual de Head SPA inclui avaliação dermatológica do couro cabeludo com microcâmera, higienização com espuma botânica e tratamento capilar completo."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "O Head SPA molha a roupa durante a sessão?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Não. Você recebe roupão felpudo, toalhas térmicas e nossa maca é equipada com capas impermeáveis para garantir total conforto e segurança."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "O Maliviê SPA possui estacionamento?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sim, há estacionamento público gratuito e amplo exatamente em frente ao espaço, no Núcleo Bandeirante, com fácil acesso para clientes de Brasília e cidades vizinhas."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Como adquirir o Gift Card do Maliviê SPA?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O Gift Card pode ser adquirido nas modalidades física (caixa com dedicatória personalizada) ou digital via WhatsApp, com validade de 30 dias para qualquer ritual do spa."
+              }
+            }
+          ]
         }
-      ],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5.0",
-        "reviewCount": "128"
-      },
-      "priceRange": "$$"
+      ]
     }
     </script>
   </head>

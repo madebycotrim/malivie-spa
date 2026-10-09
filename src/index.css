@@ -97,7 +97,7 @@ body {
   background: #7A8B7B;
 }
 
-/* Shimmer Keyframes */
+/* Shimmer Keyframes - Luxo Lento e Acetinado */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -108,23 +108,102 @@ body {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.15) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.12) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: shimmer 3.5s infinite;
+  animation: shimmer 5s ease-in-out infinite;
 }
 
-/* Pulse Glow */
+/* Zen Breathe - Respiração Consciente Contínua de Spa (12-16s) */
+@keyframes zenBreathe {
+  0%, 100% {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.08) translate3d(0, -6px, 0);
+    opacity: 1;
+  }
+}
+
+.animate-zen-breathe {
+  animation: zenBreathe 14s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.animate-zen-breathe-delayed {
+  animation: zenBreathe 16s cubic-bezier(0.37, 0, 0.63, 1) 4s infinite;
+}
+
+/* Water Drop / Cascata Suave de Scroll */
+@keyframes waterDrop {
+  0% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(9px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+.animate-water-drop {
+  animation: waterDrop 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* Subtle Organic Float */
+@keyframes zenFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-zen-float {
+  animation: zenFloat 7s ease-in-out infinite;
+}
+
+/* Pulse Glow Suave */
 @keyframes pulseGlow {
   0%, 100% {
-    opacity: 0.6;
+    opacity: 0.55;
     transform: scale(1);
   }
   50% {
-    opacity: 1;
-    transform: scale(1.05);
+    opacity: 0.9;
+    transform: scale(1.04);
   }
 }
 
 .animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
+  animation: pulseGlow 4.5s ease-in-out infinite;
+}
+
+/* Transições Aveludadas Padrão */
+.transition-luxury {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 500ms;
+}
+
+.transition-organic {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-duration: 400ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

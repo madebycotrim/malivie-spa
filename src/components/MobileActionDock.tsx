@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MessageCircle, Navigation, Volume2, VolumeX } from 'lucide-react';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { asmrEngine } from '../services/soundEngine';
+import { trackWhatsAppClick } from '../services/analytics';
 
 export const MobileActionDock: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -27,10 +28,11 @@ export const MobileActionDock: React.FC = () => {
       <div className="flex items-center justify-between gap-2 max-w-md mx-auto">
         {/* Agendamento Direct Action Button */}
         <a
-          href={SPA_BUSINESS_DATA.social.linktree}
+          href={SPA_BUSINESS_DATA.whatsapp.navUrl}
+          onClick={() => trackWhatsAppClick('dock_mobile')}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-[1.4] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#7A8B7B] text-[#121C16] font-bold text-xs shadow-md transition-transform active:scale-95"
+          className="flex-[1.4] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#7A8B7B] text-[#121C16] font-bold text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
         >
           <MessageCircle className="w-4 h-4" />
           <span className="whitespace-nowrap">Agendar um horário!</span>

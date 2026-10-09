@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { SPRING_VELVET } from '../utils/motionTransitions';
 
 interface MagneticButtonProps {
   children: React.ReactNode;
@@ -29,8 +30,8 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
     if (!ref.current) return;
     const { clientX, clientY } = e;
     const { width, height, left, top } = ref.current.getBoundingClientRect();
-    const x = (clientX - (left + width / 2)) * 0.25;
-    const y = (clientY - (top + height / 2)) * 0.25;
+    const x = (clientX - (left + width / 2)) * 0.22;
+    const y = (clientY - (top + height / 2)) * 0.22;
     setPosition({ x, y });
   };
 
@@ -57,17 +58,21 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: 'spring', stiffness: 180, damping: 15, mass: 0.1 }}
-      className={`relative inline-flex items-center justify-center gap-2 rounded-full font-sans cursor-pointer transition-colors duration-300 select-none overflow-hidden group ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      whileHover={{ scale: 1.025 }}
+      whileTap={{ scale: 0.975 }}
+      transition={SPRING_VELVET}
+      className={`relative inline-flex items-center justify-center gap-2 rounded-full font-sans cursor-pointer transition-colors duration-400 select-none overflow-hidden group ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
     >
-      <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+      {/* Acabamento acetinado líquido */}
+      <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none" />
       <span className="relative z-10 flex items-center gap-2 font-medium">{children}</span>
     </motion.div>
   );
 
   if (href) {
+    const computedRel = rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined);
     return (
-      <a href={href} target={target} rel={rel} onClick={onClick} className="inline-block">
+      <a href={href} target={target} rel={computedRel} onClick={onClick} className="inline-block">
         {content}
       </a>
     );

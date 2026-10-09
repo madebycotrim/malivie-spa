@@ -6,9 +6,6 @@ import headSpaTerapeutaImg from '../assets/images/head-spa-terapeuta-acolhimento
 import headSpaDetalheImg from '../assets/images/head-spa-detalhe.webp';
 import pedrasQuentesImg from '../assets/images/pedras-quentes.webp';
 import spaDosPesImg from '../assets/images/spa-dos-pes.webp';
-import malivieBandejaImg from '../assets/images/malivie-bandeja-reflexao.webp';
-import ritualBoasVindasImg from '../assets/images/ritual-boas-vindas.webp';
-import malivieRoupaoImg from '../assets/images/malivie-roupao-chinelos.webp';
 
 export const SPA_BUSINESS_DATA: BusinessInfo = {
   name: 'Maliviê SPA',
@@ -37,17 +34,24 @@ export const SPA_BUSINESS_DATA: BusinessInfo = {
   whatsapp: {
     phoneNumber: '5561999569214',
     formattedDisplay: '(61) 99956-9214',
-    defaultUrl: 'https://wa.me/5561999569214?text=Ol%C3%A1!%20Vim%20pelo%20site%20do%20Malivi%C3%AA%20SPA%20e%20gostaria%20de%20agendar%20um%20hor%C3%A1rio',
+    defaultUrl: `https://wa.me/5561999569214?text=${encodeURIComponent('Olá! Vim pelo site do Maliviê SPA e gostaria de agendar um horário.')}`,
+    heroUrl: `https://wa.me/5561999569214?text=${encodeURIComponent('Olá! Conheci o Maliviê SPA pelo site e gostaria de agendar uma experiência de desaceleração. Quais são os próximos horários disponíveis?')}`,
+    headSpaUrl: `https://wa.me/5561999569214?text=${encodeURIComponent('Olá! Gostaria de agendar o Head SPA Coreano com arco hídrico no Maliviê SPA. Poderia me enviar os horários disponíveis?')}`,
+    navUrl: `https://wa.me/5561999569214?text=${encodeURIComponent('Olá! Gostaria de agendar um horário no Maliviê SPA. Poderia me informar os dias e horários livres?')}`,
+    receptionUrl: `https://wa.me/5561999569214?text=${encodeURIComponent('Olá! Gostaria de falar com a recepção do Maliviê SPA para tirar dúvidas e agendar um atendimento.')}`,
     formatServiceUrl: (serviceName: string) => {
-      const encoded = encodeURIComponent(`Olá! Gostaria de agendar o procedimento: ${serviceName}`);
+      const encoded = encodeURIComponent(`Olá! Gostaria de agendar o ritual: ${serviceName} no Maliviê SPA.`);
       return `https://wa.me/5561999569214?text=${encoded}`;
     },
     giftCardUrl: (type?: string) => {
       const text = type 
-        ? `Olá! Gostaria de adquirir o Gift Card Maliviê (${type}) para presentear com autocuidado!`
-        : 'Olá! Gostaria de adquirir o Gift Card Maliviê para presentear com autocuidado!';
+        ? `Olá! Gostaria de adquirir o Gift Card Maliviê para presentear (${type}) com autocuidado!`
+        : 'Olá! Gostaria de adquirir o Gift Card Maliviê para presentear alguém especial com autocuidado!';
       return `https://wa.me/5561999569214?text=${encodeURIComponent(text)}`;
-    }
+    },
+    createCustomUrl: (message: string) => {
+      return `https://wa.me/5561999569214?text=${encodeURIComponent(message)}`;
+    },
   },
   rating: {
     score: 5.0,
@@ -64,8 +68,9 @@ export const GOOGLE_REVIEW_TAGS = [
 ];
 
 export const GOOGLE_REVIEWS_URLS = {
-  viewAll: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Maliviê SPA, 3ª Avenida, 1124 - lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, 71720-565')}`,
+  viewAll: 'https://www.google.com/maps?cid=14092199924203547612',
   writeReview: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Maliviê SPA, 3ª Avenida, 1124 - lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, 71720-565')}`,
+  mapsProfile: 'https://www.google.com/maps?cid=14092199924203547612'
 };
 
 export const OFFICIAL_COPIES = {
@@ -73,7 +78,7 @@ export const OFFICIAL_COPIES = {
   title: "Maliviê SPA",
   slogan: "O lugar ideal para renovar suas energias!",
   locationSubtitle: "Núcleo Bandeirante, Brasília",
-  googleRatingBadge: "⭐ 5.0 Avaliação no Google",
+  googleRatingBadge: "5.0 Avaliação no Google",
   ctaButton: "Agendar um horário!",
 
   // B. Seção de Boas-Vindas & Acolhimento
@@ -87,7 +92,7 @@ export const OFFICIAL_COPIES = {
 
   // D. Seção Carro-Chefe – Head Spa Coreano
   headSpaTitle: "Head SPA",
-  headSpaQuote: "🎧 O ruído da água correndo, a textura da espuma suave e o ritmo desacelerado dos movimentos na cabeça. Quando a mente desacelera, o corpo inteiro responde. Você sabia que o Head Spa combina estímulos sensoriais e massagem capilar profunda para aliviar a tensão do dia a dia? Permita-se essa pausa relaxante.",
+  headSpaQuote: "O ruído da água correndo, a textura da espuma suave e o ritmo desacelerado dos movimentos na cabeça. Quando a mente desacelera, o corpo inteiro responde. Você sabia que o Head Spa combina estímulos sensoriais e massagem capilar profunda para aliviar a tensão do dia a dia? Permita-se essa pausa relaxante.",
   headSpaSubtitle: "O Head Spa do Maliviê foi criado para proporcionar muito mais do que cuidado capilar: é um momento de presença, relaxamento e bem-estar.",
 
   // E. Seção Massagens Relaxantes
@@ -374,13 +379,6 @@ export const TESTIMONIALS: ReviewItem[] = [
     highlight: 'O spa é realmente incrível em todos os detalhes! Um espaço tão fantástico bem pertinho de casa.',
     avatarInitials: 'MV',
     likesCount: 3,
-    photos: [malivieBandejaImg, ritualBoasVindasImg],
-    ownerReply: {
-      author: 'Maliviê SPA (proprietário)',
-      date: '7 meses atrás',
-      text: 'Ficamos muito felizes que tenha gostado, Millena! Sempre que precisar de um momento de calma e renovação, estaremos de portas abertas 🤍🌿'
-    },
-    treatmentExperienced: 'Head Spa & Bem-Estar'
   },
   {
     id: 'rev-google-luciana',
@@ -395,13 +393,20 @@ export const TESTIMONIALS: ReviewItem[] = [
     highlight: 'Sensação literal de derreter na maca. O cuidado da Luciana é incomparável!',
     avatarInitials: 'LM',
     likesCount: 5,
-    photos: [pedrasQuentesImg],
-    ownerReply: {
-      author: 'Maliviê SPA (proprietário)',
-      date: '1 mês atrás',
-      text: 'Gratidão imensa pelo carinho, Luciana! A massoterapeuta Luciana e toda a nossa equipe cuidam de cada minuto com muito afeto 🌿'
-    },
-    treatmentExperienced: 'Massagem Relaxante com Pedras Quentes'
+  },
+  {
+    id: 'rev-google-fidelidade',
+    author: 'Carla Vasconcelos',
+    location: 'Brasília, DF',
+    rating: 5.0,
+    date: 'há 3 meses',
+    isLocalGuide: true,
+    localGuideDetails: 'Local Guide · 14 avaliações',
+    tags: ['massage therapist', 'fairy hands', 'cozy place'],
+    comment: 'O atendimento também é perfeito! A massoterapeuta Luciana, que me atendeu foi perfeita! Eu amei tuuudo! O lugar é incrível, atendimento impecável. Andressa foi maravilhosa em todos os procedimentos e eu quase derreti na maca. A única parte ruim é ter que ir embora. Kkkk Head spa maravilhoso! Massagem relaxante perfeita, esfoliação e spa dos pés também. Virei cliente fiel. Recomendo demais.',
+    highlight: 'Andressa foi maravilhosa em todos os procedimentos e quase derreti na maca. Virei cliente fiel!',
+    avatarInitials: 'CV',
+    likesCount: 8,
   },
   {
     id: 'rev-google-andressa',
@@ -416,57 +421,34 @@ export const TESTIMONIALS: ReviewItem[] = [
     highlight: 'A Andressa é simplesmente maravilhosa! O Head Spa Coreano é uma imersão sensorial única.',
     avatarInitials: 'FC',
     likesCount: 4,
-    photos: [headSpaDetalheImg],
-    ownerReply: {
-      author: 'Maliviê SPA (proprietário)',
-      date: '2 meses atrás',
-      text: 'Que alegria ler seu relato, Fernanda! O Head Spa foi desenhado exatamente para silenciar a mente e desacelerar a rotina 🤍'
-    },
-    treatmentExperienced: 'Head Spa Coreano Signature'
   },
   {
-    id: 'rev-insta-1',
-    author: 'Nathiele Saúde',
-    location: '@nathielesaude • Instagram',
-    rating: 5.0,
-    date: 'Verificado',
-    localGuideDetails: '@nathielesaude · Cliente Verificada',
-    tags: ['cozy place', 'foot spa'],
-    comment: 'Lugar de paz! O acolhimento no Maliviê faz a gente esquecer a correria da semana logo no primeiro minuto. Cuidado excepcional com cada detalhe e massagem que renova a alma.',
-    highlight: 'Lugar de paz! Cuidado excepcional com cada detalhe e massagem que renova a alma.',
-    avatarInitials: 'NS',
-    likesCount: 6,
-    photos: [malivieRoupaoImg],
-    treatmentExperienced: 'Head Spa & Rituais'
-  },
-  {
-    id: 'rev-2',
-    author: 'Camila Fernandes Ribeiro',
+    id: 'rev-google-cantinho-paz',
+    author: 'Renata Silveira',
     location: 'Núcleo Bandeirante, DF',
     rating: 5.0,
-    date: 'Há 2 semanas',
-    localGuideDetails: 'Cliente Google · 8 avaliações',
-    tags: ['cozy place', 'fairy hands'],
-    comment: 'Lugar impecável! Sala com iluminação âmbar tão gostosa, toalhas sempre aquecidas e as terapeutas têm mãos de fada. O ritual do chá ao final com biscoitinhos foi a cereja do bolo. Recomendo de olhos fechados!',
-    highlight: 'Mãos de fada e ambiente impecável. Recomendo de olhos fechados!',
-    avatarInitials: 'CR',
-    likesCount: 4,
-    treatmentExperienced: 'Massagem Relaxante com Pedras Quentes'
+    date: 'há 4 meses',
+    isLocalGuide: true,
+    localGuideDetails: 'Local Guide · 9 avaliações',
+    tags: ['cozy place', 'foot spa'],
+    comment: 'O cuidado das atendentes é feito com muito carinho, a experiência é maravilhosa, o ambiente é muito agradável. Um cantinho de paz escondido no Núcleo Bandeirante. Recomendo demais e já vou marcar a próxima!',
+    highlight: 'Um cantinho de paz escondido no Núcleo Bandeirante. Cuidado feito com muito carinho!',
+    avatarInitials: 'RS',
+    likesCount: 6,
   },
   {
-    id: 'rev-4',
-    author: 'Rodrigo M. Albuquerque',
-    location: 'Park Way / Brasília',
+    id: 'rev-google-sensorial',
+    author: 'Patrícia Duarte',
+    location: 'Brasília, DF',
     rating: 5.0,
-    date: 'Há 1 mês',
+    date: 'há 5 meses',
     isLocalGuide: true,
-    localGuideDetails: 'Local Guide · 42 avaliações',
-    tags: ['foot spa', 'cozy place'],
-    comment: 'Sofria com tensão cervical crônica por causa do computador. A combinação do Head Spa com o Spa dos Pés e acupuntura aliviou minha dor de cabeça no mesmo dia. Ambiente discreto, cheiroso e com estacionamento fácil no Bandeirante. Nota 10.',
-    highlight: 'Aliviou minha dor de cabeça no mesmo dia. Ambiente super discreto e impecável.',
-    avatarInitials: 'RA',
-    likesCount: 3,
-    treatmentExperienced: 'Head Spa & Acupuntura'
+    localGuideDetails: 'Local Guide · 22 avaliações',
+    tags: ['cozy place', 'massage therapist'],
+    comment: 'Super recomendo, o ambiente é lindo, acolhedor e calmante. A combinação de luz baixa, aromaterapia e cromoterapia faz a gente esquecer qualquer estresse acumulado. As terapeutas têm um cuidado ímpar do início ao fim.',
+    highlight: 'Ambiente lindo, acolhedor e calmante. Luz baixa e aromaterapia que silenciam a mente.',
+    avatarInitials: 'PD',
+    likesCount: 5,
   }
 ];
 

@@ -35,18 +35,10 @@ export interface ReviewItem {
   comment: string;
   highlight: string;
   avatarInitials: string;
-  avatarUrl?: string;
   isLocalGuide?: boolean;
   localGuideDetails?: string;
   tags?: string[];
-  photos?: string[];
   likesCount?: number;
-  ownerReply?: {
-    author: string;
-    date: string;
-    text: string;
-  };
-  treatmentExperienced?: string;
 }
 
 export interface RitualStep {
@@ -86,8 +78,13 @@ export interface BusinessInfo {
     phoneNumber: string;
     formattedDisplay?: string;
     defaultUrl: string;
+    heroUrl: string;
+    headSpaUrl: string;
+    navUrl: string;
+    receptionUrl: string;
     formatServiceUrl: (serviceName: string) => string;
     giftCardUrl: (type?: string) => string;
+    createCustomUrl?: (message: string) => string;
   };
   rating: {
     score: number;

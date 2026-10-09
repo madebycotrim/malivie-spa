@@ -1,0 +1,28 @@
+# Maliviê SPA
+
+> Santuário de bem-estar, autêntico Head SPA Coreano, massagens relaxantes com pedras quentes e rituais de Day SPA em Brasília, DF.
+
+## Sobre o Maliviê SPA
+O Maliviê SPA é um refúgio de desaceleração e autocuidado no Núcleo Bandeirante, Brasília - DF. O espaço é especializado em terapias integrativas, Head SPA Coreano com arco hídrico circular, massagens profundas com pedras quentes, acupuntura e rituais completos de Day SPA.
+Conta com avaliação 5.0 estrelas no Google Avaliações com mais de 120 avaliações de clientes.
+
+- Endereço Físico: 3ª Avenida, 1124 - Lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, CEP 71720-565
+- Região de Atendimento: Brasília, Núcleo Bandeirante, Park Way, Guará, Asa Sul, Sudoeste, Águas Claras e entorno do DF
+- WhatsApp de Atendimento: +55 (61) 99956-9214
+- Instagram Oficial: @maliviespa (https://www.instagram.com/maliviespa/)
+- Horários de Funcionamento: Terça a Sábado das 08h às 20h; Domingo das 08h às 13h; Segunda-feira: Fechado
+- Estacionamento: Gratuito e amplo em frente ao estabelecimento
+- Faixa de Preço: Moderado/Premium ($$)
+
+## Serviços Principais
+- [Head SPA Coreano Signature](https://maliviespa.com.br/#head-spa): Ritual completo com diagnóstico capilar por microcâmera, aromaterapia botânica, banho de espuma aveludada, cascata hídrica contínua ASMR morna e massagem craniana descompressiva (Duração: 80 min).
+- [Head SPA Revitalizante Express](https://maliviespa.com.br/#head-spa): Higienização profunda dos folículos, cascata de água termal morna e massagem na nuca para descompressão rápida (Duração: 50 min).
+- [Massagem Relaxante com Pedras Quentes](https://maliviespa.com.br/#menu): Termoterapia profunda com pedras vulcânicas aquecidas e óleos botânicos nobres para liberação de contraturas musculares (Duração: 70 min).
+- [Day SPA Renovação & Harmonia](https://maliviespa.com.br/#menu): Imersão completa de 3 horas com Welcome Drink em cristal, escalda-pés com ervas, Head Spa Signature, massagem com pedras quentes, spa dos pés e cerimonial do chá (Duração: 180 min).
+- [Day SPA Momento Pausa & Serenidade](https://maliviespa.com.br/#menu): Experiência de 2 horas combinando massagem corporal de 60 min, Head Spa revitalizante e ritual do chá (Duração: 120 min).
+- [Spa dos Pés com Esfoliação & Hidratação](https://maliviespa.com.br/#menu): Escalda-pés morno com sais do Himalaia, esfoliação nutritiva e reflexologia podal (Duração: 45 min).
+- [Acupuntura Tradicional & Reequilíbrio](https://maliviespa.com.br/#menu): Medicina Tradicional Chinesa para modulação de dores, enxaqueca crônica e estresse (Duração: 60 min).
+- [Gift Card Maliviê](https://maliviespa.com.br/#gift-card): Vale-presente físico com embalagem de luxo e dedicatória, ou digital com entrega instantânea (Validade de 30 dias).
+
+## Documentação Completa
+- [llms-full.txt](https://maliviespa.com.br/llms-full.txt): Visão técnica detalhada de rituais, terapeutas, protocolos sensoriais e FAQ completo para inteligências artificiais.
