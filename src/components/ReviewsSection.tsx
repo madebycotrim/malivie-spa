@@ -5,10 +5,9 @@ import { motion } from 'framer-motion';
 import { 
   Star, 
   ChevronLeft, 
-  ChevronRight, 
-  ExternalLink
+  ChevronRight 
 } from 'lucide-react';
-import { TESTIMONIALS, GOOGLE_REVIEW_TAGS, GOOGLE_REVIEWS_URLS } from '../data/spaData';
+import { TESTIMONIALS } from '../data/spaData';
 import { ReviewItem } from '../types';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 
@@ -213,66 +212,7 @@ export const ReviewsSection: React.FC = () => {
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* BARRA DE PROVA SOCIAL & LINK OFICIAL GOOGLE MAPS                          */}
-        {/* ========================================================================= */}
-        <motion.div
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.8, ease: EASE_ORGANIC }}
-          className="mt-14 max-w-4xl mx-auto rounded-3xl bg-[#18261E] border border-[#D4AF37]/25 p-6 sm:p-8 shadow-xl relative overflow-hidden"
-        >
-          <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />
-          
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-[#121C16] border border-[#F3EFE6]/15 flex items-center justify-center flex-shrink-0 shadow-inner">
-                <GoogleLogoIcon className="w-7 h-7" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 justify-center md:justify-start">
-                  <span className="font-serif text-2xl font-semibold text-[#F3EFE6]">5.0</span>
-                  <div className="flex items-center text-[#FBBC04]">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-[#FBBC04] text-[#FBBC04]" />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-xs sm:text-sm text-[#F3EFE6]/75 font-sans mt-0.5">
-                  Classificação máxima com mais de <strong>117 avaliações reais</strong> no Google Maps
-                </p>
-              </div>
-            </div>
 
-            {/* Botão de ação oficial */}
-            <a
-              href={GOOGLE_REVIEWS_URLS.viewAll}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#121C16] font-sans font-semibold text-xs sm:text-sm tracking-wide shadow-lg hover:shadow-[#D4AF37]/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
-            >
-              <span>Ver todas as avaliações no Google Maps</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Tags reais mais citadas pelos clientes no Google Maps */}
-          <div className="mt-6 pt-5 border-t border-[#F3EFE6]/10 flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-2.5 text-xs font-sans text-[#F3EFE6]/70">
-            <span className="text-[#D4AF37] font-medium mr-1 text-[11px] sm:text-xs">
-              Destaques dos clientes no Google:
-            </span>
-            {GOOGLE_REVIEW_TAGS.map((tag, tIdx) => (
-              <span
-                key={tIdx}
-                className="px-3 py-1 rounded-full bg-[#121C16] border border-[#F3EFE6]/10 text-[11px] text-[#F3EFE6]/80 flex items-center gap-1.5"
-              >
-                <span>{tag.label}</span>
-                <span className="text-[#D4AF37] font-semibold">({tag.count})</span>
-              </span>
-            ))}
-          </div>
-        </motion.div>
       </div>
 
 

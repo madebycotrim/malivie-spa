@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Gift, Heart, Sparkles, MessageCircle, Check } from 'lucide-react';
 import { OFFICIAL_COPIES, SPA_BUSINESS_DATA } from '../data/spaData';
@@ -8,7 +8,6 @@ import { trackWhatsAppClick } from '../services/analytics';
 import giftCardImg from '../assets/images/malivie-gift-card-instagram.webp';
 
 export const GiftCardSection: React.FC = () => {
-  const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
   return (
     <section id="gift-card" className="relative py-28 sm:py-36 bg-[#FBF9F6] text-[#2C2C2C] overflow-hidden">
       {/* Rose & Nude Terracotta Ambient Glows com respiração suave */}
@@ -123,79 +122,34 @@ export const GiftCardSection: React.FC = () => {
               </h3>
             </div>
 
-            {/* The 3 Personas - Interativas */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedPersona(prev => prev === 'A Amiga' ? null : 'A Amiga')}
-                className={`p-4 rounded-2xl bg-white text-left transition-all duration-300 shadow-xs flex flex-col justify-between space-y-2 cursor-pointer border ${
-                  selectedPersona === 'A Amiga'
-                    ? 'border-[#7A8B7B] ring-2 ring-[#7A8B7B]/30 shadow-md bg-[#F4F6F4]'
-                    : 'border-[#E8E0D5] hover:border-[#7A8B7B]/50 hover:-translate-y-1'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#7A8B7B] font-sans">
-                    A Amiga
-                  </span>
-                  {selectedPersona === 'A Amiga' && (
-                    <span className="text-[10px] bg-[#7A8B7B] text-white px-2 py-0.5 rounded-full font-bold">
-                      Selecionado
-                    </span>
-                  )}
-                </div>
+            {/* The 3 Personas - Inspiração Editorial */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#7A8B7B] font-sans">
+                  A Amiga
+                </span>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
                   "{OFFICIAL_COPIES.giftCardPersonaAmiga}"
                 </p>
-              </button>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => setSelectedPersona(prev => prev === 'A Mãe' ? null : 'A Mãe')}
-                className={`p-4 rounded-2xl bg-white text-left transition-all duration-300 shadow-xs flex flex-col justify-between space-y-2 cursor-pointer border ${
-                  selectedPersona === 'A Mãe'
-                    ? 'border-[#B99887] ring-2 ring-[#B99887]/30 shadow-md bg-[#FAF6F4]'
-                    : 'border-[#E8E0D5] hover:border-[#B99887]/60 hover:-translate-y-1'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#B99887] font-sans">
-                    A Mãe
-                  </span>
-                  {selectedPersona === 'A Mãe' && (
-                    <span className="text-[10px] bg-[#B99887] text-white px-2 py-0.5 rounded-full font-bold">
-                      Selecionado
-                    </span>
-                  )}
-                </div>
+              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#B99887] font-sans">
+                  A Mãe
+                </span>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
                   "{OFFICIAL_COPIES.giftCardPersonaMae}"
                 </p>
-              </button>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => setSelectedPersona(prev => prev === 'A Mulher Que Você Admira' ? null : 'A Mulher Que Você Admira')}
-                className={`p-4 rounded-2xl bg-white text-left transition-all duration-300 shadow-xs flex flex-col justify-between space-y-2 sm:col-span-1 cursor-pointer border ${
-                  selectedPersona === 'A Mulher Que Você Admira'
-                    ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-md bg-[#FCFAF2]'
-                    : 'border-[#E8E0D5] hover:border-[#D4AF37]/60 hover:-translate-y-1'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] font-sans">
-                    A Mulher Admirada
-                  </span>
-                  {selectedPersona === 'A Mulher Que Você Admira' && (
-                    <span className="text-[10px] bg-[#D4AF37] text-[#121C16] px-2 py-0.5 rounded-full font-bold">
-                      Selecionado
-                    </span>
-                  )}
-                </div>
+              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] font-sans">
+                  A Mulher Admirada
+                </span>
                 <p className="text-xs text-[#555555] font-sans leading-relaxed">
                   "{OFFICIAL_COPIES.giftCardPersonaMulher}"
                 </p>
-              </button>
+              </div>
             </div>
 
             {/* Core Message Card */}
@@ -237,8 +191,8 @@ export const GiftCardSection: React.FC = () => {
             {/* CTA Button */}
             <div className="pt-1 flex flex-col sm:flex-row items-center gap-4">
               <MagneticButton
-                href={SPA_BUSINESS_DATA.whatsapp.giftCardUrl(selectedPersona || undefined)}
-                onClick={() => trackWhatsAppClick('gift_card', selectedPersona || 'geral')}
+                href={SPA_BUSINESS_DATA.whatsapp.giftCardUrl()}
+                onClick={() => trackWhatsAppClick('gift_card', 'geral')}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="rose"
@@ -246,11 +200,7 @@ export const GiftCardSection: React.FC = () => {
                 className="w-full sm:w-auto"
               >
                 <MessageCircle className="w-5 h-5 text-[#121C16]" />
-                <span>
-                  {selectedPersona
-                    ? `Presentear ${selectedPersona} com Gift Card`
-                    : 'Presentear com Gift Card'}
-                </span>
+                <span>Presentear com Gift Card</span>
               </MagneticButton>
             </div>
           </motion.div>

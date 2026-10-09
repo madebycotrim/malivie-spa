@@ -4,8 +4,6 @@ import { GlassWater, Sparkles, Lamp, CheckCircle2 } from 'lucide-react';
 import { OFFICIAL_COPIES, WELCOME_RITUAL_STEPS } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import ritualBoasVindasImg from '../assets/images/ritual-boas-vindas.webp';
-import ritualToalhaImg from '../assets/images/malivie-bandeja-reflexao.webp';
-import roupaoChinelosImg from '../assets/images/malivie-roupao-chinelos.webp';
 
 export const ManifestoSection: React.FC = () => {
   return (
@@ -16,7 +14,7 @@ export const ManifestoSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         {/* Editorial Subheader */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -50,7 +48,7 @@ export const ManifestoSection: React.FC = () => {
         </div>
 
         {/* High-Fashion Asymmetric Layout (Inspora Design Inspired) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Atmospheric Image with Editorial Overlay */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -88,7 +86,7 @@ export const ManifestoSection: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: Editorial Manifesto Quotes & Philosophy */}
+          {/* Right Column: Editorial Manifesto Quote & Philosophy */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -96,19 +94,13 @@ export const ManifestoSection: React.FC = () => {
             transition={{ duration: 0.9, delay: 0.2 }}
             className="lg:col-span-7 flex flex-col justify-center space-y-8"
           >
-            {/* The Big Quote Block */}
-            <div className="relative p-8 sm:p-10 rounded-3xl bg-[#F0EAE1]/70 border border-[#7A8B7B]/20 shadow-sm space-y-4">
-              <span className="font-serif text-6xl text-[#7A8B7B]/30 leading-none select-none absolute top-4 left-6">
+            {/* The Quote Block */}
+            <div className="relative p-7 sm:p-9 rounded-3xl bg-[#F0EAE1]/70 border border-[#7A8B7B]/20 shadow-sm space-y-4">
+              <span className="font-serif text-5xl sm:text-6xl text-[#7A8B7B]/30 leading-none select-none absolute top-4 left-6">
                 “
               </span>
-              <p className="font-serif text-lg sm:text-2xl text-[#2C2C2C] italic font-light leading-relaxed relative z-10 pt-4">
+              <p className="font-serif text-lg sm:text-2xl text-[#2C2C2C] italic font-light leading-relaxed relative z-10 pt-3">
                 {OFFICIAL_COPIES.manifestoMain}
-              </p>
-              <p className="font-sans text-sm sm:text-base text-[#555555] leading-relaxed relative z-10 border-t border-[#7A8B7B]/20 pt-4">
-                "{OFFICIAL_COPIES.manifestoSecondary}"
-              </p>
-              <p className="font-serif italic text-sm sm:text-base text-[#7A8B7B] leading-relaxed relative z-10">
-                "{OFFICIAL_COPIES.welcomeDetail}"
               </p>
               <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-widest text-[#7A8B7B] font-semibold">
                 <span className="w-8 h-[1px] bg-[#7A8B7B]" />
@@ -152,69 +144,6 @@ export const ManifestoSection: React.FC = () => {
             </div>
           </motion.div>
         </div>
-
-        {/* Second Editorial Block: Authentic Ritual Reflection Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="rounded-3xl bg-[#F0EAE1] border border-[#E8E0D5] p-6 sm:p-10 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
-        >
-          {/* Dual Authentic Photo Showcase */}
-          <div className="lg:col-span-6 grid grid-cols-2 gap-4">
-            <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/5] bg-[#121C16] group">
-              <img
-                loading="lazy"
-                decoding="async"
-                src={roupaoChinelosImg}
-                alt="Roupão e chinelos aveludados com bordado dourado Maliviê SPA sobre a maca de massagem"
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-3 left-3 right-3 text-[11px] text-[#F3EFE6] font-medium leading-tight">
-                Roupão & Chinelos Bordados
-              </div>
-            </div>
-
-            <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/5] bg-[#121C16] group">
-              <img
-                loading="lazy"
-                decoding="async"
-                src={ritualToalhaImg}
-                alt="Bandeja de madeira com pedras vulcânicas e toalha bordada Maliviê SPA"
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-3 left-3 right-3 text-[11px] text-[#F3EFE6] font-medium leading-tight">
-                Toalha & Pedras Vulcânicas
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6 space-y-4">
-            <span className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] text-[#7A8B7B]">
-              Reflexão Maliviê
-            </span>
-            <h3 className="font-serif text-2xl sm:text-4xl text-[#2C2C2C] italic font-light leading-snug">
-              "Você se lembra da última vez em que não fez nada?"
-            </h3>
-            <p className="font-sans text-sm sm:text-base text-[#555555] leading-relaxed">
-              Fazer pausas também é produtivo. Seu bem-estar precisa de espaço na sua rotina para que você possa florescer por inteiro. Permita-se desacelerar e renovar suas energias em um espaço inteiramente dedicado a você.
-            </p>
-            <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-sans font-medium text-[#2C2C2C]">
-              <span className="px-3 py-1 rounded-full bg-white/80 border border-[#E8E0D5]">
-                Toalhas higienizadas aquecidas
-              </span>
-              <span className="px-3 py-1 rounded-full bg-white/80 border border-[#E8E0D5]">
-                Pedras vulcânicas minerais
-              </span>
-              <span className="px-3 py-1 rounded-full bg-white/80 border border-[#E8E0D5]">
-                Óleos vegetais nobres
-              </span>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

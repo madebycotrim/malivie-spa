@@ -1,26 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HelpCircle, ChevronDown, MessageCircle, Sparkles, Droplets, CheckCircle2 } from 'lucide-react';
+import { HelpCircle, ChevronDown, MessageCircle, Sparkles } from 'lucide-react';
 import { FAQ_ITEMS, SPA_BUSINESS_DATA } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { trackWhatsAppClick } from '../services/analytics';
 
 export const FAQSection: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<'todos' | 'head-spa' | 'preparacao' | 'geral'>('todos');
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({
     'faq-quimica': true, // Primeiro item aberto por padrão para affordance imediata
-  });
-
-  const categories = [
-    { key: 'todos' as const, label: 'Todas as Dúvidas' },
-    { key: 'head-spa' as const, label: 'Head SPA Coreano' },
-    { key: 'preparacao' as const, label: 'Preparação & Visita' },
-    { key: 'geral' as const, label: 'Agendamento & Geral' },
-  ];
-
-  const filteredFaqs = FAQ_ITEMS.filter((item) => {
-    if (activeCategory === 'todos') return true;
-    return item.category === activeCategory;
   });
 
   const toggleItem = (id: string) => {
@@ -71,37 +58,9 @@ export const FAQSection: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Category Pills Filter */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.key;
-            return (
-              <button
-                key={cat.key}
-                type="button"
-                onClick={() => setActiveCategory(cat.key)}
-                className={`relative px-4 py-2 rounded-full text-xs font-sans font-semibold tracking-wider uppercase transition-all duration-300 cursor-pointer select-none ${
-                  isActive
-                    ? 'bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/40 shadow-[0_4px_20px_rgba(0,0,0,0.3)]'
-                    : 'bg-[#18251E]/50 hover:bg-[#18251E] text-[#F3EFE6]/70 border border-[#F3EFE6]/10'
-                }`}
-              >
-                {isActive && (
-                  <motion.span
-                    layoutId="activeFaqPill"
-                    className="absolute inset-0 rounded-full border border-[#D4AF37]/50 pointer-events-none"
-                    transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-                  />
-                )}
-                <span>{cat.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
         {/* Minimalist Accordion List */}
         <div className="space-y-3.5 mb-14">
-          {filteredFaqs.map((faq, idx) => {
+          {FAQ_ITEMS.map((faq, idx) => {
             const isOpen = !!openItems[faq.id];
             return (
               <motion.div

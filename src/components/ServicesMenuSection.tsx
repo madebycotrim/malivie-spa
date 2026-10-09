@@ -1,31 +1,41 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, ArrowRight, Sparkles, MessageCircle, Star } from 'lucide-react';
-import { ServiceCategory, ServiceItem } from '../types';
+import { ServiceItem } from '../types';
 import { SERVICES_LIST, SPA_BUSINESS_DATA } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { trackWhatsAppClick } from '../services/analytics';
 import { ServiceDrawer } from './ServiceDrawer';
 
+type MenuCollectionKey = 'todos' | 'head-spa' | 'massagens-corporais' | 'day-spa';
+
 export const ServicesMenuSection: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>('todos');
+  const [selectedCollection, setSelectedCollection] = useState<MenuCollectionKey>('todos');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const categories: { key: ServiceCategory; label: string }[] = [
+  const collections: { key: MenuCollectionKey; label: string }[] = [
     { key: 'todos', label: 'Todos os Rituais' },
-    { key: 'head-spa', label: 'Head SPA' },
-    { key: 'massagens', label: 'Massagens Relaxantes' },
-    { key: 'pedras-quentes', label: 'Pedras Quentes' },
-    { key: 'spa-pes', label: 'Spa dos Pés' },
-    { key: 'acupuntura', label: 'Acupuntura' },
-    { key: 'day-spa', label: 'Rituais de Day SPA' },
-    { key: 'planos-horas', label: 'Planos de Horas' },
+    { key: 'head-spa', label: 'Head SPA Coreano' },
+    { key: 'massagens-corporais', label: 'Massagens & Terapias' },
+    { key: 'day-spa', label: 'Day SPA & Imersões' },
   ];
 
   const filteredServices = SERVICES_LIST.filter((item) => {
-    if (selectedCategory === 'todos') return true;
-    return item.category === selectedCategory;
+    if (selectedCollection === 'todos') return true;
+    if (selectedCollection === 'head-spa') return item.category === 'head-spa';
+    if (selectedCollection === 'massagens-corporais') {
+      return (
+        item.category === 'massagens' ||
+        item.category === 'pedras-quentes' ||
+        item.category === 'spa-pes' ||
+        item.category === 'acupuntura'
+      );
+    }
+    if (selectedCollection === 'day-spa') {
+      return item.category === 'day-spa' || item.category === 'planos-horas';
+    }
+    return true;
   });
 
   const handleOpenDetails = (service: ServiceItem) => {
@@ -68,22 +78,22 @@ export const ServicesMenuSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
-            className="mt-4 text-sm sm:text-base text-[#555555] font-sans max-w-xl mx-auto leading-relaxed"
+            className="mt-4 text-sm sm:text-base text-[#555555] font-sans max-w-2xl mx-auto leading-relaxed"
           >
-            "Reservar um tempo pra você também é uma forma de cuidado. Permita-se viver cada minuto desse cuidado!"
+            Sessões individuais em salas privativas com acústica acolhedora, Welcome Drink artesanal em cristal e atendimento exclusivo pelas terapeutas Andressa e Luciana.
           </motion.p>
         </div>
 
-        {/* Interactive Category Tabs Filter (Spell.sh / Unlumen pill feel) */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 max-w-5xl mx-auto mb-10 px-2">
-          {categories.map((cat) => {
-            const isActive = selectedCategory === cat.key;
+        {/* Cohesive Collections Tabs Filter */}
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 max-w-4xl mx-auto mb-12 px-2">
+          {collections.map((cat) => {
+            const isActive = selectedCollection === cat.key;
             return (
               <button
                 key={cat.key}
                 type="button"
-                onClick={() => setSelectedCategory(cat.key)}
-                className={`relative px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-sans font-semibold tracking-wider uppercase transition-all duration-300 cursor-pointer select-none ${
+                onClick={() => setSelectedCollection(cat.key)}
+                className={`relative px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs font-sans font-semibold tracking-wider uppercase transition-all duration-300 cursor-pointer select-none ${
                   isActive
                     ? 'bg-[#121C16] text-[#F3EFE6] shadow-[0_4px_20px_rgba(18,28,22,0.25)]'
                     : 'bg-[#F0EAE1] hover:bg-[#E8E0D5] text-[#2C2C2C]/80 border border-transparent hover:border-[#7A8B7B]/30'
@@ -102,54 +112,7 @@ export const ServicesMenuSection: React.FC = () => {
           })}
         </div>
 
-        {/* Dynamic Official Copy Banner based on active category */}
-        <div className="max-w-3xl mx-auto mb-12">
-          {selectedCategory === 'massagens' || selectedCategory === 'pedras-quentes' ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-5 rounded-2xl bg-[#F0EAE1] border border-[#7A8B7B]/30 text-center"
-            >
-              <h3 className="font-serif text-xl text-[#2C2C2C] mb-1">
-                Massagens Relaxantes
-              </h3>
-              <p className="font-serif italic text-sm text-[#7A8B7B]">
-                "A massagem com pedras quentes entra devagar e vai desfazendo os nós da tensão. Se você também está precisando desacelerar, talvez esse seja o seu sinal."
-              </p>
-            </motion.div>
-          ) : selectedCategory === 'day-spa' ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-5 rounded-2xl bg-[#F0EAE1] border border-[#D3B8AA]/40 text-center space-y-2"
-            >
-              <h3 className="font-serif text-xl text-[#2C2C2C]">
-                Rituais de Day SPA
-              </h3>
-              <p className="font-serif italic text-sm text-[#7A8B7B]">
-                "Reservar um tempo pra você também é uma forma de cuidado. Permita-se viver cada minuto desse cuidado!"
-              </p>
-              <p className="font-sans text-xs text-[#555555] border-t border-[#D3B8AA]/30 pt-2">
-                "A primavera é o convite perfeito para renovar as energias, desacelerar da rotina agitada e se dedicar um momento de cuidado único."
-              </p>
-            </motion.div>
-          ) : selectedCategory === 'planos-horas' ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-5 rounded-2xl bg-[#F0EAE1] border border-[#7A8B7B]/30 text-center"
-            >
-              <h3 className="font-serif text-xl text-[#2C2C2C] mb-1">
-                Planos de Horas
-              </h3>
-              <p className="font-sans text-xs text-[#555555]">
-                Categorias de Serviços: Head SPA, Massagens Relaxantes, Pedras Quentes, Spa dos Pés, Acupuntura, Rituais de Day SPA.
-              </p>
-            </motion.div>
-          ) : null}
-        </div>
-
-        {/* Services Grid */}
+        {/* Services Grid with Full Card Affordance */}
         <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -159,11 +122,20 @@ export const ServicesMenuSection: React.FC = () => {
               <motion.article
                 layout
                 key={service.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => handleOpenDetails(service)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleOpenDetails(service);
+                  }
+                }}
                 initial={{ opacity: 0, scale: 0.96, y: 14 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 8 }}
                 transition={{ duration: 0.5, ease: EASE_ORGANIC }}
-                className="group relative rounded-3xl bg-[#F0EAE1]/60 hover:bg-[#F0EAE1] border border-[#E8E0D5] hover:border-[#7A8B7B]/50 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(18,28,22,0.1)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-hidden"
+                className="group relative rounded-3xl bg-[#F0EAE1]/65 hover:bg-[#F0EAE1] border border-[#E8E0D5] hover:border-[#7A8B7B]/50 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(18,28,22,0.1)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-hidden cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#7A8B7B]/40"
               >
                 {/* Image Section */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-[#18251E]">
@@ -205,36 +177,38 @@ export const ServicesMenuSection: React.FC = () => {
                     <p className="font-serif italic text-sm text-[#7A8B7B] mt-1">
                       {service.tagline}
                     </p>
-                    {service.priceHint && (
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E8E0D5]/70 text-[#7A8B7B] text-[11px] font-sans font-medium mt-2">
-                        <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-                        <span>{service.priceHint}</span>
-                      </div>
-                    )}
+
+                    {/* Sensory Highlight Pill (Replaces generic price tags) */}
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-[#E8E0D5] text-[#7A8B7B] text-xs font-sans font-medium mt-2.5 shadow-2xs max-w-full">
+                      <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0" />
+                      <span className="truncate">
+                        {service.includedItems[0] || 'Experiência sensorial completa'}
+                      </span>
+                    </div>
+
                     <p className="font-sans text-xs sm:text-sm text-[#555555] mt-3 line-clamp-3 leading-relaxed">
                       {service.description}
                     </p>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="pt-4 border-t border-[#E8E0D5] flex items-center gap-2.5">
-                    <button
-                      type="button"
-                      onClick={() => handleOpenDetails(service)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#121C16] hover:bg-[#18251E] text-[#F3EFE6] text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm cursor-pointer group/btn active:scale-98"
-                    >
-                      <span>Ver Detalhes</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37] group-hover/btn:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                    </button>
+                  {/* Action Row */}
+                  <div className="pt-4 border-t border-[#E8E0D5] flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 text-xs font-sans font-semibold uppercase tracking-wider text-[#121C16] group-hover:text-[#7A8B7B] transition-colors">
+                      <span>Conhecer Ritual</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37] group-hover:translate-x-1 transition-transform duration-300" />
+                    </span>
 
                     <a
                       href={SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
-                      onClick={() => trackWhatsAppClick('servico_card', service.name)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        trackWhatsAppClick('servico_card', service.name);
+                      }}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 rounded-full bg-[#7A8B7B] hover:bg-[#677868] text-[#F3EFE6] transition-all duration-300 shadow-sm cursor-pointer active:scale-95 hover:shadow-md"
-                      title={`Agendar ${service.name} no WhatsApp`}
-                      aria-label={`Agendar ${service.name} no WhatsApp`}
+                      className="p-2.5 rounded-full bg-[#7A8B7B] hover:bg-[#677868] text-[#121C16] transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 flex-shrink-0"
+                      title={`Agendar ${service.name} direto no WhatsApp`}
+                      aria-label={`Agendar ${service.name} direto no WhatsApp`}
                     >
                       <MessageCircle className="w-4 h-4 text-[#121C16]" />
                     </a>
@@ -245,18 +219,20 @@ export const ServicesMenuSection: React.FC = () => {
           </AnimatePresence>
         </motion.div>
 
-        {/* Banner de Transparência de Investimento & Acolhimento */}
-        <div className="mt-16 max-w-4xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#F0EAE1] border border-[#7A8B7B]/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
-          <div className="space-y-1.5 text-center sm:text-left">
-            <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-semibold uppercase tracking-wider text-[#7A8B7B]">
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>Transparência & Acolhimento</span>
+        {/* Concierge Banner de Transparência de Investimento & Acolhimento */}
+        <div className="mt-16 sm:mt-20 max-w-4xl mx-auto p-7 sm:p-9 rounded-3xl bg-gradient-to-br from-[#F0EAE1] via-[#EFE8DF] to-[#E8E0D5] border border-[#D3B8AA]/60 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_15px_35px_rgba(18,28,22,0.06)] relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="space-y-2 text-center sm:text-left relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[#7A8B7B]/30 text-[11px] font-sans font-semibold uppercase tracking-[0.2em] text-[#7A8B7B]">
+              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+              <span>Atendimento Concierge & Valores</span>
             </div>
-            <h3 className="font-serif text-xl sm:text-2xl text-[#2C2C2C] font-light">
-              Expectativa de Valores & Tabela da Temporada
+            <h3 className="font-serif text-2xl sm:text-3xl text-[#2C2C2C] font-light leading-snug">
+              Tabela da Temporada & Agendamento Privativo
             </h3>
-            <p className="text-xs text-[#555555] font-sans max-w-lg leading-relaxed">
-              Todas as sessões são individuais com as terapeutas Andressa e Luciana e já incluem Welcome Drink artesanal, toalhas aquecidas, roupão felpudo, secagem (no Head Spa) e ritual do chá. Solicite a tabela completa no WhatsApp sem compromisso.
+            <p className="text-xs sm:text-sm text-[#555555] font-sans max-w-xl leading-relaxed">
+              Todas as sessões são privativas e já incluem taça de boas-vindas, toalhas aquecidas, roupão bordado e cerimonial do chá. Fale com a recepção para consultar horários livres e receber a tabela completa sem compromisso.
             </p>
           </div>
 
@@ -265,10 +241,10 @@ export const ServicesMenuSection: React.FC = () => {
             onClick={() => trackWhatsAppClick('menu_tabela_valores')}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-shrink-0 inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[#F3EFE6] text-xs font-bold tracking-wide uppercase transition-all duration-300 shadow-md group cursor-pointer"
+            className="flex-shrink-0 relative z-10 inline-flex items-center justify-center gap-2.5 py-3.5 px-7 rounded-full bg-[#121C16] hover:bg-[#1C2C22] text-[#F3EFE6] text-xs font-bold tracking-wider uppercase transition-all duration-300 shadow-[0_10px_25px_rgba(18,28,22,0.25)] hover:shadow-[0_12px_30px_rgba(18,28,22,0.35)] hover:scale-[1.02] active:scale-98 group cursor-pointer"
           >
             <MessageCircle className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform" />
-            <span>Receber Tabela no WhatsApp</span>
+            <span>Consultar Tabela no WhatsApp</span>
           </a>
         </div>
       </div>

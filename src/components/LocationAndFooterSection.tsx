@@ -80,7 +80,7 @@ export const LocationAndFooterSection: React.FC = () => {
           {/* Card 1: Authentic Spa Facade Photo */}
           <div className="lg:col-span-4 rounded-3xl bg-[#18251E] border border-[#F3EFE6]/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden group hover:border-[#D4AF37]/30 transition-all">
             {/* Header */}
-            <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#F3EFE6]/10">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
@@ -119,7 +119,7 @@ export const LocationAndFooterSection: React.FC = () => {
           {/* Card 2: Real Interactive Google Map */}
           <div className="lg:col-span-4 flex flex-col justify-between rounded-3xl bg-[#18251E] border border-[#F3EFE6]/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] relative overflow-hidden hover:border-[#D4AF37]/30 transition-all">
             {/* Header */}
-            <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#F3EFE6]/10">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7A8B7B] opacity-75" />
@@ -304,13 +304,13 @@ export const LocationAndFooterSection: React.FC = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[
               {
                 id: 'instagram',
                 name: 'Instagram',
                 handle: SPA_BUSINESS_DATA.social.instagramHandle,
-                desc: 'Fotos, rituais e autocuidado',
+                desc: 'Fotos, rituais e bastidores de autocuidado',
                 href: SPA_BUSINESS_DATA.social.instagram,
                 icon: <InstagramIcon className="w-5 h-5" />,
                 badge: null,
@@ -325,40 +325,18 @@ export const LocationAndFooterSection: React.FC = () => {
                 href: SPA_BUSINESS_DATA.whatsapp.defaultUrl,
                 icon: <MessageCircle className="w-5 h-5 text-[#D4AF37]" />,
                 badge: abertoAgora ? (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 text-[10px] text-[#F3EFE6] font-sans font-medium">
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 text-[10px] text-[#F3EFE6] font-sans font-medium">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] animate-pulse" />
                     <span>Atendimento agora</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/15 text-[10px] text-[#F3EFE6]/70 font-sans font-medium">
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/15 text-[10px] text-[#F3EFE6]/70 font-sans font-medium">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]/60" />
                     <span>Mensagens 24h</span>
                   </div>
                 ),
                 highlight: true,
                 onClick: () => trackWhatsAppClick('rodape_canais'),
-              },
-              {
-                id: 'facebook',
-                name: 'Facebook',
-                handle: 'Facebook Maliviê',
-                desc: 'Publicações e novidades',
-                href: SPA_BUSINESS_DATA.social.facebook,
-                icon: <FacebookIcon className="w-5 h-5" />,
-                badge: null,
-                highlight: false,
-                onClick: undefined,
-              },
-              {
-                id: 'tiktok',
-                name: 'TikTok',
-                handle: SPA_BUSINESS_DATA.social.tiktokHandle,
-                desc: 'Vídeos ASMR e experiências',
-                href: SPA_BUSINESS_DATA.social.tiktok,
-                icon: <TikTokIcon className="w-5 h-5" />,
-                badge: null,
-                highlight: false,
-                onClick: undefined,
               },
             ].map((channel) => (
               <a
@@ -367,7 +345,7 @@ export const LocationAndFooterSection: React.FC = () => {
                 onClick={channel.onClick}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`relative p-5 rounded-2xl border shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:-translate-y-1 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group flex flex-col justify-between overflow-hidden cursor-pointer ${
+                className={`relative p-6 sm:p-7 rounded-2xl border shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:-translate-y-1 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group flex flex-col justify-between overflow-hidden cursor-pointer ${
                   channel.highlight
                     ? 'bg-gradient-to-br from-[#1C2C22] to-[#121C16] border-[#7A8B7B]/40 hover:border-[#D4AF37]/80 hover:shadow-[0_15px_40px_rgba(0,0,0,0.5),_0_0_25px_rgba(122,139,123,0.2)]'
                     : 'bg-gradient-to-br from-[#18251E] to-[#121C16] border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:shadow-[0_15px_40px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.1)]'
@@ -379,9 +357,9 @@ export const LocationAndFooterSection: React.FC = () => {
                   }`}
                 />
 
-                <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start justify-between mb-5">
                   <div
-                    className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                    className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
                       channel.highlight
                         ? 'bg-[#7A8B7B]/20 border-[#7A8B7B]/50 text-[#D4AF37]'
                         : 'bg-[#1F3026] border-[#7A8B7B]/30 text-[#7A8B7B] group-hover:text-[#D4AF37] group-hover:border-[#D4AF37]/50'
@@ -398,27 +376,55 @@ export const LocationAndFooterSection: React.FC = () => {
 
                 <div>
                   <span
-                    className={`text-[10px] uppercase font-sans tracking-[0.2em] font-semibold block mb-0.5 ${
+                    className={`text-[10px] uppercase font-sans tracking-[0.2em] font-semibold block mb-1 ${
                       channel.highlight ? 'text-[#D4AF37]' : 'text-[#7A8B7B]'
                     }`}
                   >
                     {channel.name}
                   </span>
-                  <h4 className="font-serif text-base sm:text-lg text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug font-normal">
+                  <h4 className="font-serif text-lg sm:text-xl text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug font-normal">
                     {channel.handle}
                   </h4>
-                  <p className="text-[11px] text-[#F3EFE6]/65 font-sans mt-1">
+                  <p className="text-xs text-[#F3EFE6]/65 font-sans mt-1">
                     {channel.desc}
                   </p>
                 </div>
               </a>
             ))}
           </div>
+
+          {/* Secondary Channels in Discrete 1-Line Row */}
+          <div className="mt-5 pt-4 border-t border-[#F3EFE6]/5 flex flex-wrap items-center justify-between gap-3 text-xs text-[#F3EFE6]/55">
+            <span className="text-[11px] font-sans">
+              Outros canais oficiais:
+            </span>
+            <div className="flex items-center gap-4">
+              <a
+                href={SPA_BUSINESS_DATA.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group"
+              >
+                <FacebookIcon className="w-3.5 h-3.5 text-[#F3EFE6]/50 group-hover:text-[#D4AF37] group-hover:scale-110 transition-transform" />
+                <span>Facebook</span>
+              </a>
+              <span className="text-[#F3EFE6]/20">•</span>
+              <a
+                href={SPA_BUSINESS_DATA.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group"
+              >
+                <TikTokIcon className="w-3.5 h-3.5 text-[#F3EFE6]/50 group-hover:text-[#D4AF37] group-hover:scale-110 transition-transform" />
+                <span>TikTok</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Bar: Copyright & Back to Top */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F3EFE6]/65">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2.5 gap-y-1">
             <img
               loading="lazy"
               decoding="async"
@@ -426,8 +432,21 @@ export const LocationAndFooterSection: React.FC = () => {
               alt="Maliviê SPA"
               className="h-7 w-auto object-contain opacity-90"
             />
-            <span>•</span>
+            <span className="text-[#F3EFE6]/30">•</span>
             <span>© {new Date().getFullYear()} Todos os direitos reservados.</span>
+            <span className="text-[#F3EFE6]/30">•</span>
+            <span className="text-[11px] text-[#F3EFE6]/45 inline-flex items-center gap-1.5">
+              <span>crafted with care</span>
+              <span className="text-[#D4AF37]/40">•</span>
+              <a
+                href="https://github.com/madebycotrim"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#D4AF37]/80 hover:text-[#D4AF37] transition-colors font-medium hover:underline underline-offset-2"
+              >
+                madebycotrim
+              </a>
+            </span>
           </div>
 
           <p className="font-serif italic text-sm text-[#D4AF37]/90 text-center">

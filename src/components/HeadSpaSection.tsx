@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones, Star } from 'lucide-react';
+import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones } from 'lucide-react';
 import { HEAD_SPA_STEPS, SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
@@ -12,8 +12,6 @@ import headSpaDetalheImg from '../assets/images/head-spa-detalhe.webp';
 
 export const HeadSpaSection: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
-  const tiltCardRef = useRef<HTMLDivElement>(null);
-  const [tiltStyle, setTiltStyle] = useState({ rotateX: 0, rotateY: 0 });
 
   const stepImages = [
     headSpaTerapeutaImg,
@@ -21,35 +19,6 @@ export const HeadSpaSection: React.FC = () => {
     headSpaJatosImg,
     headSpaArcoDouradoImg,
   ];
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!tiltCardRef.current) return;
-    const rect = tiltCardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -5.5;
-    const rotateY = ((x - centerX) / centerX) * 5.5;
-    setTiltStyle({ rotateX, rotateY });
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!tiltCardRef.current || !e.touches[0]) return;
-    const touch = e.touches[0];
-    const rect = tiltCardRef.current.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -5.5;
-    const rotateY = ((x - centerX) / centerX) * 5.5;
-    setTiltStyle({ rotateX, rotateY });
-  };
-
-  const handleResetTilt = () => {
-    setTiltStyle({ rotateX: 0, rotateY: 0 });
-  };
 
   return (
     <section id="head-spa" className="relative py-28 sm:py-36 bg-[#121C16] text-[#F3EFE6] overflow-hidden">
@@ -117,18 +86,7 @@ export const HeadSpaSection: React.FC = () => {
             transition={{ duration: 1, ease: EASE_LUXURY }}
             className="lg:col-span-5"
           >
-            <div
-              ref={tiltCardRef}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleResetTilt}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleResetTilt}
-              style={{
-                transform: `perspective(1000px) rotateX(${tiltStyle.rotateX}deg) rotateY(${tiltStyle.rotateY}deg)`,
-                transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-              className="relative rounded-3xl overflow-hidden bg-[#18251E] border border-[#F3EFE6]/10 p-3 shadow-[0_25px_60px_rgba(0,0,0,0.5)] group"
-            >
+            <div className="relative rounded-3xl overflow-hidden bg-[#18251E] border border-[#F3EFE6]/10 p-3 shadow-[0_25px_60px_rgba(0,0,0,0.5)] group">
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#121C16]">
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -168,12 +126,6 @@ export const HeadSpaSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Physical interaction hint */}
-              <div className="pt-3 pb-1 text-center">
-                <span className="text-[10px] uppercase tracking-widest text-[#F3EFE6]/60 font-sans">
-                  Incline com o mouse ou deslize o dedo para efeito 3D
-                </span>
-              </div>
             </div>
 
             {/* Micro Benefits Badge (Regulatório Seguro) */}
@@ -183,21 +135,6 @@ export const HeadSpaSection: React.FC = () => {
                 <span>Alívio de tensões na cabeça, estresse e fadiga mental</span>
               </div>
               <span className="text-[#D4AF37] font-semibold text-[11px] whitespace-nowrap ml-2">Puro bem-estar</span>
-            </div>
-
-            {/* Prova Social em Destaque do Head Spa */}
-            <div className="mt-3 p-4 rounded-2xl bg-[#18251E]/40 border border-[#7A8B7B]/20 text-xs">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-1 text-[#FBBC04]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-[#FBBC04] text-[#FBBC04]" />
-                  ))}
-                </div>
-                <span className="text-[10px] text-[#7A8B7B] font-sans">Fernanda Costa · Google 5.0</span>
-              </div>
-              <p className="text-[#F3EFE6]/80 font-serif italic text-xs leading-relaxed">
-                "Fiz o Head Spa Coreano com cascata de água e saí em outro estado de espírito. O barulho da água correndo e a massagem capilar profunda silenciam qualquer cansaço."
-              </p>
             </div>
           </motion.div>
 
