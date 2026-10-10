@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { ServiceItem, FAQItem, ServiceCategory } from '../types';
 import { SERVICES_LIST, FAQ_ITEMS, AVAILABLE_SERVICE_IMAGES } from '../data/spaData';
 import { fetchD1Overrides, saveD1Override, deleteD1Override } from '../services/d1ContentService';
-import { verifyRemotePassword, changeRemotePassword } from '../services/authService';
+import { verifyRemotePassword, changeRemotePassword, getStoredAuthToken, clearStoredAuthToken } from '../services/authService';
 
 export type D1SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
 
@@ -72,19 +72,7 @@ const STORAGE_KEY_ICONS = 'malivie_editor_icons_v1';
 const STORAGE_KEY_SERVICES = 'malivie_editor_services_v3';
 const STORAGE_KEY_FAQS = 'malivie_editor_faqs_v2';
 
-// Hash SHA-256 para senha (malivie2026 e malivie)
-const ALLOWED_PASSWORD_HASHES = [
-  '310e80fa581bdac98cf605736d90d153803324268e06e27d664e0f4d79fd6d26', // malivie2026
-  'a50935b35b9e994984fe6b6d9694130aefc053f66a8dd8f29180a854c64fd602', // malivie
-];
 
-export async function computeSha256(str: string): Promise<string> {
-  const buf = new TextEncoder().encode(str);
-  const hash = await crypto.subtle.digest('SHA-256', buf);
-  return Array.from(new Uint8Array(hash))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-}
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
@@ -238,7 +226,12 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // Autenticação por Senha
   const requestOpenEditor = useCallback(() => {
     if (isEditorActive) {
-      // Se já está ativo, permite alternar ou manter
+      return;
+    }
+    const token = getStoredAuthToken();
+    if (token) {
+      setIsEditorActive(true);
+      playZenChime('activate');
       return;
     }
     setPasswordModalOpen(true);
@@ -252,21 +245,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const verifyPassword = useCallback(async (password: string): Promise<boolean> => {
     try {
-      // 1. Tenta validação remota no Cloudflare D1
+      // Validação estrita no Cloudflare D1
       const isRemoteValid = await verifyRemotePassword(password);
       if (isRemoteValid) {
-        setIsEditorActive(true);
-        setPasswordModalOpen(false);
-        playZenChime('activate');
-        return true;
-      }
-
-      // 2. Fallback de contingência caso servidor indisponível
-      const hash = await computeSha256(password.trim());
-      const envHash = import.meta.env.VITE_EDITOR_PASSWORD_HASH;
-      const isMatch = ALLOWED_PASSWORD_HASHES.includes(hash) || (envHash && hash === envHash);
-
-      if (isMatch) {
         setIsEditorActive(true);
         setPasswordModalOpen(false);
         playZenChime('activate');
@@ -369,6 +350,13 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
         setSyncStatus('error');
         playZenChime('deactivate');
+
+        // Se a sessão expirou ou não está autorizada, solicita login novamente
+        if (!getStoredAuthToken()) {
+          setIsEditorActive(false);
+          setPasswordModalOpen(true);
+        }
+
         setTimeout(() => {
           setSyncStatus((current) => (current === 'error' ? 'idle' : current));
         }, 3500);

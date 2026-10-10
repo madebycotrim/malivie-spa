@@ -36,14 +36,28 @@ function assetUploadPlugin(): Plugin {
           return
         }
 
+        const MAX_UPLOAD_BYTES = 5 * 1024 * 1024 // 5MB limite máximo
         let body = ''
+        let bodyLength = 0
+        let isExceeded = false
+
         req.on('data', (chunk) => {
+          bodyLength += chunk.length
+          if (bodyLength > MAX_UPLOAD_BYTES) {
+            isExceeded = true
+            res.statusCode = 413
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify({ error: 'Payload excede o limite máximo permitido de 5MB' }))
+            req.destroy()
+            return
+          }
           body += chunk
         })
 
         req.on('end', async () => {
+          if (isExceeded) return
           try {
-            const { serviceId, assetId, dataUrl, oldImage, prefix: reqPrefix } = JSON.parse(body)
+            const { serviceId, assetId, dataUrl, oldImage, prefix: reqPrefix } = JSON.parse(body || '{}')
 
             const targetId = assetId || serviceId
             if (!targetId || !dataUrl) {
@@ -63,12 +77,21 @@ function assetUploadPlugin(): Plugin {
               fs.mkdirSync(imagesDir, { recursive: true })
             }
 
-            // Sanitiza o ID e define prefixo
+            // Sanitiza estritamente o ID e o prefixo contra Path Traversal
             const cleanId = String(targetId).replace(/[^a-zA-Z0-9_-]/g, '-').toLowerCase()
-            const filePrefix = reqPrefix || (serviceId ? 'ritual' : 'custom')
+            const rawPrefix = reqPrefix || (serviceId ? 'ritual' : 'custom')
+            const filePrefix = String(rawPrefix).replace(/[^a-zA-Z0-9_-]/g, '') || 'custom'
             const timestamp = Date.now()
             const newFileName = `${filePrefix}-${cleanId}-${timestamp}.webp`
             const newFilePath = path.join(imagesDir, newFileName)
+
+            // Garante que o caminho resultante esteja estritamente contido em imagesDir
+            if (!newFilePath.startsWith(imagesDir)) {
+              res.statusCode = 400
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ error: 'Caminho de arquivo inválido detectado' }))
+              return
+            }
 
             // Otimiza e converte para WebP mantendo proporção original até 1400px
             await sharp(buffer)
@@ -84,7 +107,7 @@ function assetUploadPlugin(): Plugin {
               const oldBase = path.basename(oldClean)
               if (!PROTECTED_ASSETS.has(oldBase) && (oldBase.startsWith(`${filePrefix}-`) || oldBase.startsWith('ritual-') || oldBase.startsWith('custom-'))) {
                 const oldPath = path.join(imagesDir, oldBase)
-                if (fs.existsSync(oldPath)) {
+                if (fs.existsSync(oldPath) && oldPath.startsWith(imagesDir)) {
                   try {
                     fs.unlinkSync(oldPath)
                     console.log(`[Upload] Imagem anterior removida: ${oldBase}`)
@@ -99,11 +122,14 @@ function assetUploadPlugin(): Plugin {
             const existingFiles = fs.readdirSync(imagesDir)
             for (const file of existingFiles) {
               if (file.startsWith(`${filePrefix}-${cleanId}-`) && file !== newFileName) {
-                try {
-                  fs.unlinkSync(path.join(imagesDir, file))
-                  console.log(`[Upload] Versão anterior deste asset removida: ${file}`)
-                } catch (e) {
-                  console.warn(`[Upload] Falha ao limpar versão anterior:`, e)
+                const targetOld = path.join(imagesDir, file)
+                if (fs.existsSync(targetOld) && targetOld.startsWith(imagesDir)) {
+                  try {
+                    fs.unlinkSync(targetOld)
+                    console.log(`[Upload] Versão anterior deste asset removida: ${file}`)
+                  } catch (e) {
+                    console.warn(`[Upload] Falha ao limpar versão anterior:`, e)
+                  }
                 }
               }
             }
@@ -137,7 +163,46 @@ function d1LocalMiddlewarePlugin(): Plugin {
     configureServer(server) {
       const storageFile = path.resolve(process.cwd(), 'src/data/d1-local-storage.json')
 
-      const loadStorage = (): Record<string, string> => {
+      // Cache de Rate Limit em memória no ambiente de dev local
+      const rateLimits = new Map<string, { count: number; resetAt: number }>()
+
+      // Cache de Idempotência em memória: idempotencyKey -> { status: number, body: string }
+      const idempotencyCache = new Map<string, { status: number; body: string }>()
+
+      // Sessões ativas autenticadas em memória no servidor de dev
+      const activeSessions = new Set<string>()
+
+      const ID_REGEX = /^[a-zA-Z0-9_.\-:\[\]#]{1,120}$/
+      const MAX_CONTENT_LENGTH = 10000
+
+      const getReqIp = (req: any): string => {
+        const header = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1'
+        return String(header).split(',')[0].trim()
+      }
+
+      const checkRate = (ip: string, action: string, maxReq: number, windowSec: number) => {
+        const now = Math.floor(Date.now() / 1000)
+        const key = `${action}:${ip}`
+        const record = rateLimits.get(key)
+        if (record && record.resetAt > now) {
+          if (record.count >= maxReq) {
+            return { allowed: false, retryAfter: Math.max(1, record.resetAt - now) }
+          }
+          record.count++
+          return { allowed: true, retryAfter: 0 }
+        }
+        rateLimits.set(key, { count: 1, resetAt: now + windowSec })
+        return { allowed: true, retryAfter: 0 }
+      }
+
+      const checkAuthorization = (req: any): boolean => {
+        const auth = String(req.headers['authorization'] || '').trim()
+        if (!auth.startsWith('Bearer ')) return false
+        const token = auth.slice(7).trim()
+        return activeSessions.has(token)
+      }
+
+      const loadStorage = (): Record<string, any> => {
         try {
           if (fs.existsSync(storageFile)) {
             const raw = fs.readFileSync(storageFile, 'utf-8')
@@ -149,7 +214,7 @@ function d1LocalMiddlewarePlugin(): Plugin {
         return {}
       }
 
-      const saveStorage = (data: Record<string, string>) => {
+      const saveStorage = (data: Record<string, any>) => {
         try {
           const dir = path.dirname(storageFile)
           if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
@@ -161,15 +226,58 @@ function d1LocalMiddlewarePlugin(): Plugin {
 
       server.middlewares.use('/api/content', async (req, res) => {
         res.setHeader('Content-Type', 'application/json')
+        const clientIp = getReqIp(req)
 
         if (req.method === 'GET') {
-          const overrides = loadStorage()
+          const rate = checkRate(clientIp, 'content:get', 120, 60)
+          if (!rate.allowed) {
+            res.statusCode = 429
+            res.setHeader('Retry-After', String(rate.retryAfter))
+            res.end(JSON.stringify({ success: false, error: 'Rate limit excedido' }))
+            return
+          }
+
+          const current = loadStorage()
+          const overrides: Record<string, string> = {}
+          const versions = current._versions || {}
+
+          Object.keys(current).forEach((k) => {
+            if (!k.startsWith('_') && typeof current[k] === 'string') {
+              overrides[k] = current[k]
+            }
+          })
+
           res.statusCode = 200
-          res.end(JSON.stringify({ success: true, overrides, count: Object.keys(overrides).length }))
+          res.end(JSON.stringify({ success: true, overrides, versions, count: Object.keys(overrides).length }))
           return
         }
 
         if (req.method === 'POST') {
+          // Autorização obrigatória
+          if (!checkAuthorization(req)) {
+            res.statusCode = 401
+            res.end(JSON.stringify({ success: false, error: 'Acesso não autorizado. Faça login no modo editor.' }))
+            return
+          }
+
+          const rate = checkRate(clientIp, 'content:post', 60, 60)
+          if (!rate.allowed) {
+            res.statusCode = 429
+            res.setHeader('Retry-After', String(rate.retryAfter))
+            res.end(JSON.stringify({ success: false, error: 'Rate limit excedido' }))
+            return
+          }
+
+          // Idempotência
+          const idempotencyKey = String(req.headers['idempotency-key'] || req.headers['x-idempotency-key'] || '').trim()
+          if (idempotencyKey && idempotencyCache.has(idempotencyKey)) {
+            const cached = idempotencyCache.get(idempotencyKey)!
+            res.statusCode = cached.status
+            res.setHeader('X-Idempotent-Replay', 'true')
+            res.end(cached.body)
+            return
+          }
+
           let body = ''
           req.on('data', (chunk) => {
             body += chunk
@@ -178,20 +286,51 @@ function d1LocalMiddlewarePlugin(): Plugin {
             try {
               const parsed = JSON.parse(body || '{}')
               const current = loadStorage()
+              if (!current._versions) current._versions = {}
 
+              // Salvamento em lote
               if (parsed.overrides && typeof parsed.overrides === 'object') {
-                Object.assign(current, parsed.overrides)
+                const entries = Object.entries(parsed.overrides)
+                if (entries.length > 100) {
+                  res.statusCode = 400
+                  res.end(JSON.stringify({ success: false, error: 'Lote excede 100 itens' }))
+                  return
+                }
+
+                for (const [k, v] of entries) {
+                  if (!ID_REGEX.test(k) || typeof v !== 'string' || v.length > MAX_CONTENT_LENGTH) {
+                    res.statusCode = 400
+                    res.end(JSON.stringify({ success: false, error: `Item inválido: ${k}` }))
+                    return
+                  }
+                  current[k] = v
+                  current._versions[k] = (current._versions[k] || 1) + 1
+                }
+
                 saveStorage(current)
+                const resBody = JSON.stringify({ success: true, updated: entries.length })
+                if (idempotencyKey) idempotencyCache.set(idempotencyKey, { status: 200, body: resBody })
                 res.statusCode = 200
-                res.end(JSON.stringify({ success: true, updated: Object.keys(parsed.overrides).length }))
+                res.end(resBody)
                 return
               }
 
+              // Salvamento individual
               if (parsed.id && typeof parsed.content === 'string') {
-                current[parsed.id] = parsed.content
+                const cleanId = String(parsed.id).trim()
+                if (!ID_REGEX.test(cleanId) || parsed.content.length > MAX_CONTENT_LENGTH) {
+                  res.statusCode = 400
+                  res.end(JSON.stringify({ success: false, error: 'ID ou tamanho de conteúdo inválido' }))
+                  return
+                }
+
+                current[cleanId] = parsed.content
+                current._versions[cleanId] = (current._versions[cleanId] || 1) + 1
                 saveStorage(current)
+                const resBody = JSON.stringify({ success: true, id: cleanId })
+                if (idempotencyKey) idempotencyCache.set(idempotencyKey, { status: 200, body: resBody })
                 res.statusCode = 200
-                res.end(JSON.stringify({ success: true, id: parsed.id }))
+                res.end(resBody)
                 return
               }
 
@@ -200,13 +339,36 @@ function d1LocalMiddlewarePlugin(): Plugin {
             } catch (err: unknown) {
               console.error('[D1 Local Dev POST Error]:', err)
               res.statusCode = 500
-              res.end(JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' }))
+              res.end(JSON.stringify({ success: false, error: 'Erro interno ao processar requisição' }))
             }
           })
           return
         }
 
         if (req.method === 'DELETE') {
+          if (!checkAuthorization(req)) {
+            res.statusCode = 401
+            res.end(JSON.stringify({ success: false, error: 'Acesso não autorizado' }))
+            return
+          }
+
+          const rate = checkRate(clientIp, 'content:delete', 60, 60)
+          if (!rate.allowed) {
+            res.statusCode = 429
+            res.setHeader('Retry-After', String(rate.retryAfter))
+            res.end(JSON.stringify({ success: false, error: 'Rate limit excedido' }))
+            return
+          }
+
+          const idempotencyKey = String(req.headers['idempotency-key'] || req.headers['x-idempotency-key'] || '').trim()
+          if (idempotencyKey && idempotencyCache.has(idempotencyKey)) {
+            const cached = idempotencyCache.get(idempotencyKey)!
+            res.statusCode = cached.status
+            res.setHeader('X-Idempotent-Replay', 'true')
+            res.end(cached.body)
+            return
+          }
+
           let body = ''
           req.on('data', (chunk) => {
             body += chunk
@@ -215,11 +377,15 @@ function d1LocalMiddlewarePlugin(): Plugin {
             try {
               const parsed = JSON.parse(body || '{}')
               const current = loadStorage()
-              if (parsed.id && typeof parsed.id === 'string') {
-                delete current[parsed.id]
+              const cleanId = String(parsed.id || '').trim()
+              if (cleanId && ID_REGEX.test(cleanId)) {
+                delete current[cleanId]
+                if (current._versions) delete current._versions[cleanId]
                 saveStorage(current)
+                const resBody = JSON.stringify({ success: true, id: cleanId })
+                if (idempotencyKey) idempotencyCache.set(idempotencyKey, { status: 200, body: resBody })
                 res.statusCode = 200
-                res.end(JSON.stringify({ success: true, id: parsed.id }))
+                res.end(resBody)
                 return
               }
               res.statusCode = 400
@@ -227,7 +393,7 @@ function d1LocalMiddlewarePlugin(): Plugin {
             } catch (err: unknown) {
               console.error('[D1 Local Dev DELETE Error]:', err)
               res.statusCode = 500
-              res.end(JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' }))
+              res.end(JSON.stringify({ success: false, error: 'Erro interno ao processar requisição' }))
             }
           })
           return
@@ -271,6 +437,15 @@ function d1LocalMiddlewarePlugin(): Plugin {
           return
         }
 
+        const clientIp = getReqIp(req)
+        const rate = checkRate(clientIp, 'auth:attempt', 10, 60)
+        if (!rate.allowed) {
+          res.statusCode = 429
+          res.setHeader('Retry-After', String(rate.retryAfter))
+          res.end(JSON.stringify({ success: false, error: 'Muitas tentativas de autenticação. Aguarde.' }))
+          return
+        }
+
         let body = ''
         req.on('data', (chunk) => {
           body += chunk
@@ -288,8 +463,20 @@ function d1LocalMiddlewarePlugin(): Plugin {
               const pwd = typeof parsed.password === 'string' ? parsed.password.trim() : ''
               const check = await hashLocalPassword(pwd, current._auth.salt)
               const ok = check.hash === current._auth.hash
-              res.statusCode = ok ? 200 : 401
-              res.end(JSON.stringify({ success: ok }))
+              if (!ok) {
+                res.statusCode = 401
+                res.end(JSON.stringify({ success: false, error: 'Senha incorreta' }))
+                return
+              }
+
+              // Gera token de sessão seguro
+              const tokenBytes = new Uint8Array(32)
+              crypto.getRandomValues(tokenBytes)
+              const sessionToken = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('')
+              activeSessions.add(sessionToken)
+
+              res.statusCode = 200
+              res.end(JSON.stringify({ success: true, token: sessionToken, expiresAt: Math.floor(Date.now() / 1000) + 86400 }))
               return
             }
 
@@ -301,9 +488,9 @@ function d1LocalMiddlewarePlugin(): Plugin {
                 res.end(JSON.stringify({ success: false, error: 'Campos obrigatórios' }))
                 return
               }
-              if (newPwd.length < 6) {
+              if (newPwd.length < 8) {
                 res.statusCode = 400
-                res.end(JSON.stringify({ success: false, error: 'Mínimo de 6 caracteres' }))
+                res.end(JSON.stringify({ success: false, error: 'Mínimo de 8 caracteres' }))
                 return
               }
               const verifyCurrent = await hashLocalPassword(currentPwd, current._auth.salt)
@@ -312,10 +499,19 @@ function d1LocalMiddlewarePlugin(): Plugin {
                 res.end(JSON.stringify({ success: false, error: 'Senha atual incorreta' }))
                 return
               }
+
               current._auth = await hashLocalPassword(newPwd)
               saveStorage(current)
+
+              // Invalida sessões anteriores e cria nova
+              activeSessions.clear()
+              const tokenBytes = new Uint8Array(32)
+              crypto.getRandomValues(tokenBytes)
+              const newSessionToken = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('')
+              activeSessions.add(newSessionToken)
+
               res.statusCode = 200
-              res.end(JSON.stringify({ success: true, message: 'Senha atualizada' }))
+              res.end(JSON.stringify({ success: true, message: 'Senha atualizada', token: newSessionToken, expiresAt: Math.floor(Date.now() / 1000) + 86400 }))
               return
             }
 
@@ -324,7 +520,7 @@ function d1LocalMiddlewarePlugin(): Plugin {
           } catch (err: unknown) {
             console.error('[D1 Local Dev Auth Error]:', err)
             res.statusCode = 500
-            res.end(JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Erro' }))
+            res.end(JSON.stringify({ success: false, error: 'Erro interno ao autenticar' }))
           }
         })
       })

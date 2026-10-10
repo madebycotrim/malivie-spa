@@ -1,1 +1,1 @@
-{"root":["./api/auth.ts","./api/content.ts"],"version":"6.0.3"}
+{"root":["./api/_utils.ts","./api/auth.ts","./api/content.ts"],"version":"6.0.3"}

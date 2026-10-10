@@ -1,8 +1,14 @@
 /// <reference types="@cloudflare/workers-types" />
 
-interface Env {
-  DB: D1Database;
-}
+import {
+  Env,
+  getClientIp,
+  checkRateLimit,
+  checkIdempotency,
+  buildIdempotencyStatement,
+  generateSecureToken,
+  SESSION_TTL_SECONDS,
+} from './_utils';
 
 interface CredentialRow {
   key: string;
@@ -12,8 +18,11 @@ interface CredentialRow {
 }
 
 const PASSWORD_KEY = 'editor_password';
-const DEFAULT_INITIAL_PASSWORD = 'malivie2026';
 const PBKDF2_ITERATIONS = 100000;
+
+// Proteção contra brute force: Máximo de 10 tentativas por minuto por IP
+const AUTH_RATE_LIMIT_MAX = 10;
+const AUTH_RATE_LIMIT_WINDOW = 60;
 
 async function hashPassword(password: string, saltHex?: string): Promise<{ hash: string; salt: string }> {
   const enc = new TextEncoder();
@@ -51,16 +60,53 @@ async function hashPassword(password: string, saltHex?: string): Promise<{ hash:
   return { hash, salt: saltStr };
 }
 
-// POST /api/auth — Verifica ou altera a senha criptografada no D1
+// POST /api/auth — Autenticação com emissão de sessão segura no D1
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   try {
     const { request, env } = context;
 
     if (!env.DB) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Binding DB não configurado no Cloudflare' }),
+        JSON.stringify({ success: false, error: 'Serviço de dados temporariamente indisponível' }),
         { status: 503, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    // 1. Rate Limiting anti brute-force
+    const clientIp = getClientIp(request);
+    const rate = await checkRateLimit(
+      env,
+      clientIp,
+      'auth:attempt',
+      AUTH_RATE_LIMIT_MAX,
+      AUTH_RATE_LIMIT_WINDOW
+    );
+
+    if (!rate.allowed) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Muitas tentativas de autenticação. Por segurança, aguarde antes de tentar novamente.',
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': String(rate.retryAfter),
+            'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': String(rate.resetAt),
+          },
+        }
+      );
+    }
+
+    // 2. Idempotência opcional
+    const idempotencyKey =
+      request.headers.get('Idempotency-Key') || request.headers.get('x-idempotency-key');
+    const replayResponse = await checkIdempotency(env, idempotencyKey);
+    if (replayResponse) {
+      return replayResponse;
     }
 
     const body: any = await request.json();
@@ -73,14 +119,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     const action = body.action;
 
-    // 1. Busca ou inicializa as credenciais existentes
+    // 3. Busca ou inicializa as credenciais existentes
     let credential = await env.DB.prepare(
       'SELECT key, hash, salt FROM auth_credentials WHERE key = ?'
     ).bind(PASSWORD_KEY).first<CredentialRow>();
 
-    // Inicialização automática caso não exista credencial ainda
+    // Inicialização segura a partir de variável de ambiente ou fallback
     if (!credential) {
-      const initial = await hashPassword(DEFAULT_INITIAL_PASSWORD);
+      const initialPassword = env.ADMIN_INITIAL_PASSWORD || 'malivie2026';
+      const initial = await hashPassword(initialPassword);
       await env.DB.prepare(
         `INSERT INTO auth_credentials (key, hash, salt, updated_at)
          VALUES (?, ?, ?, datetime('now'))`
@@ -94,7 +141,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       };
     }
 
-    // Ação: Verificar Senha
+    // AÇÃO A: Verificar Senha & Emitir Sessão Segura
     if (action === 'verify') {
       const password = typeof body.password === 'string' ? body.password.trim() : '';
       if (!password) {
@@ -107,13 +154,49 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       const computed = await hashPassword(password, credential.salt);
       const isMatch = computed.hash === credential.hash;
 
+      if (!isMatch) {
+        return new Response(
+          JSON.stringify({ success: false, error: 'Senha incorreta' }),
+          {
+            status: 401,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
+              'X-RateLimit-Remaining': String(rate.remaining),
+              'X-RateLimit-Reset': String(rate.resetAt),
+            },
+          }
+        );
+      }
+
+      // Emite novo token de sessão com 256 bits de entropia
+      const sessionToken = generateSecureToken();
+      const expiresAt = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS;
+
+      await env.DB.prepare(
+        `INSERT INTO auth_sessions (token, expires_at)
+         VALUES (?, ?)`
+      ).bind(sessionToken, expiresAt).run();
+
       return new Response(
-        JSON.stringify({ success: isMatch }),
-        { status: isMatch ? 200 : 401, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({
+          success: true,
+          token: sessionToken,
+          expiresAt,
+        }),
+        {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
+            'X-RateLimit-Remaining': String(rate.remaining),
+            'X-RateLimit-Reset': String(rate.resetAt),
+          },
+        }
       );
     }
 
-    // Ação: Alterar Senha
+    // AÇÃO B: Alterar Senha (com invalidação de sessões anteriores)
     if (action === 'change-password') {
       const currentPassword = typeof body.currentPassword === 'string' ? body.currentPassword.trim() : '';
       const newPassword = typeof body.newPassword === 'string' ? body.newPassword.trim() : '';
@@ -125,9 +208,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         );
       }
 
-      if (newPassword.length < 6) {
+      if (newPassword.length < 8) {
         return new Response(
-          JSON.stringify({ success: false, error: 'A nova senha deve ter no mínimo 6 caracteres' }),
+          JSON.stringify({ success: false, error: 'A nova senha deve ter no mínimo 8 caracteres' }),
           { status: 400, headers: { 'Content-Type': 'application/json' } }
         );
       }
@@ -144,16 +227,61 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       // Gera novo salt e novo hash para a nova senha
       const nextCred = await hashPassword(newPassword);
 
-      await env.DB.prepare(
+      const updateStmt = env.DB.prepare(
         `UPDATE auth_credentials
          SET hash = ?, salt = ?, updated_at = datetime('now')
          WHERE key = ?`
-      ).bind(nextCred.hash, nextCred.salt, PASSWORD_KEY).run();
+      ).bind(nextCred.hash, nextCred.salt, PASSWORD_KEY);
 
-      return new Response(
-        JSON.stringify({ success: true, message: 'Senha atualizada com sucesso no Cloudflare D1' }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
+      // Invalida TODAS as sessões ativas existentes
+      const invalidateSessionsStmt = env.DB.prepare('DELETE FROM auth_sessions');
+
+      // Cria imediatamente nova sessão para o usuário que realizou a troca
+      const newSessionToken = generateSecureToken();
+      const expiresAt = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS;
+      const newSessionStmt = env.DB.prepare(
+        `INSERT INTO auth_sessions (token, expires_at)
+         VALUES (?, ?)`
+      ).bind(newSessionToken, expiresAt);
+
+      const responsePayload = JSON.stringify({
+        success: true,
+        message: 'Senha atualizada com sucesso no Cloudflare D1',
+        token: newSessionToken,
+        expiresAt,
+      });
+
+      const statements: D1PreparedStatement[] = [
+        updateStmt,
+        invalidateSessionsStmt,
+        newSessionStmt,
+      ];
+
+      if (idempotencyKey) {
+        statements.push(
+          buildIdempotencyStatement(
+            env,
+            idempotencyKey,
+            '/api/auth:change',
+            200,
+            responsePayload
+          )
+        );
+      }
+
+      // Execução atômica no D1
+      await env.DB.batch(statements);
+
+      return new Response(responsePayload, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
+          'X-RateLimit-Remaining': String(rate.remaining),
+          'X-RateLimit-Reset': String(rate.resetAt),
+          ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
+        },
+      });
     }
 
     return new Response(
