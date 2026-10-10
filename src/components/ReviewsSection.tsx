@@ -207,7 +207,7 @@ export const ReviewsSection: React.FC = () => {
             <button
               type="button"
               onClick={scrollPrev}
-              className="p-3 rounded-full bg-[#18251E]/95 hover:bg-[#203328] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37] transition-all pointer-events-auto shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-[#18251E]/95 hover:bg-[#203328] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37] transition-all pointer-events-auto shadow-md cursor-pointer hover:scale-105 active:scale-95"
               aria-label="Avaliação anterior"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -215,21 +215,21 @@ export const ReviewsSection: React.FC = () => {
             <button
               type="button"
               onClick={scrollNext}
-              className="p-3 rounded-full bg-[#18251E]/95 hover:bg-[#203328] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37] transition-all pointer-events-auto shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-[#18251E]/95 hover:bg-[#203328] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37] transition-all pointer-events-auto shadow-md cursor-pointer hover:scale-105 active:scale-95"
               aria-label="Próxima avaliação"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Carousel Dots with 44px+ touch-friendly target area */}
+          {/* Carousel Dots with 48px touch-friendly target area */}
           <div className="flex items-center justify-center gap-1 mt-6">
             {scrollSnaps.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => scrollTo(idx)}
-                className="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer focus:outline-none"
+                className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center cursor-pointer focus:outline-none"
                 aria-label={`Ir para avaliação ${idx + 1}`}
               >
                 <span

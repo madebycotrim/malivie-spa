@@ -5,7 +5,7 @@ import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { trackWhatsAppClick } from '../services/analytics';
 import { EditableText } from './editor/EditableText';
 import { EditableIcon } from './editor/EditableIcon';
-import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
+const logoMalivieWhite = '/logo-malivie-white.webp';
 
 interface NavbarProps {
   onOpenBooking?: () => void;

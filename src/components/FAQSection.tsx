@@ -61,9 +61,9 @@ export const FAQSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
-            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#F3EFE6] font-light leading-tight whitespace-nowrap"
+            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#F3EFE6] font-light leading-tight"
           >
-            <EditableText id="faq.title" defaultText="Perguntas & Preparo para a Visita" as="span" className="whitespace-nowrap">
+            <EditableText id="faq.title" defaultText="Perguntas & Preparo para a Visita" as="span">
               Perguntas & <span className="italic font-normal text-[#D4AF37]">Preparo para a Visita</span>
             </EditableText>
           </motion.h2>

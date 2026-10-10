@@ -15,14 +15,14 @@ Conta com avaliação 5.0 estrelas no Google Avaliações com mais de 120 avalia
 - Faixa de Preço: Moderado/Premium ($$)
 
 ## Serviços Principais
-- [Head SPA Coreano Signature](https://maliviespa.com.br/#head-spa): Ritual completo com diagnóstico capilar por microcâmera, aromaterapia botânica, banho de espuma aveludada, cascata hídrica contínua ASMR morna e massagem craniana descompressiva (Duração: 80 min).
-- [Head SPA Revitalizante Express](https://maliviespa.com.br/#head-spa): Higienização profunda dos folículos, cascata de água termal morna e massagem na nuca para descompressão rápida (Duração: 50 min).
-- [Massagem Relaxante com Pedras Quentes](https://maliviespa.com.br/#menu): Termoterapia profunda com pedras vulcânicas aquecidas e óleos botânicos nobres para liberação de contraturas musculares (Duração: 70 min).
-- [Day SPA Renovação & Harmonia](https://maliviespa.com.br/#menu): Imersão completa de 3 horas com Welcome Drink em cristal, escalda-pés com ervas, Head Spa Signature, massagem com pedras quentes, spa dos pés e cerimonial do chá (Duração: 180 min).
-- [Day SPA Momento Pausa & Serenidade](https://maliviespa.com.br/#menu): Experiência de 2 horas combinando massagem corporal de 60 min, Head Spa revitalizante e ritual do chá (Duração: 120 min).
-- [Spa dos Pés com Esfoliação & Hidratação](https://maliviespa.com.br/#menu): Escalda-pés morno com sais do Himalaia, esfoliação nutritiva e reflexologia podal (Duração: 45 min).
-- [Acupuntura Tradicional & Reequilíbrio](https://maliviespa.com.br/#menu): Medicina Tradicional Chinesa para modulação de dores, enxaqueca crônica e estresse (Duração: 60 min).
-- [Gift Card Maliviê](https://maliviespa.com.br/#gift-card): Vale-presente físico com embalagem de luxo e dedicatória, ou digital com entrega instantânea (Validade de 30 dias).
+- [Head SPA Coreano Signature](https://maliviespa.pages.dev/#head-spa): Ritual completo com diagnóstico capilar por microcâmera, aromaterapia botânica, banho de espuma aveludada, cascata hídrica contínua ASMR morna e massagem craniana descompressiva (Duração: 80 min).
+- [Head SPA Revitalizante Express](https://maliviespa.pages.dev/#head-spa): Higienização profunda dos folículos, cascata de água termal morna e massagem na nuca para descompressão rápida (Duração: 50 min).
+- [Massagem Relaxante com Pedras Quentes](https://maliviespa.pages.dev/#menu): Termoterapia profunda com pedras vulcânicas aquecidas e óleos botânicos nobres para liberação de contraturas musculares (Duração: 70 min).
+- [Day SPA Renovação & Harmonia](https://maliviespa.pages.dev/#menu): Imersão completa de 3 horas com Welcome Drink em cristal, escalda-pés com ervas, Head Spa Signature, massagem com pedras quentes, spa dos pés e cerimonial do chá (Duração: 180 min).
+- [Day SPA Momento Pausa & Serenidade](https://maliviespa.pages.dev/#menu): Experiência de 2 horas combinando massagem corporal de 60 min, Head Spa revitalizante e ritual do chá (Duração: 120 min).
+- [Spa dos Pés com Esfoliação & Hidratação](https://maliviespa.pages.dev/#menu): Escalda-pés morno com sais do Himalaia, esfoliação nutritiva e reflexologia podal (Duração: 45 min).
+- [Acupuntura Tradicional & Reequilíbrio](https://maliviespa.pages.dev/#menu): Medicina Tradicional Chinesa para modulação de dores, enxaqueca crônica e estresse (Duração: 60 min).
+- [Gift Card Maliviê](https://maliviespa.pages.dev/#gift-card): Vale-presente físico com embalagem de luxo e dedicatória, ou digital com entrega instantânea (Validade de 30 dias).
 
 ## Documentação Completa
-- [llms-full.txt](https://maliviespa.com.br/llms-full.txt): Visão técnica detalhada de rituais, terapeutas, protocolos sensoriais e FAQ completo para inteligências artificiais.
+- [llms-full.txt](https://maliviespa.pages.dev/llms-full.txt): Visão técnica detalhada de rituais, terapeutas, protocolos sensoriais e FAQ completo para inteligências artificiais.

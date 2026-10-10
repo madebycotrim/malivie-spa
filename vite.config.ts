@@ -574,6 +574,15 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react/')) {
             return 'icons';
           }
+          if (id.includes('node_modules/embla-carousel')) {
+            return 'carousel';
+          }
+          if (id.includes('node_modules/@radix-ui')) {
+            return 'radix';
+          }
+          if (id.includes('node_modules/lenis')) {
+            return 'lenis';
+          }
         },
       },
     },

@@ -34,4 +34,4 @@ User-agent: Applebot-Extended
 Allow: /
 
 # Localização do Sitemap e LLMs Context
-Sitemap: https://maliviespa.com.br/sitemap.xml
+Sitemap: https://maliviespa.pages.dev/sitemap.xml

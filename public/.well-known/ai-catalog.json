@@ -3,7 +3,7 @@
   "specVersion": "1.0",
   "host": {
     "displayName": "Maliviê SPA",
-    "url": "https://maliviespa.com.br"
+    "url": "https://maliviespa.pages.dev"
   },
   "entries": [
     {
@@ -11,7 +11,7 @@
       "displayName": "Maliviê SPA - Catálogo de Rituais e Head SPA",
       "type": "text/markdown",
       "description": "Catálogo completo de rituais de Head SPA Coreano com arco hídrico, massagens relaxantes, Day SPA e terapias integrativas em Brasília DF.",
-      "url": "https://maliviespa.com.br/llms.txt",
+      "url": "https://maliviespa.pages.dev/llms.txt",
       "representativeQueries": [
         "Head SPA Coreano em Brasília",
         "Massagem relaxante no Núcleo Bandeirante",
@@ -24,7 +24,7 @@
       "displayName": "Maliviê SPA Content API",
       "type": "application/json",
       "description": "Endpoint público JSON com cardápio de serviços, valores, horários de funcionamento e contatos oficiais do Maliviê SPA.",
-      "url": "https://maliviespa.com.br/api/content",
+      "url": "https://maliviespa.pages.dev/api/content",
       "representativeQueries": [
         "Consultar serviços do spa",
         "Consultar horário de funcionamento do Maliviê",

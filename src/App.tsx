@@ -10,12 +10,16 @@ import { ReviewsSection } from './components/ReviewsSection';
 import { GiftCardSection } from './components/GiftCardSection';
 import { FAQSection } from './components/FAQSection';
 import { LocationAndFooterSection } from './components/LocationAndFooterSection';
-import { AudioEqualizer } from './components/AudioEqualizer';
 import { MobileActionDock } from './components/MobileActionDock';
-
 import { EditorProvider } from './context/EditorContext';
-import { EditorToolbar } from './components/editor/EditorToolbar';
 import { Toaster } from 'sonner';
+
+const EditorToolbar = React.lazy(() =>
+  import('./components/editor/EditorToolbar').then((m) => ({ default: m.EditorToolbar }))
+);
+const AudioEqualizer = React.lazy(() =>
+  import('./components/AudioEqualizer').then((m) => ({ default: m.AudioEqualizer }))
+);
 
 function App() {
   // Initialize Lenis smooth inertia scroll
@@ -25,7 +29,9 @@ function App() {
     <EditorProvider>
       <div className="min-h-screen bg-[#121C16] text-[#F3EFE6] selection:bg-[#7A8B7B] selection:text-[#121C16] relative overflow-x-hidden font-sans">
         {/* Editor Floating Toolbar */}
-        <EditorToolbar />
+        <React.Suspense fallback={null}>
+          <EditorToolbar />
+        </React.Suspense>
 
         {/* SEO & Structured Data */}
         <SEOHead />
@@ -61,7 +67,9 @@ function App() {
         </main>
 
         {/* Floating ASMR Audio Equalizer (Desktop & Tablet) */}
-        <AudioEqualizer />
+        <React.Suspense fallback={null}>
+          <AudioEqualizer />
+        </React.Suspense>
 
         {/* Sticky Mobile Action Dock (Fixed Bottom-0 on Mobile) */}
         <MobileActionDock />

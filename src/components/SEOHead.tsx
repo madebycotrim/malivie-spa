@@ -8,10 +8,10 @@ export const SEOHead: React.FC = () => {
     '@type': 'DaySpa',
     name: SPA_BUSINESS_DATA.name,
     slogan: SPA_BUSINESS_DATA.slogan,
-    url: 'https://maliviespa.com.br',
+    url: 'https://maliviespa.pages.dev',
     telephone: '+5561999569214',
     priceRange: '$$',
-    image: 'https://maliviespa.com.br/og-malivie.webp',
+    image: 'https://maliviespa.pages.dev/og-malivie.webp',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '3ª Avenida, 1124 - lote 1208-A, Loja 3',
@@ -70,7 +70,7 @@ export const SEOHead: React.FC = () => {
   return (
     <Helmet>
       <title>Maliviê SPA | Head SPA Coreano e Day SPA em Brasília</title>
-      <link rel="canonical" href="https://maliviespa.com.br/" />
+      <link rel="canonical" href="https://maliviespa.pages.dev/" />
       <meta
         name="description"
         content="Head SPA Coreano, massagens relaxantes e Day SPA no Núcleo Bandeirante, Brasília. Desacelere e renove suas energias no Maliviê SPA. Agende seu horário!"
@@ -90,7 +90,7 @@ export const SEOHead: React.FC = () => {
         property="og:description"
         content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, Rituais Day SPA, Gift Cards e experiências sensoriais."
       />
-      <meta property="og:image" content="https://maliviespa.com.br/og-malivie.webp" />
+      <meta property="og:image" content="https://maliviespa.pages.dev/og-malivie.webp" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content="Maliviê SPA — Head SPA Coreano e Rituais de Bem-Estar no Núcleo Bandeirante, Brasília" />
@@ -102,7 +102,7 @@ export const SEOHead: React.FC = () => {
         name="twitter:description"
         content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, Rituais Day SPA e experiências sensoriais."
       />
-      <meta name="twitter:image" content="https://maliviespa.com.br/og-malivie.webp" />
+      <meta property="twitter:image" content="https://maliviespa.pages.dev/og-malivie.webp" />
 
       {/* Schema.org Structured Data */}
       <script type="application/ld+json">{JSON.stringify(schemaData)}</script>

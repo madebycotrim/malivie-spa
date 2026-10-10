@@ -242,9 +242,9 @@ export const HeadSpaSection: React.FC = () => {
             </div>
 
             {/* Micro Benefits Badge (Regulatório Seguro) */}
-            <div className="mt-4 p-3.5 rounded-2xl bg-[#18251E]/60 border border-[#F3EFE6]/10 flex items-center justify-between text-xs text-[#F3EFE6]/85">
+            <div className="mt-4 p-3.5 rounded-2xl bg-[#18251E]/60 border border-[#F3EFE6]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#F3EFE6]/85">
               <div className="flex items-center gap-2">
-                <EditableIcon id="headSpa.benefit.icon" defaultIcon="ShieldCheck" className="w-4 h-4 text-[#7A8B7B]" />
+                <EditableIcon id="headSpa.benefit.icon" defaultIcon="ShieldCheck" className="w-4 h-4 text-[#7A8B7B] shrink-0" />
                 <EditableText
                   id="headSpa.benefitText"
                   defaultText="Alívio de tensões na cabeça, estresse e fadiga mental"
@@ -253,7 +253,7 @@ export const HeadSpaSection: React.FC = () => {
                   Alívio de tensões na cabeça, estresse e fadiga mental
                 </EditableText>
               </div>
-              <span className="text-[#D4AF37] font-semibold text-[11px] whitespace-nowrap ml-2">
+              <span className="text-[#D4AF37] font-semibold text-[11px] shrink-0 sm:ml-2">
                 <EditableText id="headSpa.benefitHighlight" defaultText="Puro bem-estar" as="span">
                   Puro bem-estar
                 </EditableText>

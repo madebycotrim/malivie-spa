@@ -36,7 +36,7 @@ export const MobileActionDock: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Agendar um horário via WhatsApp pelo botão inferior"
-          className="flex-[1.4] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#121C16] font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
+          className="flex-[1.4] min-h-[48px] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#121C16] font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
         >
           <EditableIcon id="dock.cta.icon" defaultIcon="WhatsApp" fallbackComponent={WhatsAppIcon} className="w-4 h-4 text-[#121C16]" />
           <EditableText id="dock.cta" defaultText="Agendar um horário!" as="span" className="whitespace-nowrap">
@@ -48,7 +48,7 @@ export const MobileActionDock: React.FC = () => {
         <button
           type="button"
           onClick={handleScrollToLocation}
-          className="flex-1 flex items-center justify-center gap-1.5 py-3 px-2 rounded-full bg-[#18251E] text-[#F3EFE6] border border-[#F3EFE6]/15 text-xs font-medium active:scale-95 transition-transform"
+          className="flex-1 min-h-[48px] flex items-center justify-center gap-1.5 py-3 px-2 rounded-full bg-[#18251E] text-[#F3EFE6] border border-[#F3EFE6]/15 text-xs font-medium active:scale-95 transition-transform cursor-pointer"
         >
           <EditableIcon id="dock.directions.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#D4AF37]" />
           <EditableText id="dock.directions" defaultText="Como Chegar" as="span">
@@ -60,7 +60,7 @@ export const MobileActionDock: React.FC = () => {
         <button
           type="button"
           onClick={handleToggleAsmr}
-          className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center ${
+          className={`min-w-[48px] min-h-[48px] p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center cursor-pointer ${
             isPlaying
               ? 'bg-[#18251E] border-[#7A8B7B] text-[#7A8B7B] shadow-[0_0_15px_rgba(122,139,123,0.4)] ring-1 ring-[#7A8B7B]'
               : 'bg-[#18251E] border-[#F3EFE6]/15 text-[#F3EFE6]/70'

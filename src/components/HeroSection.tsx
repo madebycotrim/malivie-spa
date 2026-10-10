@@ -7,8 +7,8 @@ import { trackWhatsAppClick } from '../services/analytics';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { EditableText } from './editor/EditableText';
 import { EditableIcon } from './editor/EditableIcon';
-import heroImage from '../assets/images/hero-head-spa.webp';
-import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
+const heroImage = '/hero-head-spa.webp';
+const logoMalivieWhite = '/logo-malivie-white.webp';
 
 export const HeroSection: React.FC = () => {
   const scrollToManifesto = () => {
@@ -68,7 +68,6 @@ export const HeroSection: React.FC = () => {
                 id="hero.location"
                 defaultText={OFFICIAL_COPIES.locationSubtitle}
                 as="span"
-                className="whitespace-nowrap"
               >
                 {OFFICIAL_COPIES.locationSubtitle}
               </EditableText>

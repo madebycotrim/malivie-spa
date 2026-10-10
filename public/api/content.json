@@ -1,0 +1,104 @@
+{
+  "name": "Maliviê SPA",
+  "category": "Day Spa & Head SPA Coreano",
+  "rating": 5.0,
+  "reviewCount": 120,
+  "contact": {
+    "whatsapp": "+5561999569214",
+    "phone": "+55 61 99956-9214",
+    "instagram": "https://www.instagram.com/maliviespa/",
+    "website": "https://maliviespa.pages.dev"
+  },
+  "address": {
+    "street": "3ª Avenida, 1124 - Lote 1208-A, Loja 3",
+    "neighborhood": "Núcleo Bandeirante",
+    "city": "Brasília",
+    "state": "DF",
+    "postalCode": "71720-565",
+    "country": "BR",
+    "parking": "Gratuito em frente"
+  },
+  "openingHours": {
+    "tuesday": "08:00 - 20:00",
+    "wednesday": "08:00 - 20:00",
+    "thursday": "08:00 - 20:00",
+    "friday": "08:00 - 20:00",
+    "saturday": "08:00 - 20:00",
+    "sunday": "08:00 - 13:00",
+    "monday": "Fechado"
+  },
+  "services": [
+    {
+      "id": "head-spa-signature",
+      "name": "Head SPA Coreano Signature",
+      "duration": "80 min",
+      "priceInCents": 32000,
+      "priceFormatted": "R$ 320,00",
+      "category": "Head SPA",
+      "description": "Diagnóstico capilar com microcâmera, aromaterapia, cascata hídrica contínua ASMR morna e massagem craniana profunda."
+    },
+    {
+      "id": "head-spa-express",
+      "name": "Head SPA Revitalizante Express",
+      "duration": "50 min",
+      "priceInCents": 22000,
+      "priceFormatted": "R$ 220,00",
+      "category": "Head SPA",
+      "description": "Higienização profunda dos folículos com água termal morna e massagem na nuca para descompressão rápida."
+    },
+    {
+      "id": "massagem-pedras-quentes",
+      "name": "Massagem Relaxante com Pedras Quentes",
+      "duration": "70 min",
+      "priceInCents": 26000,
+      "priceFormatted": "R$ 260,00",
+      "category": "Massoterapia",
+      "description": "Termoterapia profunda com pedras vulcânicas aquecidas e óleos botânicos nobres."
+    },
+    {
+      "id": "day-spa-renovacao",
+      "name": "Day SPA Renovação & Harmonia",
+      "duration": "180 min",
+      "priceInCents": 58000,
+      "priceFormatted": "R$ 580,00",
+      "category": "Day SPA",
+      "description": "Imersão de 3 horas com Welcome Drink, escalda-pés, Head Spa Signature, massagem com pedras quentes e cerimonial do chá."
+    },
+    {
+      "id": "day-spa-pausa",
+      "name": "Day SPA Momento Pausa & Serenidade",
+      "duration": "120 min",
+      "priceInCents": 42000,
+      "priceFormatted": "R$ 420,00",
+      "category": "Day SPA",
+      "description": "Experiência de 2 horas combinando massagem corporal de 60 min, Head Spa e ritual do chá."
+    },
+    {
+      "id": "spa-dos-pes",
+      "name": "Spa dos Pés com Esfoliação & Hidratação",
+      "duration": "45 min",
+      "priceInCents": 15000,
+      "priceFormatted": "R$ 150,00",
+      "category": "Spa dos Pés",
+      "description": "Escalda-pés com sais do Himalaia, esfoliação nutritiva e reflexologia podal relaxante."
+    },
+    {
+      "id": "acupuntura-tradicional",
+      "name": "Acupuntura Tradicional & Reequilíbrio",
+      "duration": "60 min",
+      "priceInCents": 20000,
+      "priceFormatted": "R$ 200,00",
+      "category": "Terapias Integrativas",
+      "description": "Medicina Tradicional Chinesa para alívio de dores, estresse e cefaleia tensional."
+    },
+    {
+      "id": "gift-card",
+      "name": "Gift Card Maliviê",
+      "duration": "Validade de 30 dias",
+      "priceInCents": 22000,
+      "priceFormatted": "A partir de R$ 220,00",
+      "category": "Presente",
+      "description": "Cartão presente físico ou digital para qualquer ritual ou valor pré-pago."
+    }
+  ]
+}

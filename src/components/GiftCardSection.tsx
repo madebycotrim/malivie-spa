@@ -38,7 +38,7 @@ export const GiftCardSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
-            className="font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#2C2C2C] font-light leading-tight tracking-tight whitespace-nowrap"
+            className="font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#2C2C2C] font-light leading-tight tracking-tight"
           >
             <EditableText
               id="giftCard.title"

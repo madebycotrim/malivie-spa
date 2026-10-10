@@ -36,13 +36,12 @@ export const ManifestoSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
-            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#2C2C2C] font-light leading-[1.15] whitespace-nowrap"
+            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#2C2C2C] font-light leading-[1.15]"
           >
             <EditableText
               id="manifesto.heading"
               defaultText={`"Aqui, você é recebido(a) com calma."`}
               as="span"
-              className="whitespace-nowrap"
             >
               "Aqui, você é recebido(a) com <span className="italic font-normal text-[#2D4536]">calma</span>."
             </EditableText>
