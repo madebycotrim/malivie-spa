@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Pencil, Check, RotateCcw, AlertCircle } from 'lucide-react';
+import { Pencil, Check, RotateCcw, AlertCircle, EyeOff } from 'lucide-react';
 import { useEditor } from '../../context/EditorContext';
 
 interface EditableTextProps {
@@ -169,7 +169,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
 
     if (textRef.current) {
       const newContent = textRef.current.innerText.trim();
-      if (newContent && newContent !== currentText) {
+      if (newContent !== currentText) {
         updateText(id, newContent).then((success) => {
           if (success) {
             setShowSavedBadge(true);
@@ -183,9 +183,6 @@ export const EditableText: React.FC<EditableTextProps> = ({
             setTimeout(() => setShowErrorBadge(false), 3000);
           }
         });
-      } else if (!newContent) {
-        // Se ficou vazio, restaura o texto anterior
-        textRef.current.innerText = currentText;
       }
     }
   }, [isEditing, currentText, id, updateText]);
@@ -255,12 +252,75 @@ export const EditableText: React.FC<EditableTextProps> = ({
     }
   };
 
-  // Se o Modo Editor NÃO estiver ativo, renderiza com formatação Markdown transparente
+  const isEmpty = !currentText || currentText.trim().length === 0;
+
+  // 1. Modo Visitante (Modo Editor NÃO ativo):
+  // Se o texto estiver vazio, OCULTA completamente o elemento da página
   if (!isEditorActive) {
-    return <Tag className={className}>{renderFormattedText(currentText || baseText)}</Tag>;
+    if (isEmpty) {
+      return null;
+    }
+    return <Tag className={className}>{renderFormattedText(currentText)}</Tag>;
   }
 
-  // Quando o Modo Editor está ATIVO:
+  // 2. Modo Editor ATIVO e elemento VAZIO (fora de edição direta):
+  // Exibe indicador visual demarcando que existe um campo ali para o editor adicionar texto
+  if (!isEditing && isEmpty) {
+    return (
+      <span className="relative inline-flex items-center group/editor max-w-full align-middle my-0.5">
+        <Tag
+          ref={textRef as any}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleStartEdit(e);
+          }}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-sans cursor-pointer transition-all border border-dashed border-[#D4AF37]/70 bg-[#121C16]/90 hover:bg-[#D4AF37]/20 hover:border-[#F6E05E] text-[#D4AF37] ${className}`}
+          title="Texto vazio/oculto no site público. Clique para adicionar conteúdo ou restaurar."
+        >
+          <EyeOff className="w-3.5 h-3.5 text-[#D4AF37]/80 shrink-0" />
+          <span className="italic opacity-85 font-normal text-[11px] font-sans">
+            [Texto oculto — clique para editar]
+          </span>
+        </Tag>
+
+        {/* Botões de Ação do Editor no Hover */}
+        <span className="absolute -top-3.5 -right-3.5 z-30 flex items-center gap-1 opacity-0 group-hover/editor:opacity-100 transition-opacity duration-200 pointer-events-auto">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStartEdit();
+            }}
+            className="p-1 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/50 shadow-md hover:bg-[#D4AF37] hover:text-[#121C16] transition-all transform hover:scale-110 cursor-pointer"
+            title="Editar texto"
+          >
+            <Pencil className="w-3 h-3" />
+          </button>
+
+          {modified && (
+            <button
+              type="button"
+              onClick={handleReset}
+              className="p-1 rounded-full bg-[#18251E] text-[#94A595] border border-[#94A595]/40 shadow-md hover:bg-red-900/80 hover:text-red-200 transition-all transform hover:scale-110 cursor-pointer"
+              title="Restaurar texto original"
+            >
+              <RotateCcw className="w-3 h-3" />
+            </button>
+          )}
+        </span>
+
+        {/* Feedback animado quando salvo com sucesso */}
+        {showSavedBadge && (
+          <span className="absolute -top-6 left-1/2 -translate-x-1/2 z-40 bg-[#18251E] text-emerald-400 border border-emerald-500/60 text-[10px] font-sans font-medium px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 animate-in fade-in zoom-in duration-200 pointer-events-none whitespace-nowrap">
+            <Check className="w-3 h-3 text-emerald-400" />
+            Salvo!
+          </span>
+        )}
+      </span>
+    );
+  }
+
+  // 3. Modo Editor ATIVO (com texto ou em edição direta):
   return (
     <span className="relative inline-block group/editor max-w-full align-middle">
       <Tag
@@ -273,7 +333,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
         }}
         onBlur={handleFinishEdit}
         onKeyDown={handleKeyDown}
-        className={`cursor-pointer transition-all duration-150 ${className} ${
+        className={`cursor-pointer transition-all duration-150 ${isEditing ? 'min-w-[60px] inline-block' : ''} ${className} ${
           isEditing
             ? isOnGold
               ? 'outline-2 outline-solid outline-[#705312] bg-[#121C16]/95 text-white rounded px-1.5 py-0.5 shadow-[0_0_20px_rgba(112,83,18,0.5)] z-20'

@@ -494,14 +494,28 @@ export const LocationAndFooterSection: React.FC = () => {
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-6 px-1">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90">
+              <EditableIcon
+                id="location.channels.icon"
+                defaultIcon="Sparkles"
+                className="w-3.5 h-3.5 text-[#D4AF37]"
+              />
+              <EditableText
+                id="location.channels.title"
+                defaultText="Canais Oficiais & Redes Sociais"
+                as="span"
+                className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90"
+              >
                 Canais Oficiais & Redes Sociais
-              </span>
+              </EditableText>
             </div>
-            <span className="text-xs font-serif italic text-[#7A8B7B]">
+            <EditableText
+              id="location.channels.subtitle"
+              defaultText="Conecte-se com o santuário e acompanhe nossos rituais diários"
+              as="span"
+              className="text-xs font-serif italic text-[#7A8B7B]"
+            >
               Conecte-se com o santuário e acompanhe nossos rituais diários
-            </span>
+            </EditableText>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
