@@ -1,2 +1,8 @@
+# Agentic AI Discovery Manifests
+/ai-catalog.json  /ai-catalog.json  200
+/.well-known/ai-catalog.json  /ai-catalog.json  200
+/.well-known/ard.json  /ai-catalog.json  200
+
 # Cloudflare Pages Single Page Application (SPA) Routing
 /*  /index.html  200
+

@@ -54,7 +54,7 @@ export const GiftCardSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
-            className="mt-4 font-serif italic text-lg sm:text-2xl text-[#7A8B7B] max-w-2xl mx-auto leading-relaxed"
+            className="mt-4 font-serif italic text-lg sm:text-2xl text-[#2D4536] max-w-2xl mx-auto leading-relaxed"
           >
             "
             <EditableText
@@ -135,8 +135,8 @@ export const GiftCardSection: React.FC = () => {
 
             {/* The 3 Personas - Inspiração Editorial */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#7A8B7B]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#7A8B7B] font-sans">
+              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#2D4536]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#2D4536] font-sans">
                   <EditableText id="giftCard.personaAmiga.label" defaultText="A Amiga" as="span">
                     A Amiga
                   </EditableText>
@@ -151,7 +151,7 @@ export const GiftCardSection: React.FC = () => {
               </div>
 
               <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#B99887]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#B99887] font-sans">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#966B57] font-sans">
                   <EditableText id="giftCard.personaMae.label" defaultText="A Mãe" as="span">
                     A Mãe
                   </EditableText>
@@ -166,7 +166,7 @@ export const GiftCardSection: React.FC = () => {
               </div>
 
               <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#D4AF37]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] font-sans">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#8A7020] font-sans">
                   <EditableText id="giftCard.personaMulher.label" defaultText="A Mulher Admirada" as="span">
                     A Mulher Admirada
                   </EditableText>
@@ -183,7 +183,7 @@ export const GiftCardSection: React.FC = () => {
 
             {/* Core Message Card */}
             <div className="p-6 sm:p-7 rounded-3xl bg-[#F0EAE1]/80 border border-[#D3B8AA]/40 space-y-4 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#7A8B7B]">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#2D4536]">
                 <EditableIcon id="giftCard.deliveryTitle.icon" defaultIcon="Heart" className="w-4 h-4 text-[#D3B8AA]" />
                 <EditableText id="giftCard.deliveryTitle" defaultText="O que você realmente entrega" as="span">
                   O que você realmente entrega
@@ -201,19 +201,19 @@ export const GiftCardSection: React.FC = () => {
               {/* 3 Steps */}
               <div className="pt-3 border-t border-[#D3B8AA]/30 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div className="flex items-center gap-2 text-[#2C2C2C] font-medium">
-                  <span className="w-5 h-5 rounded-full bg-[#7A8B7B]/15 text-[#7A8B7B] flex items-center justify-center text-[10px] font-bold">1</span>
+                  <span className="w-5 h-5 rounded-full bg-[#2D4536]/15 text-[#213529] flex items-center justify-center text-[10px] font-bold">1</span>
                   <EditableText id="giftCard.deliveryStep1" defaultText="Ela escolhe o dia." as="span">
                     Ela escolhe o dia.
                   </EditableText>
                 </div>
                 <div className="flex items-center gap-2 text-[#2C2C2C] font-medium">
-                  <span className="w-5 h-5 rounded-full bg-[#7A8B7B]/15 text-[#7A8B7B] flex items-center justify-center text-[10px] font-bold">2</span>
+                  <span className="w-5 h-5 rounded-full bg-[#2D4536]/15 text-[#213529] flex items-center justify-center text-[10px] font-bold">2</span>
                   <EditableText id="giftCard.deliveryStep2" defaultText="Ela escolhe a experiência." as="span">
                     Ela escolhe a experiência.
                   </EditableText>
                 </div>
                 <div className="flex items-center gap-2 text-[#2C2C2C] font-medium">
-                  <span className="w-5 h-5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center text-[10px] font-bold">3</span>
+                  <span className="w-5 h-5 rounded-full bg-[#D4AF37]/20 text-[#8A7020] flex items-center justify-center text-[10px] font-bold">3</span>
                   <EditableText id="giftCard.deliveryStep3" defaultText="Você entende o que ela precisava." as="span">
                     Você entende o que ela precisava.
                   </EditableText>

@@ -35,7 +35,8 @@ export const MobileActionDock: React.FC = () => {
           onClick={() => trackWhatsAppClick('dock_mobile')}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-[1.4] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#7A8B7B] text-[#121C16] font-bold text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
+          aria-label="Agendar um horário via WhatsApp pelo botão inferior"
+          className="flex-[1.4] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#121C16] font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
         >
           <EditableIcon id="dock.cta.icon" defaultIcon="WhatsApp" fallbackComponent={WhatsAppIcon} className="w-4 h-4 text-[#121C16]" />
           <EditableText id="dock.cta" defaultText="Agendar um horário!" as="span" className="whitespace-nowrap">

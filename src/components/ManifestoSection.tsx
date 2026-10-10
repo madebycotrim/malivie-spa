@@ -23,7 +23,7 @@ export const ManifestoSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#7A8B7B] border border-[#7A8B7B]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#2D4536] border border-[#2D4536]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <EditableIcon id="manifesto.badge.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
             <EditableText id="manifesto.badge" defaultText="O Ritual de Recepção Maliviê" as="span">
@@ -44,7 +44,7 @@ export const ManifestoSection: React.FC = () => {
               as="span"
               className="whitespace-nowrap"
             >
-              "Aqui, você é recebido(a) com <span className="italic font-normal text-[#7A8B7B]">calma</span>."
+              "Aqui, você é recebido(a) com <span className="italic font-normal text-[#2D4536]">calma</span>."
             </EditableText>
           </motion.h2>
 
@@ -97,11 +97,11 @@ export const ManifestoSection: React.FC = () => {
                       <EditableIcon id="manifesto.drink.icon" defaultIcon="CupSoda" className="w-5 h-5" fallbackComponent={GlassWater} />
                     </div>
                     <div>
-                      <h4 className="font-serif italic text-base text-[#F3EFE6]">
+                      <p className="font-serif italic text-base text-[#F3EFE6] font-medium">
                         <EditableText id="manifesto.drinkTitle" defaultText="Taça de Cristal & Boas-Vindas" as="span">
                           Taça de Cristal & Boas-Vindas
                         </EditableText>
-                      </h4>
+                      </p>
                       <p className="text-xs text-[#F3EFE6]/70 font-sans">
                         <EditableText id="manifesto.drinkDesc" defaultText="Infusão artesanal de frutas e ervas" as="span">
                           Infusão artesanal de frutas e ervas

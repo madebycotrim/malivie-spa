@@ -586,9 +586,9 @@ export const LocationAndFooterSection: React.FC = () => {
                   >
                     {channel.name}
                   </span>
-                  <h4 className="font-serif text-lg sm:text-xl text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug font-normal">
+                  <p className="font-serif text-lg sm:text-xl text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug font-medium">
                     {channel.handle}
-                  </h4>
+                  </p>
                   <EditableText
                     id={`location.channel.${channel.id}.desc`}
                     defaultText={channel.desc}
@@ -653,6 +653,8 @@ export const LocationAndFooterSection: React.FC = () => {
                   decoding="async"
                   src={logoMalivieWhite}
                   alt="Maliviê SPA"
+                  width={112}
+                  height={28}
                   className="h-7 w-auto object-contain opacity-90"
                 />
               </button>
@@ -663,14 +665,14 @@ export const LocationAndFooterSection: React.FC = () => {
             <span className="text-[#F3EFE6]/30">•</span>
             <span>© {new Date().getFullYear()} Todos os direitos reservados.</span>
             <span className="text-[#F3EFE6]/30">•</span>
-            <span className="text-[11px] text-[#F3EFE6]/45 inline-flex items-center gap-1.5">
+            <span className="text-[11px] text-[#F3EFE6]/80 inline-flex items-center gap-1.5 font-sans">
               <span>crafted with care</span>
-              <span className="text-[#D4AF37]/40">•</span>
+              <span className="text-[#D4AF37]/50">•</span>
               <a
                 href="https://github.com/madebycotrim"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#D4AF37]/80 hover:text-[#D4AF37] transition-colors font-medium hover:underline underline-offset-2"
+                className="text-[#D4AF37] hover:text-[#E5C158] transition-colors font-medium hover:underline underline-offset-2"
               >
                 madebycotrim
               </a>

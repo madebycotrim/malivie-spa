@@ -23,6 +23,10 @@ export const HeroSection: React.FC = () => {
         <img
           src={heroImage}
           alt="Maliviê Head Spa Coreano com arco hídrico e iluminação relaxante"
+          width={1920}
+          height={1080}
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover object-center opacity-35 scale-105 transform motion-safe:animate-zen-breathe filter brightness-90 contrast-110"
         />
         {/* Deep Botanical Vignettes */}
@@ -47,6 +51,10 @@ export const HeroSection: React.FC = () => {
           <img
             src={logoMalivieWhite}
             alt={OFFICIAL_COPIES.title}
+            width={293}
+            height={192}
+            fetchPriority="high"
+            decoding="async"
             className="w-auto h-24 sm:h-36 md:h-44 lg:h-48 object-contain filter drop-shadow-[0_8px_35px_rgba(0,0,0,0.7)] hover:scale-[1.02] transition-transform duration-700 ease-out"
           />
           <div className="mt-3 flex flex-col items-center gap-1">

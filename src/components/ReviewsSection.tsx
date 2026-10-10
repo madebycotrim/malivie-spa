@@ -154,11 +154,11 @@ export const ReviewsSection: React.FC = () => {
                         </div>
 
                         <div>
-                          <h4 className="font-sans font-semibold text-base sm:text-lg text-[#F3EFE6]">
+                          <h3 className="font-sans font-semibold text-base sm:text-lg text-[#F3EFE6]">
                             <EditableText id={`review.${review.id}.author`} defaultText={review.author} as="span">
                               {review.author}
                             </EditableText>
-                          </h4>
+                          </h3>
                           <p className="text-xs text-[#F3EFE6]/60 font-sans mt-0.5">
                             <EditableText id={`review.${review.id}.location`} defaultText={review.location} as="span">
                               {review.location}
@@ -222,20 +222,24 @@ export const ReviewsSection: React.FC = () => {
             </button>
           </div>
 
-          {/* Carousel Dots */}
-          <div className="flex items-center justify-center gap-2 mt-8">
+          {/* Carousel Dots with 44px+ touch-friendly target area */}
+          <div className="flex items-center justify-center gap-1 mt-6">
             {scrollSnaps.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => scrollTo(idx)}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  selectedIndex === idx
-                    ? 'w-8 h-2 bg-[#D4AF37]'
-                    : 'w-2 h-2 bg-[#F3EFE6]/20 hover:bg-[#F3EFE6]/50'
-                }`}
+                className="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer focus:outline-none"
                 aria-label={`Ir para avaliação ${idx + 1}`}
-              />
+              >
+                <span
+                  className={`transition-all duration-300 rounded-full block ${
+                    selectedIndex === idx
+                      ? 'w-8 h-2 bg-[#D4AF37]'
+                      : 'w-2 h-2 bg-[#F3EFE6]/40 hover:bg-[#F3EFE6]/70'
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </div>

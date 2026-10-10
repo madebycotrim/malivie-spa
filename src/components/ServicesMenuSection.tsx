@@ -375,7 +375,7 @@ export const ServicesMenuSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#7A8B7B] border border-[#7A8B7B]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#2D4536] border border-[#2D4536]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
           >
             <EditableIcon id="menu.badge.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
             <EditableText id="menu.badge" defaultText="Cardápio de Experiências" as="span">
@@ -391,7 +391,7 @@ export const ServicesMenuSection: React.FC = () => {
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-tight"
           >
             <EditableText id="menu.title" defaultText="Menu de Rituais & Cuidados" as="span">
-              Menu de <span className="italic font-normal text-[#7A8B7B]">Rituais & Cuidados</span>
+              Menu de <span className="italic font-normal text-[#2D4536]">Rituais & Cuidados</span>
             </EditableText>
           </motion.h2>
 
@@ -436,7 +436,7 @@ export const ServicesMenuSection: React.FC = () => {
                         Guia de Escolha Maliviê
                       </EditableText>
                     </h3>
-                    <span className="text-[10px] uppercase font-sans font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#7A8B7B]/20 text-[#7A8B7B]">
+                    <span className="text-[10px] uppercase font-sans font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#2D4536]/15 text-[#213529]">
                       <EditableText
                         id="services.guide.headerBadge"
                         defaultText="Página 3 do Menu"
@@ -446,7 +446,7 @@ export const ServicesMenuSection: React.FC = () => {
                       </EditableText>
                     </span>
                   </div>
-                  <p className="text-xs text-[#555555] font-sans mt-0.5">
+                  <p className="text-xs text-[#444444] font-sans mt-0.5">
                     <EditableText
                       id="services.guide.headerSubtitle"
                       defaultText="Encontre a opção ideal para o seu momento • Toque para ver as recomendações"
@@ -457,12 +457,12 @@ export const ServicesMenuSection: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#7A8B7B]">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#2D4536]">
                 <span className="hidden sm:inline">
                   {isGuideOpen ? 'Ocultar Guia' : 'Explorar Guia'}
                 </span>
                 <ChevronDown
-                  className={`w-4 h-4 text-[#7A8B7B] transition-transform duration-300 ${
+                  className={`w-4 h-4 text-[#2D4536] transition-transform duration-300 ${
                     isGuideOpen ? 'rotate-180' : ''
                   }`}
                 />
@@ -527,7 +527,7 @@ export const ServicesMenuSection: React.FC = () => {
                               className={`text-[9px] font-sans uppercase font-bold tracking-wider px-1.5 py-0.5 rounded ${
                                 isCurrent
                                   ? 'bg-white/10 text-[#D4AF37]'
-                                  : 'bg-[#F0EAE1] text-[#7A8B7B]'
+                                  : 'bg-[#F0EAE1] text-[#2D4536]'
                               }`}
                             >
                               <EditableText
@@ -622,11 +622,11 @@ export const ServicesMenuSection: React.FC = () => {
         >
           <AnimatePresence mode="popLayout">
             {filteredServices.map((service) => (
-              <motion.article
-                layout
+              <motion.div
                 key={service.id}
                 role="button"
                 tabIndex={0}
+                aria-label={`Ver detalhes e valores de ${service.name}`}
                 onClick={() => handleOpenDetails(service)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -929,8 +929,8 @@ export const ServicesMenuSection: React.FC = () => {
                     {service.priceOptions && service.priceOptions.length > 0 ? (
                       <div>
                         {service.priceOptions.length === 1 ? (
-                          <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-white/80 border border-[#E8E0D5] shadow-2xs group-hover:border-[#7A8B7B]/40 transition-colors">
-                            <span className="text-[10px] font-sans font-semibold text-[#7A8B7B] uppercase tracking-wider">
+                          <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-white/80 border border-[#E8E0D5] shadow-2xs group-hover:border-[#2D4536]/30 transition-colors">
+                            <span className="text-[10px] font-sans font-semibold text-[#2D4536] uppercase tracking-wider">
                               <EditableText
                                 id={`service.${service.id}.opt.0.duration`}
                                 defaultText={service.priceOptions[0].duration || 'Sessão'}
@@ -954,9 +954,9 @@ export const ServicesMenuSection: React.FC = () => {
                             {service.priceOptions.map((opt, oIdx) => (
                               <div
                                 key={oIdx}
-                                className="flex flex-col items-center justify-center py-2 px-2 rounded-xl bg-white/80 hover:bg-white border border-[#E8E0D5] hover:border-[#D4AF37]/50 text-center shadow-2xs group-hover:border-[#7A8B7B]/30 transition-all duration-300"
+                                className="flex flex-col items-center justify-center py-2 px-2 rounded-xl bg-white/80 hover:bg-white border border-[#E8E0D5] hover:border-[#D4AF37]/50 text-center shadow-2xs group-hover:border-[#2D4536]/30 transition-all duration-300"
                               >
-                                <span className="text-[10px] uppercase tracking-wider font-sans font-semibold text-[#7A8B7B]">
+                                <span className="text-[10px] uppercase tracking-wider font-sans font-semibold text-[#2D4536]">
                                   <EditableText
                                     id={`service.${service.id}.opt.${oIdx}.duration`}
                                     defaultText={opt.duration}
@@ -988,7 +988,7 @@ export const ServicesMenuSection: React.FC = () => {
                                     : 'bg-white/80 border-[#E8E0D5]'
                                 }`}
                               >
-                                <span className="text-[9.5px] uppercase tracking-tight font-sans font-semibold text-[#7A8B7B] truncate w-full">
+                                <span className="text-[9.5px] uppercase tracking-tight font-sans font-semibold text-[#2D4536] truncate w-full">
                                   <EditableText
                                     id={`service.${service.id}.opt.${oIdx}.duration`}
                                     defaultText={opt.duration}
@@ -1014,7 +1014,7 @@ export const ServicesMenuSection: React.FC = () => {
                     ) : service.price ? (
                       <div>
                         <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-white/80 border border-[#E8E0D5] shadow-2xs">
-                          <span className="text-[10px] font-sans font-semibold text-[#7A8B7B] uppercase tracking-wider">
+                          <span className="text-[10px] font-sans font-semibold text-[#2D4536] uppercase tracking-wider">
                             <EditableText
                               id={`service.${service.id}.investmentLabel`}
                               defaultText="Investimento"
@@ -1063,13 +1063,12 @@ export const ServicesMenuSection: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </motion.article>
+              </motion.div>
             ))}
 
             {/* Card de Adicionar Novo Ritual no Modo Editor */}
             {isEditorActive && (
               <motion.div
-                layout
                 onClick={handleCreateService}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -1079,10 +1078,10 @@ export const ServicesMenuSection: React.FC = () => {
                 <div className="w-16 h-16 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/40 group-hover:bg-[#D4AF37] group-hover:text-[#121C16] flex items-center justify-center transition-all duration-300 transform group-hover:scale-110 shadow-md mb-4">
                   <Plus className="w-8 h-8" />
                 </div>
-                <h4 className="font-serif text-2xl text-[#2C2C2C] group-hover:text-[#121C16] transition-colors leading-snug">
+                <h3 className="font-serif text-2xl text-[#2C2C2C] group-hover:text-[#121C16] transition-colors leading-snug">
                   Adicionar Novo Ritual
-                </h4>
-                <p className="font-sans text-xs text-[#7A8B7B] mt-2 max-w-[240px] leading-relaxed">
+                </h3>
+                <p className="font-sans text-xs text-[#2D4536] mt-2 max-w-[240px] leading-relaxed">
                   Crie uma nova experiência para o cardápio. Imagem, título, duração e textos totalmente editáveis.
                 </p>
                 <span className="mt-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#18251E] text-[#D4AF37] text-xs font-sans font-semibold uppercase tracking-wider group-hover:bg-[#D4AF37] group-hover:text-[#18251E] transition-all">
@@ -1099,7 +1098,7 @@ export const ServicesMenuSection: React.FC = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="space-y-2 text-center sm:text-left relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[#7A8B7B]/30 text-[11px] font-sans font-semibold uppercase tracking-[0.2em] text-[#7A8B7B]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[#2D4536]/30 text-[11px] font-sans font-semibold uppercase tracking-[0.2em] text-[#2D4536]">
               <EditableIcon id="services.conciergeBadge.icon" defaultIcon="Sparkles" className="w-3 h-3 text-[#D4AF37]" />
               <EditableText id="services.conciergeBadge" defaultText="Atendimento Concierge & Valores" as="span">
                 Atendimento Concierge & Valores

@@ -40,7 +40,7 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
   };
 
   const variantStyles = {
-    sage: 'bg-[#7A8B7B] hover:bg-[#677868] text-[#F3EFE6] shadow-[0_8px_30px_rgb(122,139,123,0.3)] hover:shadow-[0_12px_35px_rgb(122,139,123,0.45)] border border-[#94A595]/30',
+    sage: 'bg-[#3A5040] hover:bg-[#2D3E32] text-[#FDFBF7] shadow-[0_8px_30px_rgb(34,50,38,0.35)] hover:shadow-[0_12px_35px_rgb(34,50,38,0.5)] border border-[#526C58]/40',
     gold: 'bg-gradient-to-r from-[#D4AF37] to-[#B8972E] text-[#121C16] font-medium shadow-[0_8px_30px_rgb(212,175,55,0.25)] hover:shadow-[0_12px_35px_rgb(212,175,55,0.4)] border border-[#E7C85C]/40',
     glass: 'bg-[#18251E]/80 hover:bg-[#1E2D24] text-[#F3EFE6] backdrop-blur-md border border-[#F3EFE6]/15 hover:border-[#7A8B7B]/50 shadow-lg',
     rose: 'bg-[#D3B8AA] hover:bg-[#C2A394] text-[#121C16] font-medium shadow-[0_8px_30px_rgb(211,184,170,0.3)] border border-[#E8D4C8]/40',

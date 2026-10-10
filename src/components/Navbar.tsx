@@ -66,6 +66,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
             <img
               src={logoMalivieWhite}
               alt="Maliviê SPA Logotipo"
+              width={160}
+              height={48}
+              decoding="async"
               className={`w-auto object-contain transition-all duration-300 group-hover:scale-105 filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] ${
                 isScrolled ? 'h-8 sm:h-9' : 'h-10 sm:h-12'
               }`}
@@ -96,7 +99,8 @@ export const Navbar: React.FC<NavbarProps> = () => {
               onClick={() => trackWhatsAppClick('navbar')}
               target="_blank"
               rel="noopener noreferrer"
-              className={`relative inline-flex items-center gap-2 rounded-full text-xs font-medium uppercase tracking-wider text-[#121C16] bg-[#7A8B7B] hover:bg-[#94A595] transition-all duration-300 shadow-[0_4px_20px_rgba(122,139,123,0.35)] hover:shadow-[0_6px_25px_rgba(122,139,123,0.5)] group overflow-hidden cursor-pointer ${
+              aria-label="Agendar um horário via WhatsApp pelo cabeçalho"
+              className={`relative inline-flex items-center gap-2 rounded-full text-xs font-semibold uppercase tracking-wider text-[#121C16] bg-[#D4AF37] hover:bg-[#E5C158] transition-all duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.3)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.5)] group overflow-hidden cursor-pointer ${
                 isScrolled ? 'px-4 py-2 text-[11px]' : 'px-5 py-2.5 text-xs'
               }`}
             >
@@ -168,9 +172,10 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 onClick={() => trackWhatsAppClick('navbar_mobile')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#7A8B7B] text-[#121C16] font-semibold text-sm tracking-wide shadow-lg cursor-pointer"
+                aria-label="Agendar um horário via WhatsApp pelo menu mobile"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#121C16] font-semibold text-sm tracking-wide shadow-lg cursor-pointer transition-colors"
               >
-                <EditableIcon id="nav.mobileCta.icon" defaultIcon="MessageCircle" className="w-4 h-4" />
+                <EditableIcon id="nav.mobileCta.icon" defaultIcon="MessageCircle" className="w-4 h-4 text-[#121C16]" />
                 <span>Agendar um horário!</span>
               </a>
 
@@ -178,7 +183,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <p className="text-xs text-[#F3EFE6]/60">
                   {SPA_BUSINESS_DATA.address.street} • {SPA_BUSINESS_DATA.address.neighborhood}
                 </p>
-                <p className="text-[11px] text-[#7A8B7B] mt-1">
+                <p className="text-[11px] text-[#D4AF37] font-medium mt-1">
                   ⭐ 5.0 Avaliação no Google
                 </p>
               </div>

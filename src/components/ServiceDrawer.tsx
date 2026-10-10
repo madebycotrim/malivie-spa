@@ -267,7 +267,8 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
                 onClick={() => trackWhatsAppClick('servico_drawer', service?.name)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-[#7A8B7B] hover:bg-[#677868] text-[#F3EFE6] font-semibold text-sm tracking-wide transition-all duration-300 shadow-[0_10px_25px_rgba(122,139,123,0.35)] hover:shadow-[0_14px_30px_rgba(122,139,123,0.5)] group"
+                aria-label={`Agendar ${service?.name || 'Ritual'} via WhatsApp`}
+                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#121C16] font-semibold text-sm tracking-wide transition-all duration-300 shadow-[0_10px_25px_rgba(212,175,55,0.3)] hover:shadow-[0_14px_30px_rgba(212,175,55,0.45)] group cursor-pointer"
               >
                 <EditableIcon id={`drawer.${service.id}.whatsappCta.icon`} defaultIcon="MessageCircle" className="w-5 h-5 text-[#121C16] group-hover:scale-110 transition-transform" />
                 <EditableText id="drawer.ctaBtn" defaultText="Agendar este Ritual via WhatsApp" as="span" className="text-[#121C16] font-bold">
