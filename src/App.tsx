@@ -15,6 +15,7 @@ import { MobileActionDock } from './components/MobileActionDock';
 
 import { EditorProvider } from './context/EditorContext';
 import { EditorToolbar } from './components/editor/EditorToolbar';
+import { Toaster } from 'sonner';
 
 function App() {
   // Initialize Lenis smooth inertia scroll
@@ -64,6 +65,22 @@ function App() {
 
         {/* Sticky Mobile Action Dock (Fixed Bottom-0 on Mobile) */}
         <MobileActionDock />
+
+        {/* Sonner Toasts (Micro-interações Emil Kowalski) */}
+        <Toaster
+          position="bottom-right"
+          theme="dark"
+          toastOptions={{
+            style: {
+              background: '#121C16',
+              color: '#F3EFE6',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+              borderRadius: '16px',
+              fontFamily: 'inherit',
+            },
+          }}
+        />
       </div>
     </EditorProvider>
   );

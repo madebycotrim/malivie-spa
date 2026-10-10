@@ -5,13 +5,6 @@ export interface Env {
   ADMIN_INITIAL_PASSWORD?: string;
 }
 
-export interface RateLimitResult {
-  allowed: boolean;
-  remaining: number;
-  resetAt: number;
-  retryAfter: number;
-}
-
 export const VALID_ID_REGEX = /^[a-zA-Z0-9_.\-:\[\]#]{1,120}$/;
 export const MAX_CONTENT_LENGTH = 100000; // 100KB máximo por elemento
 export const SESSION_TTL_SECONDS = 86400; // 24 horas
@@ -65,7 +58,6 @@ export async function validateSession(
     }
 
     if (session.expires_at <= now) {
-      // Sessão expirada
       await env.DB.prepare('DELETE FROM auth_sessions WHERE token = ?').bind(token).run().catch(() => {});
       return {
         valid: false,
@@ -122,7 +114,7 @@ export function validateContentPayload(
 }
 
 /**
- * Obtém o endereço IP do cliente de forma segura nos headers da Cloudflare com validação de formato
+ * Obtém o endereço IP do cliente de forma segura nos headers da Cloudflare
  */
 export function getClientIp(request: Request): string {
   const IP_REGEX = /^[0-9a-fA-F:.]+$/;
@@ -148,126 +140,97 @@ export function getClientIp(request: Request): string {
   return '127.0.0.1';
 }
 
+export interface ClientMetadata {
+  ip: string;
+  location: string;
+  userAgent: string;
+}
+
 /**
- * Validação de Rate Limiting persistente no D1
+ * Extrai metadados completos de rastreamento (IP, Cidade/País via Cloudflare e Dispositivo)
  */
-export async function checkRateLimit(
-  env: Env,
-  ip: string,
-  endpoint: string,
-  maxRequests: number,
-  windowSeconds: number
-): Promise<RateLimitResult> {
-  const now = Math.floor(Date.now() / 1000);
-  const key = `${endpoint}:${ip}`;
+export function getClientMetadata(request: Request): ClientMetadata {
+  const ip = getClientIp(request);
+  const city = request.headers.get('cf-ipcity') || '';
+  const region = request.headers.get('cf-region') || '';
+  const country = request.headers.get('cf-ipcountry') || '';
+  const parts = [city, region, country].filter(Boolean);
+  const location = parts.length > 0 ? parts.join(', ') : 'Localização não identificada';
+  const userAgent = (request.headers.get('user-agent') || 'Desconhecido').slice(0, 200);
+
+  return { ip, location, userAgent };
+}
+
+/**
+ * Bloqueia ataques CSRF e requisições cross-site não autorizadas em métodos mutativos
+ */
+export function validateSameOrigin(request: Request): { valid: boolean; error?: string } {
+  const method = request.method.toUpperCase();
+  if (['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+    return { valid: true };
+  }
+
+  const fetchSite = request.headers.get('sec-fetch-site');
+  if (fetchSite === 'cross-site') {
+    return { valid: false, error: 'Requisições cross-site não permitidas por política de segurança.' };
+  }
+
+  const origin = request.headers.get('origin');
+  if (origin) {
+    try {
+      const originHost = new URL(origin).host;
+      const requestHost = new URL(request.url).host;
+      if (originHost !== requestHost) {
+        return { valid: false, error: 'Origem da requisição não autorizada.' };
+      }
+    } catch {
+      return { valid: false, error: 'Cabeçalho Origin malformado.' };
+    }
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Lê o corpo da requisição com limite estrito de bytes para prevenir DoS
+ */
+export async function readJsonWithLimit<T = unknown>(
+  request: Request,
+  maxBytes: number = 256 * 1024
+): Promise<{ data?: T; errorResponse?: Response }> {
+  const contentLength = request.headers.get('content-length');
+  if (contentLength && parseInt(contentLength, 10) > maxBytes) {
+    return {
+      errorResponse: new Response(
+        JSON.stringify({ success: false, error: 'Payload excede o tamanho máximo permitido.' }),
+        { status: 413, headers: { 'Content-Type': 'application/json' } }
+      ),
+    };
+  }
 
   try {
-    const row = await env.DB.prepare(
-      'SELECT count, reset_at FROM rate_limits WHERE key = ?'
-    ).bind(key).first<{ count: number; reset_at: number }>();
-
-    if (row && row.reset_at > now) {
-      if (row.count >= maxRequests) {
-        const retryAfter = Math.max(1, row.reset_at - now);
-        return {
-          allowed: false,
-          remaining: 0,
-          resetAt: row.reset_at,
-          retryAfter,
-        };
-      }
-
-      await env.DB.prepare(
-        'UPDATE rate_limits SET count = count + 1 WHERE key = ?'
-      ).bind(key).run();
-
+    const text = await request.text();
+    if (new TextEncoder().encode(text).length > maxBytes) {
       return {
-        allowed: true,
-        remaining: Math.max(0, maxRequests - (row.count + 1)),
-        resetAt: row.reset_at,
-        retryAfter: 0,
+        errorResponse: new Response(
+          JSON.stringify({ success: false, error: 'Payload excede o tamanho máximo permitido.' }),
+          { status: 413, headers: { 'Content-Type': 'application/json' } }
+        ),
       };
     }
 
-    const resetAt = now + windowSeconds;
-    await env.DB.prepare(
-      `INSERT INTO rate_limits (key, count, reset_at)
-       VALUES (?, 1, ?)
-       ON CONFLICT(key) DO UPDATE SET count = 1, reset_at = excluded.reset_at`
-    ).bind(key, resetAt).run();
-
-    if (Math.random() < 0.05) {
-      env.DB.prepare('DELETE FROM rate_limits WHERE reset_at < ?').bind(now).run().catch(() => {});
+    if (!text.trim()) {
+      return { data: {} as T };
     }
 
+    const data = JSON.parse(text) as T;
+    return { data };
+  } catch {
     return {
-      allowed: true,
-      remaining: maxRequests - 1,
-      resetAt,
-      retryAfter: 0,
-    };
-  } catch (error) {
-    console.warn('[RateLimit Warning] Falha ao verificar no D1, permitindo tráfego:', error);
-    return {
-      allowed: true,
-      remaining: maxRequests,
-      resetAt: now + windowSeconds,
-      retryAfter: 0,
+      errorResponse: new Response(
+        JSON.stringify({ success: false, error: 'Formato JSON inválido ou corrompido.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      ),
     };
   }
-}
-
-/**
- * Verifica se já existe resposta armazenada para a Idempotency-Key
- */
-export async function checkIdempotency(
-  env: Env,
-  idempotencyKey: string | null
-): Promise<Response | null> {
-  if (!idempotencyKey || typeof idempotencyKey !== 'string') {
-    return null;
-  }
-
-  const cleanKey = idempotencyKey.trim();
-  if (!cleanKey) return null;
-
-  try {
-    const row = await env.DB.prepare(
-      'SELECT response_status, response_body FROM idempotency_keys WHERE key = ?'
-    ).bind(cleanKey).first<{ response_status: number; response_body: string }>();
-
-    if (row && row.response_body) {
-      return new Response(row.response_body, {
-        status: row.response_status,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Idempotent-Replay': 'true',
-          'X-Idempotency-Key': cleanKey,
-        },
-      });
-    }
-  } catch (error) {
-    console.warn('[Idempotency Warning] Falha ao buscar chave no D1:', error);
-  }
-
-  return null;
-}
-
-/**
- * Cria o prepared statement para registrar a chave de idempotência de forma atômica no batch
- */
-export function buildIdempotencyStatement(
-  env: Env,
-  idempotencyKey: string,
-  endpoint: string,
-  status: number,
-  body: string
-): D1PreparedStatement {
-  return env.DB.prepare(
-    `INSERT INTO idempotency_keys (key, endpoint, response_status, response_body, created_at)
-     VALUES (?, ?, ?, ?, datetime('now'))
-     ON CONFLICT(key) DO UPDATE SET
-       response_status = excluded.response_status,
-       response_body = excluded.response_body`
-  ).bind(idempotencyKey.trim(), endpoint, status, body);
 }

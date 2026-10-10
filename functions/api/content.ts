@@ -2,12 +2,11 @@
 
 import {
   Env,
-  getClientIp,
-  checkRateLimit,
-  checkIdempotency,
-  buildIdempotencyStatement,
+  getClientMetadata,
   validateSession,
   validateContentPayload,
+  validateSameOrigin,
+  readJsonWithLimit,
   VALID_ID_REGEX,
 } from './_utils';
 
@@ -18,14 +17,12 @@ interface ContentRow {
   updated_at: string;
 }
 
-const CONTENT_RATE_LIMIT_MAX = 60; // 60 requisições
-const CONTENT_RATE_LIMIT_WINDOW = 60; // por minuto
-const MAX_BATCH_ENTRIES = 100; // Máximo de 100 textos por requisição em lote
+const MAX_BATCH_ENTRIES = 100;
 
 // GET /api/content — Retorna todos os textos salvos no D1 (leitura pública)
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   try {
-    const { request, env } = context;
+    const { env } = context;
 
     if (!env.DB) {
       return new Response(
@@ -44,37 +41,8 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // Rate Limiting
-    const clientIp = getClientIp(request);
-    const rate = await checkRateLimit(
-      env,
-      clientIp,
-      'content:get',
-      CONTENT_RATE_LIMIT_MAX * 2,
-      CONTENT_RATE_LIMIT_WINDOW
-    );
-
-    if (!rate.allowed) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Limite de requisições excedido. Tente novamente mais tarde.',
-        }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': String(rate.retryAfter),
-            'X-RateLimit-Limit': String(CONTENT_RATE_LIMIT_MAX * 2),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': String(rate.resetAt),
-          },
-        }
-      );
-    }
-
     const { results } = await env.DB.prepare(
-      'SELECT id, content, version FROM content_overrides'
+      'SELECT id, content, version, updated_at FROM content_overrides ORDER BY id ASC'
     ).all<ContentRow>();
 
     const overrides: Record<string, string> = {};
@@ -84,7 +52,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       for (const row of results) {
         if (row && typeof row.id === 'string' && typeof row.content === 'string') {
           overrides[row.id] = row.content;
-          versions[row.id] = typeof row.version === 'number' ? row.version : 1;
+          versions[row.id] = row.version || 1;
         }
       }
     }
@@ -100,10 +68,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=60, s-maxage=60',
-          'X-RateLimit-Limit': String(CONTENT_RATE_LIMIT_MAX * 2),
-          'X-RateLimit-Remaining': String(rate.remaining),
-          'X-RateLimit-Reset': String(rate.resetAt),
+          'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600',
         },
       }
     );
@@ -123,7 +88,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   }
 };
 
-// POST /api/content — Salva textos com AUTORIZAÇÃO OBRIGATÓRIA, validação e atomicidade
+// POST /api/content — Salva textos com AUTORIZAÇÃO OBRIGATÓRIA e histórico de quem mexeu
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   try {
     const { request, env } = context;
@@ -134,14 +99,20 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           success: false,
           error: 'Serviço de banco de dados indisponível',
         }),
-        {
-          status: 503,
-          headers: { 'Content-Type': 'application/json' },
-        }
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // 1. Autorização Obrigatória (Valida sessão do editor no servidor)
+    // 1. Validação de CSRF / Cross-Site Origin
+    const originCheck = validateSameOrigin(request);
+    if (!originCheck.valid) {
+      return new Response(
+        JSON.stringify({ success: false, error: originCheck.error }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // 2. Autorização Obrigatória (Valida sessão do editor no servidor)
     const sessionAuth = await validateSession(env, request);
     if (!sessionAuth.valid) {
       return new Response(
@@ -149,57 +120,25 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           success: false,
           error: sessionAuth.error || 'Acesso não autorizado',
         }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        }
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // 2. Rate Limiting por IP
-    const clientIp = getClientIp(request);
-    const rate = await checkRateLimit(
-      env,
-      clientIp,
-      'content:write',
-      CONTENT_RATE_LIMIT_MAX,
-      CONTENT_RATE_LIMIT_WINDOW
-    );
-
-    if (!rate.allowed) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Limite de requisições excedido. Aguarde alguns segundos.',
-        }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': String(rate.retryAfter),
-            'X-RateLimit-Limit': String(CONTENT_RATE_LIMIT_MAX),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': String(rate.resetAt),
-          },
-        }
-      );
+    // 3. Limite de tamanho de payload estrito (256KB)
+    const { data: body, errorResponse } = await readJsonWithLimit<any>(request, 256 * 1024);
+    if (errorResponse) {
+      return errorResponse;
     }
 
-    // 3. Idempotência
-    const idempotencyKey =
-      request.headers.get('Idempotency-Key') || request.headers.get('x-idempotency-key');
-    const replayResponse = await checkIdempotency(env, idempotencyKey);
-    if (replayResponse) {
-      return replayResponse;
-    }
-
-    const body: any = await request.json();
     if (!body || typeof body !== 'object') {
       return new Response(
         JSON.stringify({ success: false, error: 'Corpo da requisição inválido' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
+
+    const clientMeta = getClientMetadata(request);
+    const sessionToken = request.headers.get('Authorization')?.slice(7).trim() || null;
 
     // CASO A: Salvamento em lote ({ overrides: { [id]: content } })
     if (body.overrides && typeof body.overrides === 'object') {
@@ -233,6 +172,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           );
         }
 
+        const cleanKey = key.trim();
+        const contentStr = String(val);
+
+        // Atualiza o conteúdo (nativamente idempotente via ON CONFLICT)
         statements.push(
           env.DB.prepare(
             `INSERT INTO content_overrides (id, content, version, updated_at)
@@ -241,37 +184,25 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
                content = excluded.content,
                version = content_overrides.version + 1,
                updated_at = datetime('now')`
-          ).bind(key.trim(), String(val))
+          ).bind(cleanKey, contentStr)
         );
-      }
 
-      const responsePayload = JSON.stringify({ success: true, updated: statements.length });
-
-      if (idempotencyKey) {
+        // Registra quem mexeu (IP, localização, navegador, token)
         statements.push(
-          buildIdempotencyStatement(
-            env,
-            idempotencyKey,
-            '/api/content',
-            200,
-            responsePayload
-          )
+          env.DB.prepare(
+            `INSERT INTO content_history (content_id, action, new_content, ip, location, user_agent, session_token)
+             VALUES (?, 'update', ?, ?, ?, ?, ?)`
+          ).bind(cleanKey, contentStr, clientMeta.ip, clientMeta.location, clientMeta.userAgent, sessionToken)
         );
       }
 
       // Execução 100% ATÔMICA via env.DB.batch
       await env.DB.batch(statements);
 
-      return new Response(responsePayload, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-RateLimit-Limit': String(CONTENT_RATE_LIMIT_MAX),
-          'X-RateLimit-Remaining': String(rate.remaining),
-          'X-RateLimit-Reset': String(rate.resetAt),
-          ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
-        },
-      });
+      return new Response(
+        JSON.stringify({ success: true, updated: rawEntries.length }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // CASO B: Salvamento individual ({ id, content })
@@ -295,34 +226,18 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
          updated_at = datetime('now')`
     ).bind(cleanId, content);
 
-    const responsePayload = JSON.stringify({ success: true, id: cleanId });
-    const statements: D1PreparedStatement[] = [updateStatement];
-
-    if (idempotencyKey) {
-      statements.push(
-        buildIdempotencyStatement(
-          env,
-          idempotencyKey,
-          '/api/content',
-          200,
-          responsePayload
-        )
-      );
-    }
+    const historyStatement = env.DB.prepare(
+      `INSERT INTO content_history (content_id, action, new_content, ip, location, user_agent, session_token)
+       VALUES (?, 'update', ?, ?, ?, ?, ?)`
+    ).bind(cleanId, content, clientMeta.ip, clientMeta.location, clientMeta.userAgent, sessionToken);
 
     // Execução atômica em batch
-    await env.DB.batch(statements);
+    await env.DB.batch([updateStatement, historyStatement]);
 
-    return new Response(responsePayload, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-RateLimit-Limit': String(CONTENT_RATE_LIMIT_MAX),
-        'X-RateLimit-Remaining': String(rate.remaining),
-        'X-RateLimit-Reset': String(rate.resetAt),
-        ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
-      },
-    });
+    return new Response(
+      JSON.stringify({ success: true, id: cleanId }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error: any) {
     console.error('[Cloudflare D1 POST Error]:', error);
     return new Response(
@@ -335,7 +250,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 };
 
-// DELETE /api/content — Remove override com AUTORIZAÇÃO OBRIGATÓRIA
+// DELETE /api/content — Remove override com AUTORIZAÇÃO OBRIGATÓRIA e rastreamento
 export const onRequestDelete: PagesFunction<Env> = async (context) => {
   try {
     const { request, env } = context;
@@ -347,7 +262,16 @@ export const onRequestDelete: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // 1. Autorização Obrigatória (Valida sessão do editor no servidor)
+    // 1. Validação de CSRF / Cross-Site Origin
+    const originCheck = validateSameOrigin(request);
+    if (!originCheck.valid) {
+      return new Response(
+        JSON.stringify({ success: false, error: originCheck.error }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // 2. Autorização Obrigatória (Valida sessão do editor no servidor)
     const sessionAuth = await validateSession(env, request);
     if (!sessionAuth.valid) {
       return new Response(
@@ -355,51 +279,16 @@ export const onRequestDelete: PagesFunction<Env> = async (context) => {
           success: false,
           error: sessionAuth.error || 'Acesso não autorizado',
         }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        }
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // 2. Rate Limiting por IP
-    const clientIp = getClientIp(request);
-    const rate = await checkRateLimit(
-      env,
-      clientIp,
-      'content:delete',
-      CONTENT_RATE_LIMIT_MAX,
-      CONTENT_RATE_LIMIT_WINDOW
-    );
-
-    if (!rate.allowed) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Limite de requisições excedido. Aguarde alguns segundos.',
-        }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': String(rate.retryAfter),
-            'X-RateLimit-Limit': String(CONTENT_RATE_LIMIT_MAX),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': String(rate.resetAt),
-          },
-        }
-      );
+    // 3. Limite de tamanho de payload (16KB)
+    const { data: body, errorResponse } = await readJsonWithLimit<any>(request, 16 * 1024);
+    if (errorResponse) {
+      return errorResponse;
     }
 
-    // 3. Idempotência
-    const idempotencyKey =
-      request.headers.get('Idempotency-Key') || request.headers.get('x-idempotency-key');
-    const replayResponse = await checkIdempotency(env, idempotencyKey);
-    if (replayResponse) {
-      return replayResponse;
-    }
-
-    const body: any = await request.json();
     const id = body?.id;
 
     if (!id || typeof id !== 'string' || !VALID_ID_REGEX.test(id.trim())) {
@@ -410,42 +299,29 @@ export const onRequestDelete: PagesFunction<Env> = async (context) => {
     }
 
     const cleanId = id.trim();
+    const clientMeta = getClientMetadata(request);
+    const sessionToken = request.headers.get('Authorization')?.slice(7).trim() || null;
+
     const deleteStmt = env.DB.prepare(
       'DELETE FROM content_overrides WHERE id = ?'
     ).bind(cleanId);
 
-    const responsePayload = JSON.stringify({ success: true, id: cleanId });
-    const statements: D1PreparedStatement[] = [deleteStmt];
-
-    if (idempotencyKey) {
-      statements.push(
-        buildIdempotencyStatement(
-          env,
-          idempotencyKey,
-          '/api/content',
-          200,
-          responsePayload
-        )
-      );
-    }
+    const deleteHistoryStmt = env.DB.prepare(
+      `INSERT INTO content_history (content_id, action, new_content, ip, location, user_agent, session_token)
+       VALUES (?, 'delete', NULL, ?, ?, ?, ?)`
+    ).bind(cleanId, clientMeta.ip, clientMeta.location, clientMeta.userAgent, sessionToken);
 
     // Execução atômica em batch
-    await env.DB.batch(statements);
+    await env.DB.batch([deleteStmt, deleteHistoryStmt]);
 
-    return new Response(responsePayload, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-RateLimit-Limit': String(CONTENT_RATE_LIMIT_MAX),
-        'X-RateLimit-Remaining': String(rate.remaining),
-        'X-RateLimit-Reset': String(rate.resetAt),
-        ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
-      },
-    });
+    return new Response(
+      JSON.stringify({ success: true, id: cleanId }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error: any) {
     console.error('[Cloudflare D1 DELETE Error]:', error);
     return new Response(
-      JSON.stringify({ success: false, error: 'Erro interno ao remover item' }),
+      JSON.stringify({ success: false, error: 'Erro interno ao remover customização' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

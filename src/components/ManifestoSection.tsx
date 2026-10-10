@@ -17,7 +17,7 @@ export const ManifestoSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         {/* Editorial Subheader */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+        <div className="text-center max-w-5xl mx-auto mb-16 sm:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -36,12 +36,13 @@ export const ManifestoSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
-            className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-[1.15]"
+            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#2C2C2C] font-light leading-[1.15] whitespace-nowrap"
           >
             <EditableText
               id="manifesto.heading"
               defaultText={`"Aqui, você é recebido(a) com calma."`}
               as="span"
+              className="whitespace-nowrap"
             >
               "Aqui, você é recebido(a) com <span className="italic font-normal text-[#7A8B7B]">calma</span>."
             </EditableText>
@@ -52,7 +53,7 @@ export const ManifestoSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
-            className="mt-4 text-base sm:text-lg text-[#555555] font-sans font-normal leading-relaxed"
+            className="mt-4 text-base sm:text-lg text-[#555555] font-sans font-normal leading-relaxed max-w-2xl mx-auto"
           >
             <EditableText
               id="manifesto.welcome"

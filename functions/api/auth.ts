@@ -2,11 +2,10 @@
 
 import {
   Env,
-  getClientIp,
-  checkRateLimit,
-  checkIdempotency,
-  buildIdempotencyStatement,
+  getClientMetadata,
   generateSecureToken,
+  validateSameOrigin,
+  readJsonWithLimit,
   SESSION_TTL_SECONDS,
 } from './_utils';
 
@@ -19,10 +18,6 @@ interface CredentialRow {
 
 const PASSWORD_KEY = 'editor_password';
 const PBKDF2_ITERATIONS = 100000;
-
-// Proteção contra brute force: Máximo de 10 tentativas por minuto por IP
-const AUTH_RATE_LIMIT_MAX = 10;
-const AUTH_RATE_LIMIT_WINDOW = 60;
 
 async function hashPassword(password: string, saltHex?: string): Promise<{ hash: string; salt: string }> {
   const enc = new TextEncoder();
@@ -60,7 +55,7 @@ async function hashPassword(password: string, saltHex?: string): Promise<{ hash:
   return { hash, salt: saltStr };
 }
 
-// POST /api/auth — Autenticação com emissão de sessão segura no D1
+// POST /api/auth — Autenticação e Gestão de Sessões no Cloudflare D1
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   try {
     const { request, env } = context;
@@ -72,44 +67,21 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // 1. Rate Limiting anti brute-force
-    const clientIp = getClientIp(request);
-    const rate = await checkRateLimit(
-      env,
-      clientIp,
-      'auth:attempt',
-      AUTH_RATE_LIMIT_MAX,
-      AUTH_RATE_LIMIT_WINDOW
-    );
-
-    if (!rate.allowed) {
+    // 1. Validação de CSRF / Cross-Site Origin
+    const originCheck = validateSameOrigin(request);
+    if (!originCheck.valid) {
       return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Muitas tentativas de autenticação. Por segurança, aguarde antes de tentar novamente.',
-        }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': String(rate.retryAfter),
-            'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': String(rate.resetAt),
-          },
-        }
+        JSON.stringify({ success: false, error: originCheck.error }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // 2. Idempotência opcional
-    const idempotencyKey =
-      request.headers.get('Idempotency-Key') || request.headers.get('x-idempotency-key');
-    const replayResponse = await checkIdempotency(env, idempotencyKey);
-    if (replayResponse) {
-      return replayResponse;
+    // 2. Limite de tamanho de payload (16KB)
+    const { data: body, errorResponse } = await readJsonWithLimit<any>(request, 16 * 1024);
+    if (errorResponse) {
+      return errorResponse;
     }
 
-    const body: any = await request.json();
     if (!body || typeof body !== 'object') {
       return new Response(
         JSON.stringify({ success: false, error: 'Corpo da requisição inválido' }),
@@ -131,7 +103,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         return new Response(
           JSON.stringify({
             success: false,
-            error: 'Configuração do servidor incompleta: ADMIN_INITIAL_PASSWORD deve ser definida no painel do Cloudflare Pages com no mínimo 8 caracteres.',
+            error: 'Configuração do servidor incompleta: ADMIN_INITIAL_PASSWORD deve ser definida no Cloudflare Pages com no mínimo 8 caracteres.',
           }),
           { status: 500, headers: { 'Content-Type': 'application/json' } }
         );
@@ -151,7 +123,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       };
     }
 
-    // AÇÃO A: Verificar Senha & Emitir Sessão Segura
+    // AÇÃO A: Verificar Senha & Emitir Sessão com Rastreamento
     if (action === 'verify') {
       const password = typeof body.password === 'string' ? body.password.trim() : '';
       if (!password) {
@@ -167,26 +139,19 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       if (!isMatch) {
         return new Response(
           JSON.stringify({ success: false, error: 'Senha incorreta' }),
-          {
-            status: 401,
-            headers: {
-              'Content-Type': 'application/json',
-              'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
-              'X-RateLimit-Remaining': String(rate.remaining),
-              'X-RateLimit-Reset': String(rate.resetAt),
-            },
-          }
+          { status: 401, headers: { 'Content-Type': 'application/json' } }
         );
       }
 
-      // Emite novo token de sessão com 256 bits de entropia
+      // Emite novo token de sessão com rastreamento de IP e Dispositivo
       const sessionToken = generateSecureToken();
       const expiresAt = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS;
+      const clientMeta = getClientMetadata(request);
 
       await env.DB.prepare(
-        `INSERT INTO auth_sessions (token, expires_at)
-         VALUES (?, ?)`
-      ).bind(sessionToken, expiresAt).run();
+        `INSERT INTO auth_sessions (token, ip, location, user_agent, expires_at)
+         VALUES (?, ?, ?, ?, ?)`
+      ).bind(sessionToken, clientMeta.ip, clientMeta.location, clientMeta.userAgent, expiresAt).run();
 
       return new Response(
         JSON.stringify({
@@ -194,15 +159,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           token: sessionToken,
           expiresAt,
         }),
-        {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
-            'X-RateLimit-Remaining': String(rate.remaining),
-            'X-RateLimit-Reset': String(rate.resetAt),
-          },
-        }
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -265,10 +222,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       // Cria imediatamente nova sessão para o usuário que realizou a troca
       const newSessionToken = generateSecureToken();
       const expiresAt = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS;
+      const clientMeta = getClientMetadata(request);
       const newSessionStmt = env.DB.prepare(
-        `INSERT INTO auth_sessions (token, expires_at)
-         VALUES (?, ?)`
-      ).bind(newSessionToken, expiresAt);
+        `INSERT INTO auth_sessions (token, ip, location, user_agent, expires_at)
+         VALUES (?, ?, ?, ?, ?)`
+      ).bind(newSessionToken, clientMeta.ip, clientMeta.location, clientMeta.userAgent, expiresAt);
 
       const responsePayload = JSON.stringify({
         success: true,
@@ -277,36 +235,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         expiresAt,
       });
 
-      const statements: D1PreparedStatement[] = [
-        updateStmt,
-        invalidateSessionsStmt,
-        newSessionStmt,
-      ];
-
-      if (idempotencyKey) {
-        statements.push(
-          buildIdempotencyStatement(
-            env,
-            idempotencyKey,
-            '/api/auth:change',
-            200,
-            responsePayload
-          )
-        );
-      }
-
       // Execução atômica no D1
-      await env.DB.batch(statements);
+      await env.DB.batch([updateStmt, invalidateSessionsStmt, newSessionStmt]);
 
       return new Response(responsePayload, {
         status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-RateLimit-Limit': String(AUTH_RATE_LIMIT_MAX),
-          'X-RateLimit-Remaining': String(rate.remaining),
-          'X-RateLimit-Reset': String(rate.resetAt),
-          ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 

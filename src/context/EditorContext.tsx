@@ -3,6 +3,7 @@ import { ServiceItem, FAQItem, ServiceCategory } from '../types';
 import { SERVICES_LIST, FAQ_ITEMS, AVAILABLE_SERVICE_IMAGES } from '../data/spaData';
 import { fetchD1Overrides, saveD1Override, deleteD1Override } from '../services/d1ContentService';
 import { verifyRemotePassword, changeRemotePassword, getStoredAuthToken, logoutRemoteSession } from '../services/authService';
+import { toast } from 'sonner';
 
 export type D1SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
 
@@ -279,6 +280,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setIsEditorActive(true);
         setPasswordModalOpen(false);
         playZenChime('activate');
+        toast.success('Modo editor ativado', {
+          description: 'Clique em qualquer texto ou elemento para personalizar.',
+        });
         return true;
       }
     } catch (e) {
@@ -293,6 +297,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         const result = await changeRemotePassword(currentPassword, newPassword);
         if (result.success) {
           playZenChime('save');
+          toast.success('Senha atualizada com sucesso', {
+            description: 'Nova credencial gravada no Cloudflare D1.',
+          });
         }
         return result;
       } catch (err: unknown) {
@@ -336,6 +343,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const logoutEditor = useCallback(async () => {
     try {
       await logoutRemoteSession();
+      toast.info('Sessão finalizada', {
+        description: 'Modo editor encerrado com segurança.',
+      });
     } finally {
       setIsEditorActive(false);
       playZenChime('deactivate');
@@ -368,6 +378,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           setIsD1Connected(true);
           setSyncStatus('synced');
           playZenChime('save');
+          toast.success('Alteração salva', {
+            description: 'Texto sincronizado no Cloudflare D1.',
+          });
           setTimeout(() => {
             setSyncStatus((current) => (current === 'synced' ? 'idle' : current));
           }, 2500);
@@ -391,6 +404,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
         setSyncStatus('error');
         playZenChime('deactivate');
+        toast.error('Erro ao salvar no servidor', {
+          description: 'Sessão expirada ou falha de conexão.',
+        });
 
         // Se a sessão expirou ou não está autorizada, solicita login novamente
         if (!getStoredAuthToken()) {
@@ -419,7 +435,12 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setSyncStatus('syncing');
       deleteD1Override(id)
         .then((ok) => {
-          if (ok) setSyncStatus('synced');
+          if (ok) {
+            setSyncStatus('synced');
+            toast.info('Texto restaurado', {
+              description: 'Conteúdo redefinido para o padrão original.',
+            });
+          }
         })
         .catch((err) => {
           console.warn(`[EditorContext] Erro ao deletar ${id} no D1:`, err);

@@ -1,6 +1,7 @@
 -- Maliviê SPA — Cloudflare D1 Database Schema
--- Armazena os textos editados em tempo real pelo modo editor
+-- Arquitetura Enxuta e Eficiente (4 Tabelas Essenciais)
 
+-- 1. Armazena os textos editados em tempo real pelo modo editor
 CREATE TABLE IF NOT EXISTS content_overrides (
   id TEXT PRIMARY KEY,
   content TEXT NOT NULL,
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS content_overrides (
 
 CREATE INDEX IF NOT EXISTS idx_content_overrides_updated ON content_overrides(updated_at);
 
--- Tabela para autenticação segura criptografada com salt (PBKDF2/SHA-256)
+-- 2. Tabela para autenticação segura criptografada com salt (PBKDF2/SHA-256)
 CREATE TABLE IF NOT EXISTS auth_credentials (
   key TEXT PRIMARY KEY,
   hash TEXT NOT NULL,
@@ -19,31 +20,31 @@ CREATE TABLE IF NOT EXISTS auth_credentials (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Tabela para gerenciamento seguro de sessões de autorização do editor
+-- 3. Tabela para gerenciamento de sessões com rastreamento de IP e Dispositivo
 CREATE TABLE IF NOT EXISTS auth_sessions (
   token TEXT PRIMARY KEY,
+  ip TEXT,
+  location TEXT,
+  user_agent TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   expires_at INTEGER NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_auth_sessions_expires ON auth_sessions(expires_at);
 
--- Tabela para Idempotência (Idempotency-Key)
-CREATE TABLE IF NOT EXISTS idempotency_keys (
-  key TEXT PRIMARY KEY,
-  endpoint TEXT NOT NULL,
-  response_status INTEGER NOT NULL,
-  response_body TEXT NOT NULL,
+-- 4. Tabela de Auditoria: Histórico Completo de Quem Mexeu (IP, Localização, Dispositivo e Alterações)
+CREATE TABLE IF NOT EXISTS content_history (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  content_id TEXT NOT NULL,
+  action TEXT NOT NULL, -- 'create', 'update', 'delete'
+  old_content TEXT,
+  new_content TEXT,
+  ip TEXT NOT NULL,
+  location TEXT,
+  user_agent TEXT,
+  session_token TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE INDEX IF NOT EXISTS idx_idempotency_keys_created ON idempotency_keys(created_at);
-
--- Tabela para Rate Limit distribuído por IP e rota
-CREATE TABLE IF NOT EXISTS rate_limits (
-  key TEXT PRIMARY KEY,
-  count INTEGER NOT NULL DEFAULT 1,
-  reset_at INTEGER NOT NULL
-);
-
-CREATE INDEX IF NOT EXISTS idx_rate_limits_reset ON rate_limits(reset_at);
+CREATE INDEX IF NOT EXISTS idx_content_history_content_id ON content_history(content_id);
+CREATE INDEX IF NOT EXISTS idx_content_history_created_at ON content_history(created_at);
