@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Upload, Loader2, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { useEditor } from '../../context/EditorContext';
+import { getStoredAuthToken } from '../../services/authService';
 
 interface EditableImageProps {
   id: string;
@@ -54,9 +55,15 @@ export const EditableImage: React.FC<EditableImageProps> = ({
       updateImage(id, dataUrl);
 
       try {
+        const token = getStoredAuthToken();
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const res = await fetch('/api/upload-asset', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({
             assetId: id,
             dataUrl,

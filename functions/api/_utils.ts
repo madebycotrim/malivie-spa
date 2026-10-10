@@ -13,7 +13,7 @@ export interface RateLimitResult {
 }
 
 export const VALID_ID_REGEX = /^[a-zA-Z0-9_.\-:\[\]#]{1,120}$/;
-export const MAX_CONTENT_LENGTH = 10000; // 10KB máximo por texto
+export const MAX_CONTENT_LENGTH = 100000; // 100KB máximo por elemento
 export const SESSION_TTL_SECONDS = 86400; // 24 horas
 
 /**
@@ -122,20 +122,28 @@ export function validateContentPayload(
 }
 
 /**
- * Obtém o endereço IP do cliente de forma segura nos headers da Cloudflare
+ * Obtém o endereço IP do cliente de forma segura nos headers da Cloudflare com validação de formato
  */
 export function getClientIp(request: Request): string {
+  const IP_REGEX = /^[0-9a-fA-F:.]+$/;
+
   const cfIp = request.headers.get('cf-connecting-ip');
-  if (cfIp) return cfIp.trim();
+  if (cfIp) {
+    const clean = cfIp.trim();
+    if (IP_REGEX.test(clean)) return clean;
+  }
 
   const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) {
-    const first = forwarded.split(',')[0];
-    if (first) return first.trim();
+    const first = forwarded.split(',')[0].trim();
+    if (IP_REGEX.test(first)) return first;
   }
 
   const realIp = request.headers.get('x-real-ip');
-  if (realIp) return realIp.trim();
+  if (realIp) {
+    const clean = realIp.trim();
+    if (IP_REGEX.test(clean)) return clean;
+  }
 
   return '127.0.0.1';
 }

@@ -647,7 +647,7 @@ export const LocationAndFooterSection: React.FC = () => {
                     ? 'ring-2 ring-[#D4AF37] bg-[#D4AF37]/15 shadow-[0_0_15px_rgba(212,175,55,0.4)]'
                     : ''
                 }`}
-                title="Maliviê SPA (Clique 3 vezes para ativar/desativar o Modo Editor de Textos)"
+                title="Maliviê SPA"
               >
                 <img
                   loading="lazy"

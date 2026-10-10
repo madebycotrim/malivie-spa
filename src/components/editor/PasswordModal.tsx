@@ -99,7 +99,7 @@ export const PasswordModal: React.FC = () => {
               className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none z-10"
             >
               <span className="text-[11px] font-sans font-semibold text-white bg-rose-600 px-2.5 py-0.5 rounded-full shadow-md">
-                Senha incorreta (padrão: malivie2026)
+                Senha incorreta. Tente novamente.
               </span>
             </motion.div>
           )}
@@ -129,7 +129,7 @@ export const PasswordModal: React.FC = () => {
                   setPassword(e.target.value);
                   if (error) setError(false);
                 }}
-                placeholder="malivie2026"
+                placeholder="••••••••"
                 className={`w-28 sm:w-32 px-2.5 py-1 pr-6 text-xs font-sans rounded-lg transition-all focus:outline-none ${
                   error
                     ? 'bg-rose-50 border border-rose-300 text-rose-900 placeholder-rose-300 ring-2 ring-rose-400/20'

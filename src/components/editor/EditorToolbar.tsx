@@ -8,7 +8,7 @@ import { ChangePasswordModal } from './ChangePasswordModal';
 export const EditorToolbar: React.FC = () => {
   const {
     isEditorActive,
-    setEditorActive,
+    logoutEditor,
     modifiedCount,
     resetAll,
     setChangePasswordModalOpen,
@@ -99,7 +99,7 @@ export const EditorToolbar: React.FC = () => {
                 </div>
               )}
 
-              {/* Fechar Modo Editor com Popover de Confirmação */}
+              {/* Fechar Modo Editor com Popover de Confirmação e Logout Seguro */}
               <div className="relative">
                 <button
                   type="button"
@@ -114,7 +114,7 @@ export const EditorToolbar: React.FC = () => {
                   isOpen={showExitConfirm}
                   onConfirm={() => {
                     setShowExitConfirm(false);
-                    setEditorActive(false);
+                    logoutEditor();
                   }}
                   onCancel={() => setShowExitConfirm(false)}
                   message="Deseja sair?"

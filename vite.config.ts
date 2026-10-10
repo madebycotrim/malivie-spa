@@ -25,6 +25,9 @@ const PROTECTED_ASSETS = new Set([
   'spa-dos-pes.webp',
 ])
 
+// Sessões ativas autenticadas em memória no servidor de desenvolvimento local
+const activeDevSessions = new Set<string>()
+
 function assetUploadPlugin(): Plugin {
   return {
     name: 'vite-plugin-asset-upload',
@@ -32,7 +35,17 @@ function assetUploadPlugin(): Plugin {
       server.middlewares.use('/api/upload-asset', async (req, res) => {
         if (req.method !== 'POST') {
           res.statusCode = 405
+          res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify({ error: 'Method not allowed' }))
+          return
+        }
+
+        // Validação de Autorização Obrigatória (Modo Editor)
+        const auth = String(req.headers['authorization'] || '').trim()
+        if (!auth.startsWith('Bearer ') || !activeDevSessions.has(auth.slice(7).trim())) {
+          res.statusCode = 401
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'Acesso não autorizado. Faça login no modo editor para enviar imagens.' }))
           return
         }
 
@@ -161,7 +174,7 @@ function d1LocalMiddlewarePlugin(): Plugin {
   return {
     name: 'vite-plugin-d1-local',
     configureServer(server) {
-      const storageFile = path.resolve(process.cwd(), 'src/data/d1-local-storage.json')
+      const storageFile = path.resolve(process.cwd(), '.data/d1-local-storage.json')
 
       // Cache de Rate Limit em memória no ambiente de dev local
       const rateLimits = new Map<string, { count: number; resetAt: number }>()
@@ -169,11 +182,8 @@ function d1LocalMiddlewarePlugin(): Plugin {
       // Cache de Idempotência em memória: idempotencyKey -> { status: number, body: string }
       const idempotencyCache = new Map<string, { status: number; body: string }>()
 
-      // Sessões ativas autenticadas em memória no servidor de dev
-      const activeSessions = new Set<string>()
-
       const ID_REGEX = /^[a-zA-Z0-9_.\-:\[\]#]{1,120}$/
-      const MAX_CONTENT_LENGTH = 10000
+      const MAX_CONTENT_LENGTH = 100000
 
       const getReqIp = (req: any): string => {
         const header = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1'
@@ -199,7 +209,7 @@ function d1LocalMiddlewarePlugin(): Plugin {
         const auth = String(req.headers['authorization'] || '').trim()
         if (!auth.startsWith('Bearer ')) return false
         const token = auth.slice(7).trim()
-        return activeSessions.has(token)
+        return activeDevSessions.has(token)
       }
 
       const loadStorage = (): Record<string, any> => {
@@ -462,13 +472,7 @@ function d1LocalMiddlewarePlugin(): Plugin {
             if (parsed.action === 'verify') {
               const pwd = typeof parsed.password === 'string' ? parsed.password.trim() : ''
               const check = await hashLocalPassword(pwd, current._auth.salt)
-              let ok = check.hash === current._auth.hash
-              if (!ok && (pwd === 'malivie' || pwd === 'malivie2026')) {
-                const checkInit = await hashLocalPassword('malivie2026', current._auth.salt)
-                if (checkInit.hash === current._auth.hash) {
-                  ok = true
-                }
-              }
+              const ok = check.hash === current._auth.hash
               if (!ok) {
                 res.statusCode = 401
                 res.end(JSON.stringify({ success: false, error: 'Senha incorreta' }))
@@ -479,10 +483,20 @@ function d1LocalMiddlewarePlugin(): Plugin {
               const tokenBytes = new Uint8Array(32)
               crypto.getRandomValues(tokenBytes)
               const sessionToken = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('')
-              activeSessions.add(sessionToken)
+              activeDevSessions.add(sessionToken)
 
               res.statusCode = 200
               res.end(JSON.stringify({ success: true, token: sessionToken, expiresAt: Math.floor(Date.now() / 1000) + 86400 }))
+              return
+            }
+
+            if (parsed.action === 'logout') {
+              const auth = String(req.headers['authorization'] || '').trim()
+              if (auth.startsWith('Bearer ')) {
+                activeDevSessions.delete(auth.slice(7).trim())
+              }
+              res.statusCode = 200
+              res.end(JSON.stringify({ success: true, message: 'Sessão encerrada com sucesso' }))
               return
             }
 
@@ -510,11 +524,11 @@ function d1LocalMiddlewarePlugin(): Plugin {
               saveStorage(current)
 
               // Invalida sessões anteriores e cria nova
-              activeSessions.clear()
+              activeDevSessions.clear()
               const tokenBytes = new Uint8Array(32)
               crypto.getRandomValues(tokenBytes)
               const newSessionToken = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('')
-              activeSessions.add(newSessionToken)
+              activeDevSessions.add(newSessionToken)
 
               res.statusCode = 200
               res.end(JSON.stringify({ success: true, message: 'Senha atualizada', token: newSessionToken, expiresAt: Math.floor(Date.now() / 1000) + 86400 }))

@@ -36,6 +36,7 @@ import { EditableText } from './editor/EditableText';
 import { EditableIcon } from './editor/EditableIcon';
 import { ConfirmPopover } from './editor/ConfirmPopover';
 import { useEditor } from '../context/EditorContext';
+import { getStoredAuthToken } from '../services/authService';
 
 type MenuCollectionKey = 'todos' | 'head-spa' | 'massagens-corporais' | 'day-spa';
 
@@ -88,9 +89,15 @@ export const ServicesMenuSection: React.FC = () => {
 
       // 2. Envia para salvar fisicamente em src/assets/images e excluir a anterior
       try {
+        const token = getStoredAuthToken();
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const res = await fetch('/api/upload-asset', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({
             serviceId: target.serviceId,
             dataUrl,

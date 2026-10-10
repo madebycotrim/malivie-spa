@@ -124,9 +124,19 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       'SELECT key, hash, salt FROM auth_credentials WHERE key = ?'
     ).bind(PASSWORD_KEY).first<CredentialRow>();
 
-    // Inicialização segura a partir de variável de ambiente ou fallback
+    // Inicialização segura a partir de variável de ambiente (obrigatória)
     if (!credential) {
-      const initialPassword = env.ADMIN_INITIAL_PASSWORD || 'malivie2026';
+      const initialPassword = env.ADMIN_INITIAL_PASSWORD?.trim();
+      if (!initialPassword || initialPassword.length < 8) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Configuração do servidor incompleta: ADMIN_INITIAL_PASSWORD deve ser definida no painel do Cloudflare Pages com no mínimo 8 caracteres.',
+          }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
       const initial = await hashPassword(initialPassword);
       await env.DB.prepare(
         `INSERT INTO auth_credentials (key, hash, salt, updated_at)
@@ -152,15 +162,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }
 
       const computed = await hashPassword(password, credential.salt);
-      let isMatch = computed.hash === credential.hash;
-
-      // Suporte para ambas as senhas iniciais padrão (malivie2026 e malivie) enquanto não for alterada
-      if (!isMatch && (password === 'malivie' || password === 'malivie2026')) {
-        const checkInitial = await hashPassword('malivie2026', credential.salt);
-        if (checkInitial.hash === credential.hash) {
-          isMatch = true;
-        }
-      }
+      const isMatch = computed.hash === credential.hash;
 
       if (!isMatch) {
         return new Response(
@@ -204,7 +206,23 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // AÇÃO B: Alterar Senha (com invalidação de sessões anteriores)
+    // AÇÃO B: Logout e Invalidação de Sessão Específica
+    if (action === 'logout') {
+      const authHeader = request.headers.get('Authorization') || '';
+      if (authHeader.startsWith('Bearer ')) {
+        const token = authHeader.slice(7).trim();
+        if (token) {
+          await env.DB.prepare('DELETE FROM auth_sessions WHERE token = ?').bind(token).run().catch(() => {});
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, message: 'Sessão encerrada com sucesso' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // AÇÃO C: Alterar Senha (com invalidação de todas as sessões anteriores)
     if (action === 'change-password') {
       const currentPassword = typeof body.currentPassword === 'string' ? body.currentPassword.trim() : '';
       const newPassword = typeof body.newPassword === 'string' ? body.newPassword.trim() : '';

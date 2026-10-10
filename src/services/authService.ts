@@ -178,3 +178,19 @@ export async function changeRemotePassword(
     };
   }
 }
+
+/**
+ * Encerra a sessão ativa no Cloudflare D1 e limpa o armazenamento local
+ */
+export async function logoutRemoteSession(): Promise<void> {
+  const token = getStoredAuthToken();
+  if (token) {
+    try {
+      await fetchAuthWithTimeout('/api/auth', { action: 'logout' }, undefined, 3000);
+    } catch (e) {
+      console.warn('[Auth Service] Falha ao notificar logout no servidor:', e);
+    }
+  }
+  clearStoredAuthToken();
+}
+

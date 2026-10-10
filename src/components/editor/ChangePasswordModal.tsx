@@ -54,8 +54,8 @@ export const ChangePasswordModal: React.FC = () => {
       return;
     }
 
-    if (newPassword.length < 6) {
-      setError('A nova senha deve ter no mínimo 6 caracteres');
+    if (newPassword.length < 8) {
+      setError('A nova senha deve ter no mínimo 8 caracteres');
       return;
     }
 
@@ -181,10 +181,10 @@ export const ChangePasswordModal: React.FC = () => {
                       type={showNewPassword ? 'text' : 'password'}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Mínimo de 6 caracteres"
+                      placeholder="Mínimo de 8 caracteres"
                       disabled={loading}
                       required
-                      minLength={6}
+                      minLength={8}
                       className="w-full bg-[#0A120E] border border-[#D4AF37]/30 focus:border-[#D4AF37] rounded-xl px-3.5 py-2.5 text-xs text-[#F3EFE6] placeholder-[#5A6E5D] focus:outline-none transition-all pr-10"
                     />
                     <button
@@ -210,7 +210,7 @@ export const ChangePasswordModal: React.FC = () => {
                     placeholder="Repita a nova senha"
                     disabled={loading}
                     required
-                    minLength={6}
+                    minLength={8}
                     className="w-full bg-[#0A120E] border border-[#D4AF37]/30 focus:border-[#D4AF37] rounded-xl px-3.5 py-2.5 text-xs text-[#F3EFE6] placeholder-[#5A6E5D] focus:outline-none transition-all"
                   />
                 </div>

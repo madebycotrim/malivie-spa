@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { ServiceItem, FAQItem, ServiceCategory } from '../types';
 import { SERVICES_LIST, FAQ_ITEMS, AVAILABLE_SERVICE_IMAGES } from '../data/spaData';
 import { fetchD1Overrides, saveD1Override, deleteD1Override } from '../services/d1ContentService';
-import { verifyRemotePassword, changeRemotePassword, getStoredAuthToken, clearStoredAuthToken } from '../services/authService';
+import { verifyRemotePassword, changeRemotePassword, getStoredAuthToken, logoutRemoteSession } from '../services/authService';
 
 export type D1SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
 
@@ -10,6 +10,7 @@ interface EditorContextType {
   isEditorActive: boolean;
   toggleEditor: () => void;
   setEditorActive: (active: boolean) => void;
+  logoutEditor: () => Promise<void>;
   overrides: Record<string, string>;
   getText: (id: string, defaultText: string) => string;
   updateText: (id: string, newText: string) => Promise<boolean>;
@@ -154,8 +155,54 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         const remote = await fetchD1Overrides();
         if (!isMounted) return;
         if (remote && Object.keys(remote).length > 0) {
+          // 1. Sincroniza dados estruturais do CMS se presentes no D1
+          if (remote['cms.services']) {
+            try {
+              const parsed = JSON.parse(remote['cms.services']);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                setServices(parsed);
+                localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(parsed));
+              }
+            } catch {}
+          }
+          if (remote['cms.faqs']) {
+            try {
+              const parsed = JSON.parse(remote['cms.faqs']);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                setFaqs(parsed);
+                localStorage.setItem(STORAGE_KEY_FAQS, JSON.stringify(parsed));
+              }
+            } catch {}
+          }
+          if (remote['cms.images']) {
+            try {
+              const parsed = JSON.parse(remote['cms.images']);
+              if (parsed && typeof parsed === 'object') {
+                setImageOverrides(parsed);
+                localStorage.setItem(STORAGE_KEY_IMAGES, JSON.stringify(parsed));
+              }
+            } catch {}
+          }
+          if (remote['cms.icons']) {
+            try {
+              const parsed = JSON.parse(remote['cms.icons']);
+              if (parsed && typeof parsed === 'object') {
+                setIconOverrides(parsed);
+                localStorage.setItem(STORAGE_KEY_ICONS, JSON.stringify(parsed));
+              }
+            } catch {}
+          }
+
+          // 2. Filtra chaves estruturais para manter overrides de texto limpos
+          const textOverrides: Record<string, string> = {};
+          for (const [k, v] of Object.entries(remote)) {
+            if (!k.startsWith('cms.')) {
+              textOverrides[k] = v;
+            }
+          }
+
           setOverrides((prev) => {
-            const merged = { ...prev, ...remote };
+            const merged = { ...prev, ...textOverrides };
             try {
               localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(merged));
             } catch (e) {
@@ -305,6 +352,15 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     [requestOpenEditor]
   );
 
+  const logoutEditor = useCallback(async () => {
+    try {
+      await logoutRemoteSession();
+    } finally {
+      setIsEditorActive(false);
+      playZenChime('deactivate');
+    }
+  }, []);
+
   const getText = useCallback(
     (id: string, defaultText: string) => {
       if (overrides[id] !== undefined) {
@@ -409,6 +465,16 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     []
   );
 
+  // Sincronização de campos estruturais do CMS no D1
+  const syncCmsToD1 = useCallback((key: 'cms.services' | 'cms.faqs' | 'cms.images' | 'cms.icons', data: unknown) => {
+    const token = getStoredAuthToken();
+    if (token) {
+      saveD1Override(key, JSON.stringify(data)).catch((e) => {
+        console.warn(`[EditorContext] Falha ao sincronizar ${key} no D1:`, e);
+      });
+    }
+  }, []);
+
   // Imagens Customizadas do Site
   const getImage = useCallback(
     (id: string, defaultImage: string) => {
@@ -428,10 +494,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao salvar imageOverrides no localStorage:', e);
       }
+      syncCmsToD1('cms.images', next);
       return next;
     });
     playZenChime('save');
-  }, []);
+  }, [syncCmsToD1]);
 
   const resetImage = useCallback((id: string) => {
     setImageOverrides((prev) => {
@@ -443,10 +510,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao resetar imageOverrides no localStorage:', e);
       }
+      syncCmsToD1('cms.images', next);
       return next;
     });
     playZenChime('deactivate');
-  }, []);
+  }, [syncCmsToD1]);
 
   const isImageModified = useCallback(
     (id: string) => id in imageOverrides,
@@ -472,10 +540,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao salvar iconOverrides no localStorage:', e);
       }
+      syncCmsToD1('cms.icons', next);
       return next;
     });
     playZenChime('save');
-  }, []);
+  }, [syncCmsToD1]);
 
   const resetIcon = useCallback((id: string) => {
     setIconOverrides((prev) => {
@@ -487,10 +556,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao resetar iconOverrides no localStorage:', e);
       }
+      syncCmsToD1('cms.icons', next);
       return next;
     });
     playZenChime('deactivate');
-  }, []);
+  }, [syncCmsToD1]);
 
   const isIconModified = useCallback(
     (id: string) => id in iconOverrides,
@@ -548,12 +618,13 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao persistir novo serviço:', e);
       }
+      syncCmsToD1('cms.services', next);
       return next;
     });
 
     playZenChime('save');
     return newService;
-  }, []);
+  }, [syncCmsToD1]);
 
   const removeService = useCallback((serviceId: string) => {
     setServices((prev) => {
@@ -563,10 +634,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao persistir remoção de serviço:', e);
       }
+      syncCmsToD1('cms.services', next);
       return next;
     });
     playZenChime('deactivate');
-  }, []);
+  }, [syncCmsToD1]);
 
   const cycleServiceImage = useCallback((serviceId: string) => {
     setServices((prev) => {
@@ -584,10 +656,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao alternar imagem:', e);
       }
+      syncCmsToD1('cms.services', next);
       return next;
     });
     playZenChime('save');
-  }, []);
+  }, [syncCmsToD1]);
 
   const updateServiceImage = useCallback((serviceId: string, newImageUrl: string) => {
     setServices((prev) => {
@@ -603,10 +676,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao atualizar imagem do serviço:', e);
       }
+      syncCmsToD1('cms.services', next);
       return next;
     });
     playZenChime('save');
-  }, []);
+  }, [syncCmsToD1]);
 
   const toggleServicePopular = useCallback((serviceId: string) => {
     setServices((prev) => {
@@ -622,10 +696,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao alternar destaque:', e);
       }
+      syncCmsToD1('cms.services', next);
       return next;
     });
     playZenChime('save');
-  }, []);
+  }, [syncCmsToD1]);
 
   const updateServiceCategory = useCallback((serviceId: string, category: ServiceCategory, categoryLabel?: string) => {
     setServices((prev) => {
@@ -642,10 +717,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao atualizar categoria do serviço:', e);
       }
+      syncCmsToD1('cms.services', next);
       return next;
     });
     playZenChime('save');
-  }, []);
+  }, [syncCmsToD1]);
 
   const moveService = useCallback(
     (serviceId: string, direction: 'left' | 'right' | 'up' | 'down', currentListIds?: string[]) => {
@@ -679,11 +755,12 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         } catch (e) {
           console.warn('Falha ao salvar nova ordem dos serviços:', e);
         }
+        syncCmsToD1('cms.services', next);
         return next;
       });
       playZenChime('save');
     },
-    []
+    [syncCmsToD1]
   );
 
   const resetServices = useCallback(() => {
@@ -693,6 +770,7 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (e) {
       console.warn('[EditorContext] Falha ao limpar STORAGE_KEY_SERVICES:', e);
     }
+    deleteD1Override('cms.services').catch(() => {});
     playZenChime('deactivate');
   }, []);
 
@@ -715,12 +793,13 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao persistir novo FAQ:', e);
       }
+      syncCmsToD1('cms.faqs', next);
       return next;
     });
 
     playZenChime('save');
     return newFaq;
-  }, []);
+  }, [syncCmsToD1]);
 
   const removeFaq = useCallback((faqId: string) => {
     setFaqs((prev) => {
@@ -730,10 +809,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao persistir remoção de FAQ:', e);
       }
+      syncCmsToD1('cms.faqs', next);
       return next;
     });
     playZenChime('deactivate');
-  }, []);
+  }, [syncCmsToD1]);
 
   const moveFaq = useCallback((faqId: string, direction: 'up' | 'down') => {
     setFaqs((prev) => {
@@ -752,10 +832,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } catch (e) {
         console.warn('Falha ao salvar nova ordem dos FAQs:', e);
       }
+      syncCmsToD1('cms.faqs', next);
       return next;
     });
     playZenChime('save');
-  }, []);
+  }, [syncCmsToD1]);
 
   const resetFaqs = useCallback(() => {
     setFaqs(FAQ_ITEMS);
@@ -764,6 +845,7 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (e) {
       console.warn('[EditorContext] Falha ao limpar STORAGE_KEY_FAQS:', e);
     }
+    deleteD1Override('cms.faqs').catch(() => {});
     playZenChime('deactivate');
   }, []);
 
@@ -785,15 +867,14 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
     playZenChime('deactivate');
 
-    if (idsToDelete.length > 0) {
-      setSyncStatus('syncing');
-      Promise.all(idsToDelete.map((id) => deleteD1Override(id)))
-        .then(() => setSyncStatus('synced'))
-        .catch((err) => {
-          console.warn('[EditorContext] Erro ao resetar itens no Cloudflare D1:', err);
-          setSyncStatus('error');
-        });
-    }
+    const allIdsToDelete = [...idsToDelete, 'cms.services', 'cms.faqs', 'cms.images', 'cms.icons'];
+    setSyncStatus('syncing');
+    Promise.all(allIdsToDelete.map((id) => deleteD1Override(id)))
+      .then(() => setSyncStatus('synced'))
+      .catch((err) => {
+        console.warn('[EditorContext] Erro ao resetar itens no Cloudflare D1:', err);
+        setSyncStatus('error');
+      });
   }, [overrides]);
 
   const isModified = useCallback(
@@ -853,6 +934,7 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         isEditorActive,
         toggleEditor,
         setEditorActive,
+        logoutEditor,
         overrides,
         getText,
         updateText,

@@ -28,3 +28,4 @@ dist-ssr
 
 # Local development storage
 src/data/d1-local-storage.json
+.data/
