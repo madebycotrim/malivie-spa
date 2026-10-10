@@ -494,24 +494,14 @@ export const LocationAndFooterSection: React.FC = () => {
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-6 px-1">
             <div className="flex items-center gap-2">
-              <EditableIcon id="location.channels.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <EditableText
-                id="location.channels.title"
-                defaultText="Canais Oficiais & Redes Sociais"
-                as="span"
-                className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90"
-              >
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90">
                 Canais Oficiais & Redes Sociais
-              </EditableText>
+              </span>
             </div>
-            <EditableText
-              id="location.channels.subtitle"
-              defaultText="Conecte-se com o santuário e acompanhe nossos rituais diários"
-              as="span"
-              className="text-xs font-serif italic text-[#7A8B7B]"
-            >
+            <span className="text-xs font-serif italic text-[#7A8B7B]">
               Conecte-se com o santuário e acompanhe nossos rituais diários
-            </EditableText>
+            </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -533,18 +523,8 @@ export const LocationAndFooterSection: React.FC = () => {
                 handle: SPA_BUSINESS_DATA.whatsapp.formattedDisplay,
                 desc: abertoAgora ? 'Atendimento e recepção direta' : 'Mensagens 24h • Retorno no expediente',
                 href: SPA_BUSINESS_DATA.whatsapp.defaultUrl,
-                icon: <EditableIcon id="location.channel.whatsapp.icon" defaultIcon="WhatsApp" fallbackComponent={WhatsAppIcon} className="w-5 h-5 text-[#D4AF37]" />,
-                badge: abertoAgora ? (
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 text-[10px] text-[#F3EFE6] font-sans font-medium shadow-[0_0_12px_rgba(122,139,123,0.25)]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] animate-pulse" />
-                    <span>Atendimento agora</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/15 text-[10px] text-[#F3EFE6]/70 font-sans font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]/60" />
-                    <span>Mensagens 24h</span>
-                  </div>
-                ),
+                icon: <WhatsAppIcon className="w-5 h-5 text-[#D4AF37]" />,
+                badge: null,
                 highlight: true,
                 onClick: () => trackWhatsAppClick('rodape_canais'),
               },
@@ -595,9 +575,14 @@ export const LocationAndFooterSection: React.FC = () => {
                   <h4 className="font-serif text-lg sm:text-xl text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug font-normal">
                     {channel.handle}
                   </h4>
-                  <p className="text-xs text-[#F3EFE6]/65 font-sans mt-1">
+                  <EditableText
+                    id={`location.channel.${channel.id}.desc`}
+                    defaultText={channel.desc}
+                    as="p"
+                    className="text-xs text-[#F3EFE6]/65 font-sans mt-1"
+                  >
                     {channel.desc}
-                  </p>
+                  </EditableText>
                 </div>
               </a>
             ))}

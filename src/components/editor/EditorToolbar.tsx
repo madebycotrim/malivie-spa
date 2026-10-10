@@ -66,11 +66,10 @@ export const EditorToolbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setChangePasswordModalOpen(true)}
-                className="p-1.5 sm:px-3 sm:py-1.5 rounded-full text-xs font-sans font-medium transition-all flex items-center gap-1 cursor-pointer bg-white/5 hover:bg-white/10 text-[#E4D5B7] border border-[#D4AF37]/30 hover:border-[#D4AF37]"
-                title="Alterar senha segura no Cloudflare D1"
+                className="w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer bg-white/5 hover:bg-white/10 text-[#E4D5B7] border border-[#D4AF37]/30 hover:border-[#D4AF37] hover:scale-105 shadow-sm"
+                title="Alterar senha de acesso"
               >
                 <KeyRound className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span className="hidden sm:inline">Senha</span>
               </button>
 
               {/* Botão Reset */}
