@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { HEAD_SPA_STEPS, SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaData';
@@ -20,8 +20,6 @@ interface StepDetailItem {
   text: string;
 }
 
-const STORAGE_KEY_HEAD_SPA_DETAILS = 'malivie_head_spa_details_v2';
-
 const DEFAULT_STEP_DETAILS: Record<number, StepDetailItem[]> = {
   0: HEAD_SPA_STEPS[0].details.map((d, i) => ({ id: `s0-d${i}`, text: d })),
   1: HEAD_SPA_STEPS[1].details.map((d, i) => ({ id: `s1-d${i}`, text: d })),
@@ -33,17 +31,17 @@ export const HeadSpaSection: React.FC = () => {
   const { isEditorActive } = useEditor();
   const [activeStep, setActiveStep] = useState<number>(0);
 
-  const [detailsByStep, setDetailsByStep] = useState<Record<number, StepDetailItem[]>>(() => {
+  // Limpeza preventiva de armazenamento local
+  useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY_HEAD_SPA_DETAILS);
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch {
-      // fallback
+      localStorage.removeItem('malivie_head_spa_details_v2');
+      sessionStorage.removeItem('malivie_head_spa_details_v2');
+    } catch (e) {
+      console.warn('[HeadSpaSection] Falha ao purgar armazenamento legado:', e);
     }
-    return DEFAULT_STEP_DETAILS;
-  });
+  }, []);
+
+  const [detailsByStep, setDetailsByStep] = useState<Record<number, StepDetailItem[]>>(DEFAULT_STEP_DETAILS);
 
   const [confirmDeleteDetailId, setConfirmDeleteDetailId] = useState<string | null>(null);
 
@@ -51,32 +49,20 @@ export const HeadSpaSection: React.FC = () => {
     const newId = `s${stepIdx}-d${Date.now()}`;
     setDetailsByStep((prev) => {
       const currentList = prev[stepIdx] || DEFAULT_STEP_DETAILS[stepIdx] || [];
-      const updated = {
+      return {
         ...prev,
         [stepIdx]: [...currentList, { id: newId, text: 'Novo detalhe do procedimento' }],
       };
-      try {
-        localStorage.setItem(STORAGE_KEY_HEAD_SPA_DETAILS, JSON.stringify(updated));
-      } catch {
-        // ignore
-      }
-      return updated;
     });
   };
 
   const handleRemoveDetail = (stepIdx: number, detailId: string) => {
     setDetailsByStep((prev) => {
       const currentList = prev[stepIdx] || DEFAULT_STEP_DETAILS[stepIdx] || [];
-      const updated = {
+      return {
         ...prev,
         [stepIdx]: currentList.filter((item) => item.id !== detailId),
       };
-      try {
-        localStorage.setItem(STORAGE_KEY_HEAD_SPA_DETAILS, JSON.stringify(updated));
-      } catch {
-        // ignore
-      }
-      return updated;
     });
     setConfirmDeleteDetailId(null);
   };
@@ -94,16 +80,10 @@ export const HeadSpaSection: React.FC = () => {
       currentList[index] = currentList[targetIndex];
       currentList[targetIndex] = temp;
 
-      const updated = {
+      return {
         ...prev,
         [stepIdx]: currentList,
       };
-      try {
-        localStorage.setItem(STORAGE_KEY_HEAD_SPA_DETAILS, JSON.stringify(updated));
-      } catch {
-        // ignore
-      }
-      return updated;
     });
   };
 

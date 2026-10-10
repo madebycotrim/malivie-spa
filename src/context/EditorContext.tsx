@@ -67,13 +67,36 @@ interface EditorContextType {
   isFaqsModified: boolean;
 }
 
-const STORAGE_KEY_OVERRIDES = 'malivie_editor_content_v2';
-const STORAGE_KEY_IMAGES = 'malivie_editor_images_v1';
-const STORAGE_KEY_ICONS = 'malivie_editor_icons_v1';
-const STORAGE_KEY_SERVICES = 'malivie_editor_services_v3';
-const STORAGE_KEY_FAQS = 'malivie_editor_faqs_v2';
+// Chaves legadas para purga preventiva de dados do navegador
+const LEGACY_STORAGE_KEYS = [
+  'malivie_auth_session_token',
+  'malivie_editor_content_v2',
+  'malivie_editor_images_v1',
+  'malivie_editor_icons_v1',
+  'malivie_editor_services_v3',
+  'malivie_editor_faqs_v2',
+  'malivie_content_overrides',
+  'malivie_spa_services',
+  'malivie_spa_faqs',
+  'malivie_spa_image_overrides',
+  'malivie_spa_icon_overrides',
+  'malivie_head_spa_details_v2',
+];
 
+function purgeLegacyClientStorage(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    for (const key of LEGACY_STORAGE_KEYS) {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    }
+  } catch (e) {
+    console.warn('[EditorContext] Falha ao purgar armazenamento legado:', e);
+  }
+}
 
+// Limpeza preventiva imediata
+purgeLegacyClientStorage();
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
@@ -136,64 +159,74 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isD1Connected, setIsD1Connected] = useState(false);
   const [syncStatus, setSyncStatus] = useState<D1SyncStatus>('idle');
 
-  // 1. Text Overrides
-  const [overrides, setOverrides] = useState<Record<string, string>>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_OVERRIDES);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.warn('Falha ao ler overrides do localStorage:', e);
-    }
-    return {};
-  });
+  // 1. Text Overrides (estritamente em memória e sincronizado com Cloudflare D1)
+  const [overrides, setOverrides] = useState<Record<string, string>>({});
 
-  // Inicialização e sincronização com Cloudflare D1
+  // 2. Services List (em memória)
+  const [services, setServices] = useState<ServiceItem[]>(SERVICES_LIST);
+
+  // 3. FAQ Items (em memória)
+  const [faqs, setFaqs] = useState<FAQItem[]>(FAQ_ITEMS);
+
+  // 4. Image Overrides (em memória)
+  const [imageOverrides, setImageOverrides] = useState<Record<string, string>>({});
+
+  // 5. Icon Overrides (em memória)
+  const [iconOverrides, setIconOverrides] = useState<Record<string, string>>({});
+
+  // Inicialização e sincronização exclusiva com Cloudflare D1
   useEffect(() => {
     let isMounted = true;
+    purgeLegacyClientStorage();
+
     const syncRemoteOverrides = async () => {
       try {
         const remote = await fetchD1Overrides();
         if (!isMounted) return;
         if (remote && Object.keys(remote).length > 0) {
-          // 1. Sincroniza dados estruturais do CMS se presentes no D1
+          // Sincroniza dados estruturais do CMS se presentes no D1
           if (remote['cms.services']) {
             try {
               const parsed = JSON.parse(remote['cms.services']);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 setServices(parsed);
-                localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(parsed));
               }
-            } catch {}
+            } catch (e) {
+              console.warn('[EditorContext] Falha ao processar cms.services:', e);
+            }
           }
           if (remote['cms.faqs']) {
             try {
               const parsed = JSON.parse(remote['cms.faqs']);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 setFaqs(parsed);
-                localStorage.setItem(STORAGE_KEY_FAQS, JSON.stringify(parsed));
               }
-            } catch {}
+            } catch (e) {
+              console.warn('[EditorContext] Falha ao processar cms.faqs:', e);
+            }
           }
           if (remote['cms.images']) {
             try {
               const parsed = JSON.parse(remote['cms.images']);
               if (parsed && typeof parsed === 'object') {
                 setImageOverrides(parsed);
-                localStorage.setItem(STORAGE_KEY_IMAGES, JSON.stringify(parsed));
               }
-            } catch {}
+            } catch (e) {
+              console.warn('[EditorContext] Falha ao processar cms.images:', e);
+            }
           }
           if (remote['cms.icons']) {
             try {
               const parsed = JSON.parse(remote['cms.icons']);
               if (parsed && typeof parsed === 'object') {
                 setIconOverrides(parsed);
-                localStorage.setItem(STORAGE_KEY_ICONS, JSON.stringify(parsed));
               }
-            } catch {}
+            } catch (e) {
+              console.warn('[EditorContext] Falha ao processar cms.icons:', e);
+            }
           }
 
-          // 2. Filtra chaves estruturais para manter overrides de texto limpos
+          // Filtra chaves estruturais para manter overrides de texto limpos
           const textOverrides: Record<string, string> = {};
           for (const [k, v] of Object.entries(remote)) {
             if (!k.startsWith('cms.')) {
@@ -201,15 +234,7 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             }
           }
 
-          setOverrides((prev) => {
-            const merged = { ...prev, ...textOverrides };
-            try {
-              localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(merged));
-            } catch (e) {
-              console.warn('[EditorContext] Falha ao gravar cache local:', e);
-            }
-            return merged;
-          });
+          setOverrides((prev) => ({ ...prev, ...textOverrides }));
           setIsD1Connected(true);
           setSyncStatus('synced');
         } else if (remote !== null) {
@@ -225,50 +250,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       isMounted = false;
     };
   }, []);
-
-  // 2. Services List
-  const [services, setServices] = useState<ServiceItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_SERVICES);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.warn('Falha ao ler services do localStorage:', e);
-    }
-    return SERVICES_LIST;
-  });
-
-  // 3. FAQ Items
-  const [faqs, setFaqs] = useState<FAQItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_FAQS);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.warn('Falha ao ler faqs do localStorage:', e);
-    }
-    return FAQ_ITEMS;
-  });
-
-  // 4. Image Overrides (Manifesto, Head Spa, Gift Card, Fachada, etc.)
-  const [imageOverrides, setImageOverrides] = useState<Record<string, string>>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_IMAGES);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.warn('Falha ao ler imageOverrides do localStorage:', e);
-    }
-    return {};
-  });
-
-  // 5. Icon Overrides (Biblioteca de Ícones Lucide)
-  const [iconOverrides, setIconOverrides] = useState<Record<string, string>>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_ICONS);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.warn('Falha ao ler iconOverrides do localStorage:', e);
-    }
-    return {};
-  });
 
   // Autenticação por Senha
   const requestOpenEditor = useCallback(() => {
@@ -375,16 +356,8 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     async (id: string, newText: string): Promise<boolean> => {
       const previousValue = overrides[id];
 
-      // Aplica alteração inicialmente
-      setOverrides((prev) => {
-        const next = { ...prev, [id]: newText };
-        try {
-          localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(next));
-        } catch (e) {
-          console.warn('Falha ao gravar overrides no localStorage:', e);
-        }
-        return next;
-      });
+      // Aplica alteração inicialmente em memória
+      setOverrides((prev) => ({ ...prev, [id]: newText }));
 
       // Ativa status de sincronização
       setSyncStatus('syncing');
@@ -413,11 +386,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           } else {
             delete reverted[id];
           }
-          try {
-            localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(reverted));
-          } catch (e) {
-            console.warn('Falha ao atualizar localStorage após rollback:', e);
-          }
           return reverted;
         });
 
@@ -444,11 +412,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setOverrides((prev) => {
         const next = { ...prev };
         delete next[id];
-        try {
-          localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(next));
-        } catch (e) {
-          console.warn('Falha ao gravar overrides no localStorage:', e);
-        }
         return next;
       });
 
@@ -489,11 +452,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const updateImage = useCallback((id: string, newImageUrl: string) => {
     setImageOverrides((prev) => {
       const next = { ...prev, [id]: newImageUrl };
-      try {
-        localStorage.setItem(STORAGE_KEY_IMAGES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao salvar imageOverrides no localStorage:', e);
-      }
       syncCmsToD1('cms.images', next);
       return next;
     });
@@ -505,11 +463,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (!(id in prev)) return prev;
       const next = { ...prev };
       delete next[id];
-      try {
-        localStorage.setItem(STORAGE_KEY_IMAGES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao resetar imageOverrides no localStorage:', e);
-      }
       syncCmsToD1('cms.images', next);
       return next;
     });
@@ -535,11 +488,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const updateIcon = useCallback((id: string, newIconName: string) => {
     setIconOverrides((prev) => {
       const next = { ...prev, [id]: newIconName };
-      try {
-        localStorage.setItem(STORAGE_KEY_ICONS, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao salvar iconOverrides no localStorage:', e);
-      }
       syncCmsToD1('cms.icons', next);
       return next;
     });
@@ -551,11 +499,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (!(id in prev)) return prev;
       const next = { ...prev };
       delete next[id];
-      try {
-        localStorage.setItem(STORAGE_KEY_ICONS, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao resetar iconOverrides no localStorage:', e);
-      }
       syncCmsToD1('cms.icons', next);
       return next;
     });
@@ -613,11 +556,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     setServices((prev) => {
       const next = [newService, ...prev];
-      try {
-        localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao persistir novo serviço:', e);
-      }
       syncCmsToD1('cms.services', next);
       return next;
     });
@@ -629,11 +567,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const removeService = useCallback((serviceId: string) => {
     setServices((prev) => {
       const next = prev.filter((s) => s.id !== serviceId);
-      try {
-        localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao persistir remoção de serviço:', e);
-      }
       syncCmsToD1('cms.services', next);
       return next;
     });
@@ -651,11 +584,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           image: AVAILABLE_SERVICE_IMAGES[nextIndex],
         };
       });
-      try {
-        localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao alternar imagem:', e);
-      }
       syncCmsToD1('cms.services', next);
       return next;
     });
@@ -671,11 +599,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           image: newImageUrl,
         };
       });
-      try {
-        localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao atualizar imagem do serviço:', e);
-      }
       syncCmsToD1('cms.services', next);
       return next;
     });
@@ -691,11 +614,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           popular: !s.popular,
         };
       });
-      try {
-        localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao alternar destaque:', e);
-      }
       syncCmsToD1('cms.services', next);
       return next;
     });
@@ -712,11 +630,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           categoryLabel: categoryLabel || s.categoryLabel,
         };
       });
-      try {
-        localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao atualizar categoria do serviço:', e);
-      }
       syncCmsToD1('cms.services', next);
       return next;
     });
@@ -750,11 +663,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         const [movedItem] = next.splice(prevCurrentIdx, 1);
         next.splice(prevTargetIdx, 0, movedItem);
 
-        try {
-          localStorage.setItem(STORAGE_KEY_SERVICES, JSON.stringify(next));
-        } catch (e) {
-          console.warn('Falha ao salvar nova ordem dos serviços:', e);
-        }
         syncCmsToD1('cms.services', next);
         return next;
       });
@@ -765,11 +673,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const resetServices = useCallback(() => {
     setServices(SERVICES_LIST);
-    try {
-      localStorage.removeItem(STORAGE_KEY_SERVICES);
-    } catch (e) {
-      console.warn('[EditorContext] Falha ao limpar STORAGE_KEY_SERVICES:', e);
-    }
     deleteD1Override('cms.services').catch(() => {});
     playZenChime('deactivate');
   }, []);
@@ -788,11 +691,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     setFaqs((prev) => {
       const next = [...prev, newFaq];
-      try {
-        localStorage.setItem(STORAGE_KEY_FAQS, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao persistir novo FAQ:', e);
-      }
       syncCmsToD1('cms.faqs', next);
       return next;
     });
@@ -804,11 +702,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const removeFaq = useCallback((faqId: string) => {
     setFaqs((prev) => {
       const next = prev.filter((f) => f.id !== faqId);
-      try {
-        localStorage.setItem(STORAGE_KEY_FAQS, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao persistir remoção de FAQ:', e);
-      }
       syncCmsToD1('cms.faqs', next);
       return next;
     });
@@ -827,11 +720,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const [item] = next.splice(index, 1);
       next.splice(targetIndex, 0, item);
 
-      try {
-        localStorage.setItem(STORAGE_KEY_FAQS, JSON.stringify(next));
-      } catch (e) {
-        console.warn('Falha ao salvar nova ordem dos FAQs:', e);
-      }
       syncCmsToD1('cms.faqs', next);
       return next;
     });
@@ -840,11 +728,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const resetFaqs = useCallback(() => {
     setFaqs(FAQ_ITEMS);
-    try {
-      localStorage.removeItem(STORAGE_KEY_FAQS);
-    } catch (e) {
-      console.warn('[EditorContext] Falha ao limpar STORAGE_KEY_FAQS:', e);
-    }
     deleteD1Override('cms.faqs').catch(() => {});
     playZenChime('deactivate');
   }, []);
@@ -856,15 +739,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIconOverrides({});
     setServices(SERVICES_LIST);
     setFaqs(FAQ_ITEMS);
-    try {
-      localStorage.removeItem(STORAGE_KEY_OVERRIDES);
-      localStorage.removeItem(STORAGE_KEY_IMAGES);
-      localStorage.removeItem(STORAGE_KEY_ICONS);
-      localStorage.removeItem(STORAGE_KEY_SERVICES);
-      localStorage.removeItem(STORAGE_KEY_FAQS);
-    } catch (e) {
-      console.warn('[EditorContext] Falha ao limpar chaves do localStorage:', e);
-    }
     playZenChime('deactivate');
 
     const allIdsToDelete = [...idsToDelete, 'cms.services', 'cms.faqs', 'cms.images', 'cms.icons'];

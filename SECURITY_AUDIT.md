@@ -17,8 +17,9 @@ A auditoria identificou vulnerabilidades que foram **100% corrigidas no código-
 - A interface foi higienizada sem qualquer pista ou placeholder da credencial administrativa.
 - A chave de desenvolvimento commitada foi removida do Git e protegida via `.gitignore`.
 - O endpoint de upload no ambiente local e as chamadas no cliente foram blindadas com verificação do token Bearer.
-- Foi implementado logout seguro com invalidação de sessão única no Cloudflare D1 e limpeza de armazenamento no navegador.
-- Os dados do CMS (serviços, faqs, imagens e ícones) foram integrados à sincronização com o banco D1, sanando a fragmentação multiusuário.
+- Foi implementado logout seguro com invalidação no Cloudflare D1 e eliminação total de persistência local (`localStorage` e `sessionStorage` zerados; sessão mantida estritamente em memória RAM).
+- Os dados do CMS (serviços, faqs, imagens e ícones) foram integrados com sincronização direta no Cloudflare D1 sem qualquer gravação no disco ou storage do navegador.
+- Purga preventiva automática executada no cliente para eliminar qualquer dado legado remanescente de versões anteriores.
 - A validação de IP foi blindada com regex contra header injection.
 
 ### Status dos Achados Auditados:

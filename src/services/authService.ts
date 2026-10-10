@@ -21,29 +21,35 @@ interface AuthChangeResponse {
   error?: string;
 }
 
-export function getStoredAuthToken(): string | null {
-  try {
-    return sessionStorage.getItem(AUTH_TOKEN_STORAGE_KEY) || localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
+let inMemoryAuthToken: string | null = null;
 
-export function setStoredAuthToken(token: string): void {
-  try {
-    sessionStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
-    localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
-  } catch {
-    // Ignore storage errors
-  }
-}
-
-export function clearStoredAuthToken(): void {
+// Limpeza preventiva de qualquer resquício em armazenamento do navegador
+if (typeof window !== 'undefined') {
   try {
     sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
     localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-  } catch {
-    // Ignore storage errors
+  } catch (e) {
+    console.warn('[Auth Service] Falha ao limpar tokens legados do armazenamento:', e);
+  }
+}
+
+export function getStoredAuthToken(): string | null {
+  return inMemoryAuthToken;
+}
+
+export function setStoredAuthToken(token: string): void {
+  inMemoryAuthToken = token;
+}
+
+export function clearStoredAuthToken(): void {
+  inMemoryAuthToken = null;
+  try {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    }
+  } catch (e) {
+    console.warn('[Auth Service] Falha ao limpar armazenamento na saída:', e);
   }
 }
 

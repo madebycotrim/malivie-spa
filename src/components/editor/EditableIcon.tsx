@@ -67,7 +67,7 @@ export const EditableIcon: React.FC<EditableIconProps> = ({
     checkGoldBg();
   }, [isEditorActive, darkBorder]);
 
-  // Obtém o nome do ícone salvo no localStorage ou usa o padrão
+  // Obtém o nome do ícone configurado ou usa o padrão
   const iconName = getIcon(id, defaultIcon);
   const modified = isIconModified(id);
 
