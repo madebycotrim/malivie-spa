@@ -1,4 +1,5 @@
 import React from 'react';
+import { WhatsAppIcon } from '../SocialIcons';
 import {
   // Spa, Bem-estar & Cuidado
   Sparkles,
@@ -98,12 +99,37 @@ import {
   Package,
   ShoppingBag,
   Ticket,
+  Plus,
+  PlusCircle,
+  Footprints,
+  GlassWater,
+  Lamp,
+  Users,
+  Scissors,
+  SmilePlus,
+  VolumeX,
+  ExternalLink,
+  RotateCcw,
+  X,
+  Menu,
+
+  // Setas & Direções
+  ArrowRight,
+  ArrowLeft,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  ChevronRight,
+  ChevronLeft,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 export interface IconDefinition {
   name: string;
   label: string;
-  category: 'spa' | 'luxo' | 'tempo-local' | 'contato' | 'geral';
+  category: 'spa' | 'luxo' | 'tempo-local' | 'contato' | 'setas' | 'geral';
   tags: string[];
   component: React.ComponentType<{ className?: string; size?: number; style?: React.CSSProperties }>;
 }
@@ -431,12 +457,19 @@ export const ICON_REGISTRY: Record<string, IconDefinition> = {
   },
 
   // Contato & Comunicação
+  WhatsApp: {
+    name: 'WhatsApp',
+    label: 'WhatsApp Oficial',
+    category: 'contato',
+    tags: ['whatsapp', 'wpp', 'mensagem', 'contato', 'agendar', 'conversa'],
+    component: WhatsAppIcon,
+  },
   MessageCircle: {
     name: 'MessageCircle',
-    label: 'WhatsApp / Mensagem',
+    label: 'WhatsApp Oficial',
     category: 'contato',
-    tags: ['whatsapp', 'mensagem', 'chat', 'conversa', 'recepcao'],
-    component: MessageCircle,
+    tags: ['whatsapp', 'wpp', 'mensagem', 'chat', 'conversa', 'recepcao'],
+    component: WhatsAppIcon,
   },
   MessageSquare: {
     name: 'MessageSquare',
@@ -580,6 +613,169 @@ export const ICON_REGISTRY: Record<string, IconDefinition> = {
     tags: ['ticket', 'voucher', 'cupom', 'experiencia'],
     component: Ticket,
   },
+  Footprints: {
+    name: 'Footprints',
+    label: 'Spa dos Pés / Pegadas',
+    category: 'spa',
+    tags: ['pe', 'pes', 'passos', 'pegadas', 'spa dos pes', 'escalda-pes', 'relaxamento'],
+    component: Footprints,
+  },
+  GlassWater: {
+    name: 'GlassWater',
+    label: 'Copo de Água / Cristal',
+    category: 'spa',
+    tags: ['agua', 'cristal', 'taca', 'welcome drink', 'hidratacao'],
+    component: GlassWater,
+  },
+  Lamp: {
+    name: 'Lamp',
+    label: 'Iluminação Quente / Abajur',
+    category: 'spa',
+    tags: ['luz', 'luminaria', 'abajur', 'ambiente', '3000k', 'calma'],
+    component: Lamp,
+  },
+  Scissors: {
+    name: 'Scissors',
+    label: 'Tesoura Cuidado Capilar',
+    category: 'spa',
+    tags: ['tesoura', 'cabelo', 'terapia capilar', 'corte', 'fios'],
+    component: Scissors,
+  },
+  SmilePlus: {
+    name: 'SmilePlus',
+    label: 'Sorriso Positivo',
+    category: 'spa',
+    tags: ['sorriso', 'alegria', 'bem-estar', 'felicidade'],
+    component: SmilePlus,
+  },
+  Users: {
+    name: 'Users',
+    label: 'Equipe Terapêutica / Dupla',
+    category: 'contato',
+    tags: ['terapeutas', 'equipe', 'dupla', 'atendimento', 'pessoas', 'andressa', 'luciana'],
+    component: Users,
+  },
+  VolumeX: {
+    name: 'VolumeX',
+    label: 'Silêncio / Mudo',
+    category: 'spa',
+    tags: ['silencio', 'mudo', 'sem som', 'paz', 'tranquilidade'],
+    component: VolumeX,
+  },
+  Plus: {
+    name: 'Plus',
+    label: 'Adicionar / Mais',
+    category: 'geral',
+    tags: ['mais', 'adicionar', 'novo', 'plus', 'incluir'],
+    component: Plus,
+  },
+  PlusCircle: {
+    name: 'PlusCircle',
+    label: 'Complemento / Adicional',
+    category: 'geral',
+    tags: ['complemento', 'mais', 'circulo', 'adicional', 'upgrade'],
+    component: PlusCircle,
+  },
+  ExternalLink: {
+    name: 'ExternalLink',
+    label: 'Link Externo',
+    category: 'geral',
+    tags: ['link', 'externo', 'abrir', 'janela'],
+    component: ExternalLink,
+  },
+  RotateCcw: {
+    name: 'RotateCcw',
+    label: 'Restaurar / Voltar',
+    category: 'geral',
+    tags: ['restaurar', 'recarregar', 'voltar', 'reset'],
+    component: RotateCcw,
+  },
+  X: {
+    name: 'X',
+    label: 'Fechar / Cancelar',
+    category: 'geral',
+    tags: ['fechar', 'cancelar', 'sair', 'x'],
+    component: X,
+  },
+  Menu: {
+    name: 'Menu',
+    label: 'Menu Hamburguer',
+    category: 'geral',
+    tags: ['menu', 'navegacao', 'linhas', 'gaveta'],
+    component: Menu,
+  },
+
+  // Setas & Navegação Direcional
+  ArrowRight: {
+    name: 'ArrowRight',
+    label: 'Seta Direita / Próximo',
+    category: 'setas',
+    tags: ['seta', 'direita', 'proximo', 'seguir', 'avancar', 'acao', 'conhecer'],
+    component: ArrowRight,
+  },
+  ArrowLeft: {
+    name: 'ArrowLeft',
+    label: 'Seta Esquerda / Voltar',
+    category: 'setas',
+    tags: ['seta', 'esquerda', 'voltar', 'anterior'],
+    component: ArrowLeft,
+  },
+  ArrowUp: {
+    name: 'ArrowUp',
+    label: 'Seta Cima / Topo',
+    category: 'setas',
+    tags: ['seta', 'cima', 'topo', 'subir', 'voltar ao topo', 'inicio'],
+    component: ArrowUp,
+  },
+  ArrowDown: {
+    name: 'ArrowDown',
+    label: 'Seta Baixo / Rolar',
+    category: 'setas',
+    tags: ['seta', 'baixo', 'descer', 'rolar'],
+    component: ArrowDown,
+  },
+  ArrowUpRight: {
+    name: 'ArrowUpRight',
+    label: 'Seta Diagonal Externa',
+    category: 'setas',
+    tags: ['seta', 'diagonal', 'externo', 'link', 'abrir', 'ir'],
+    component: ArrowUpRight,
+  },
+  ArrowDownRight: {
+    name: 'ArrowDownRight',
+    label: 'Seta Diagonal Baixo',
+    category: 'setas',
+    tags: ['seta', 'diagonal', 'baixo'],
+    component: ArrowDownRight,
+  },
+  ChevronRight: {
+    name: 'ChevronRight',
+    label: 'Chevron Direita',
+    category: 'setas',
+    tags: ['chevron', 'direita', 'avancar', 'proximo'],
+    component: ChevronRight,
+  },
+  ChevronLeft: {
+    name: 'ChevronLeft',
+    label: 'Chevron Esquerda',
+    category: 'setas',
+    tags: ['chevron', 'esquerda', 'anterior', 'voltar'],
+    component: ChevronLeft,
+  },
+  ChevronDown: {
+    name: 'ChevronDown',
+    label: 'Chevron Baixo / Expandir',
+    category: 'setas',
+    tags: ['chevron', 'baixo', 'abrir', 'expandir', 'acordeon', 'descer', 'rolar'],
+    component: ChevronDown,
+  },
+  ChevronUp: {
+    name: 'ChevronUp',
+    label: 'Chevron Cima / Recolher',
+    category: 'setas',
+    tags: ['chevron', 'cima', 'fechar', 'recolher', 'subir'],
+    component: ChevronUp,
+  },
 };
 
 export const ICON_CATEGORIES = [
@@ -588,5 +784,6 @@ export const ICON_CATEGORIES = [
   { key: 'luxo', label: 'Luxo & Presentes' },
   { key: 'tempo-local', label: 'Tempo & Local' },
   { key: 'contato', label: 'Contato & Social' },
+  { key: 'setas', label: 'Setas & Navegação' },
   { key: 'geral', label: 'Qualidade & Geral' },
 ] as const;

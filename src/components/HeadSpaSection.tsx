@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones } from 'lucide-react';
+import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { HEAD_SPA_STEPS, SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
@@ -8,13 +8,104 @@ import { trackWhatsAppClick } from '../services/analytics';
 import { EditableText } from './editor/EditableText';
 import { EditableImage } from './editor/EditableImage';
 import { EditableIcon } from './editor/EditableIcon';
+import { ConfirmPopover } from './editor/ConfirmPopover';
+import { useEditor } from '../context/EditorContext';
 import headSpaTerapeutaImg from '../assets/images/head-spa-terapeuta-acolhimento.webp';
 import headSpaJatosImg from '../assets/images/head-spa-jatos-agua.webp';
 import headSpaArcoDouradoImg from '../assets/images/head-spa-arco-dourado.webp';
 import headSpaDetalheImg from '../assets/images/head-spa-detalhe.webp';
 
+interface StepDetailItem {
+  id: string;
+  text: string;
+}
+
+const STORAGE_KEY_HEAD_SPA_DETAILS = 'malivie_head_spa_details_v2';
+
+const DEFAULT_STEP_DETAILS: Record<number, StepDetailItem[]> = {
+  0: HEAD_SPA_STEPS[0].details.map((d, i) => ({ id: `s0-d${i}`, text: d })),
+  1: HEAD_SPA_STEPS[1].details.map((d, i) => ({ id: `s1-d${i}`, text: d })),
+  2: HEAD_SPA_STEPS[2].details.map((d, i) => ({ id: `s2-d${i}`, text: d })),
+  3: HEAD_SPA_STEPS[3].details.map((d, i) => ({ id: `s3-d${i}`, text: d })),
+};
+
 export const HeadSpaSection: React.FC = () => {
+  const { isEditorActive } = useEditor();
   const [activeStep, setActiveStep] = useState<number>(0);
+
+  const [detailsByStep, setDetailsByStep] = useState<Record<number, StepDetailItem[]>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_HEAD_SPA_DETAILS);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch {
+      // fallback
+    }
+    return DEFAULT_STEP_DETAILS;
+  });
+
+  const [confirmDeleteDetailId, setConfirmDeleteDetailId] = useState<string | null>(null);
+
+  const handleAddDetail = (stepIdx: number) => {
+    const newId = `s${stepIdx}-d${Date.now()}`;
+    setDetailsByStep((prev) => {
+      const currentList = prev[stepIdx] || DEFAULT_STEP_DETAILS[stepIdx] || [];
+      const updated = {
+        ...prev,
+        [stepIdx]: [...currentList, { id: newId, text: 'Novo detalhe do procedimento' }],
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY_HEAD_SPA_DETAILS, JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+  };
+
+  const handleRemoveDetail = (stepIdx: number, detailId: string) => {
+    setDetailsByStep((prev) => {
+      const currentList = prev[stepIdx] || DEFAULT_STEP_DETAILS[stepIdx] || [];
+      const updated = {
+        ...prev,
+        [stepIdx]: currentList.filter((item) => item.id !== detailId),
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY_HEAD_SPA_DETAILS, JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+    setConfirmDeleteDetailId(null);
+  };
+
+  const handleMoveDetail = (stepIdx: number, detailId: string, direction: 'up' | 'down') => {
+    setDetailsByStep((prev) => {
+      const currentList = [...(prev[stepIdx] || DEFAULT_STEP_DETAILS[stepIdx] || [])];
+      const index = currentList.findIndex((item) => item.id === detailId);
+      if (index === -1) return prev;
+
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= currentList.length) return prev;
+
+      const temp = currentList[index];
+      currentList[index] = currentList[targetIndex];
+      currentList[targetIndex] = temp;
+
+      const updated = {
+        ...prev,
+        [stepIdx]: currentList,
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY_HEAD_SPA_DETAILS, JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+  };
 
   const stepImages = [
     headSpaTerapeutaImg,
@@ -88,7 +179,7 @@ export const HeadSpaSection: React.FC = () => {
             transition={{ duration: 0.85, delay: 0.3, ease: EASE_ORGANIC }}
             className="mt-6 p-5 rounded-2xl bg-[#18251E]/90 border border-[#7A8B7B]/30 text-xs sm:text-sm text-[#F3EFE6]/90 max-w-3xl mx-auto leading-relaxed flex items-start gap-3 text-left shadow-lg"
           >
-            <Headphones className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+            <EditableIcon id="headSpa.quote.icon" defaultIcon="Headphones" className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
             <p className="font-sans leading-relaxed">
               <EditableText
                 id="headSpa.quote"
@@ -131,7 +222,7 @@ export const HeadSpaSection: React.FC = () => {
                   className="absolute top-4 left-4 z-30 pointer-events-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121C16]/80 backdrop-blur-md border border-[#F3EFE6]/20 text-[11px] text-[#F3EFE6]"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                  <EditableIcon id="headSpa.photoBadge.icon" defaultIcon="Sparkles" className="w-3 h-3 text-[#D4AF37]" />
                   <EditableText id="headSpa.photoBadge" defaultText="Arco Hídrico Terapêutico ASMR" as="span">
                     Arco Hídrico Terapêutico ASMR
                   </EditableText>
@@ -216,12 +307,15 @@ export const HeadSpaSection: React.FC = () => {
               return (
                 <div
                   key={step.number}
-                  className={`rounded-2xl transition-all duration-300 border overflow-hidden ${
+                  className={`rounded-2xl transition-all duration-400 border overflow-hidden relative group/step ${
                     isOpen
-                      ? 'bg-[#18251E] border-[#7A8B7B]/60 shadow-[0_10px_30px_rgba(0,0,0,0.35)]'
-                      : 'bg-[#18251E]/40 border-[#F3EFE6]/10 hover:border-[#F3EFE6]/25'
+                      ? 'bg-[#18251E] border-[#D4AF37]/50 shadow-[0_15px_35px_rgba(0,0,0,0.45),_0_0_20px_rgba(212,175,55,0.08)] -translate-y-0.5'
+                      : 'bg-[#18251E]/40 border-[#F3EFE6]/10 hover:border-[#7A8B7B]/50 hover:bg-[#18251E]/70 hover:-translate-y-0.5'
                   }`}
                 >
+                  {/* Linha dourada suave no topo */}
+                  <div className={`absolute inset-x-6 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent transition-opacity duration-400 pointer-events-none ${isOpen ? 'opacity-100' : 'opacity-0 group-hover/step:opacity-70'}`} />
+
                   <button
                     type="button"
                     onClick={() => setActiveStep(idx)}
@@ -287,20 +381,108 @@ export const HeadSpaSection: React.FC = () => {
                                 Detalhes do Procedimento:
                               </EditableText>
                             </span>
+
                             <ul className="grid grid-cols-1 gap-2">
-                              {step.details.map((detail, dIdx) => (
-                                <li key={dIdx} className="flex items-start gap-2.5 text-xs text-[#F3EFE6]/75">
-                                  <Check className="w-3.5 h-3.5 text-[#7A8B7B] flex-shrink-0 mt-0.5" />
-                                  <EditableText
-                                    id={`headSpa.step.${idx}.detail.${dIdx}`}
-                                    defaultText={detail}
-                                    as="span"
-                                  >
-                                    {detail}
-                                  </EditableText>
+                              {(detailsByStep[idx] || DEFAULT_STEP_DETAILS[idx] || []).map((item, itemIdx, currentArr) => (
+                                <li
+                                  key={item.id}
+                                  className={`flex items-start gap-2.5 text-xs text-[#F3EFE6]/75 group/detail ${
+                                    confirmDeleteDetailId === item.id ? 'relative z-50 overflow-visible' : 'relative z-10'
+                                  }`}
+                                >
+                                  <EditableIcon
+                                    id={`headSpa.detail.${item.id}.icon`}
+                                    defaultIcon="Check"
+                                    className="w-3.5 h-3.5 text-[#7A8B7B] flex-shrink-0 mt-0.5"
+                                  />
+                                  <span className="flex-1">
+                                    <EditableText
+                                      id={`headSpa.detail.${item.id}.text`}
+                                      defaultText={item.text}
+                                      as="span"
+                                    >
+                                      {item.text}
+                                    </EditableText>
+                                  </span>
+
+                                  {isEditorActive && (
+                                    <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
+                                      {/* Setinhas de Direção / Reordenação (Pílula dourada idêntica ao card) */}
+                                      <div className="flex items-center gap-0.5 bg-[#121C16]/90 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-[#D4AF37]/40 shadow-md">
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleMoveDetail(idx, item.id, 'up');
+                                          }}
+                                          disabled={itemIdx === 0}
+                                          className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] disabled:opacity-20 disabled:hover:text-[#F3EFE6]/80 hover:bg-white/10 transition-all cursor-pointer"
+                                          title="Mover para cima"
+                                          aria-label="Mover para cima"
+                                        >
+                                          <ArrowUp className="w-3 h-3" />
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleMoveDetail(idx, item.id, 'down');
+                                          }}
+                                          disabled={itemIdx === currentArr.length - 1}
+                                          className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] disabled:opacity-20 disabled:hover:text-[#F3EFE6]/80 hover:bg-white/10 transition-all cursor-pointer"
+                                          title="Mover para baixo"
+                                          aria-label="Mover para baixo"
+                                        >
+                                          <ArrowDown className="w-3 h-3" />
+                                        </button>
+                                      </div>
+
+                                      {/* Excluir Detalhe (Botão circular idêntico ao card) */}
+                                      <div className={`relative ${confirmDeleteDetailId === item.id ? 'z-50' : ''}`}>
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setConfirmDeleteDetailId((prev) => (prev === item.id ? null : item.id));
+                                          }}
+                                          className="p-1.5 rounded-full border shadow-md transition-all cursor-pointer bg-[#121C16]/85 hover:bg-red-950 text-[#94A595] hover:text-red-200 border-white/20 hover:border-red-500/50"
+                                          title="Remover este detalhe"
+                                          aria-label="Remover este detalhe"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+
+                                        <ConfirmPopover
+                                          isOpen={confirmDeleteDetailId === item.id}
+                                          onConfirm={() => handleRemoveDetail(idx, item.id)}
+                                          onCancel={() => setConfirmDeleteDetailId(null)}
+                                          message="Deseja excluir?"
+                                          position="bottom"
+                                          align="right"
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
                                 </li>
                               ))}
                             </ul>
+
+                            {isEditorActive && (
+                              <div className="pt-1">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAddDetail(idx);
+                                  }}
+                                  className="w-full py-2 px-3 rounded-xl border border-dashed border-[#D4AF37]/40 hover:border-[#D4AF37] bg-[#D4AF37]/5 hover:bg-[#D4AF37]/15 text-[#D4AF37] text-xs font-sans font-medium flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                  <span>Adicionar mais detalhe a esta etapa</span>
+                                </button>
+                              </div>
+                            )}
                           </div>
 
                           <div className="pt-2 flex items-center justify-between text-xs border-t border-[#F3EFE6]/5">
@@ -326,58 +508,167 @@ export const HeadSpaSection: React.FC = () => {
             <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-[#18251E] border border-[#D4AF37]/30 space-y-4 shadow-lg">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F3EFE6]/10 pb-3">
                 <span className="text-xs uppercase font-sans font-bold tracking-widest text-[#D4AF37]">
-                  Escolha Sua Experiência Head SPA
+                  <EditableText
+                    id="headSpa.pricing.headerTitle"
+                    defaultText="Escolha Sua Experiência Head SPA"
+                    as="span"
+                  >
+                    Escolha Sua Experiência Head SPA
+                  </EditableText>
                 </span>
                 <span className="text-[11px] text-[#7A8B7B] font-medium">
-                  Aromaterapia Inclusa • Escalda-pés cortesia com antecedência*
+                  <EditableText
+                    id="headSpa.pricing.headerSubtitle"
+                    defaultText="Aromaterapia Inclusa • Escalda-pés cortesia com antecedência*"
+                    as="span"
+                  >
+                    Aromaterapia Inclusa • Escalda-pés cortesia com antecedência*
+                  </EditableText>
                 </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#F3EFE6]/10 flex flex-col justify-between">
                   <div>
-                    <span className="text-xs font-semibold text-[#F3EFE6] block">Head Spa Essencial</span>
-                    <span className="text-[11px] text-[#F3EFE6]/60 block mt-0.5">Couro cabeludo & fios com ozonioterapia</span>
+                    <EditableText
+                      id="headSpa.pricing.card1.name"
+                      defaultText="Head Spa Essencial"
+                      as="span"
+                      className="text-xs font-semibold text-[#F3EFE6] block"
+                    >
+                      Head Spa Essencial
+                    </EditableText>
+                    <EditableText
+                      id="headSpa.pricing.card1.desc"
+                      defaultText="Couro cabeludo & fios com ozonioterapia"
+                      as="span"
+                      className="text-[11px] text-[#F3EFE6]/60 block mt-0.5"
+                    >
+                      Couro cabeludo & fios com ozonioterapia
+                    </EditableText>
                   </div>
                   <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
-                    <span className="text-[11px] text-[#7A8B7B]">45' min</span>
-                    <span className="text-sm font-serif font-bold text-[#D4AF37]">R$ 239,00</span>
+                    <EditableText
+                      id="headSpa.pricing.card1.duration"
+                      defaultText="45' min"
+                      as="span"
+                      className="text-[11px] text-[#7A8B7B]"
+                    >
+                      45' min
+                    </EditableText>
+                    <EditableText
+                      id="headSpa.pricing.card1.price"
+                      defaultText="R$ 239,00"
+                      as="span"
+                      className="text-sm font-serif font-bold text-[#D4AF37]"
+                    >
+                      R$ 239,00
+                    </EditableText>
                   </div>
                 </div>
 
                 <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#7A8B7B]/40 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs font-semibold text-[#F3EFE6] block">Head Spa Harmonia</span>
+                      <EditableText
+                        id="headSpa.pricing.card2.name"
+                        defaultText="Head Spa Harmonia"
+                        as="span"
+                        className="text-xs font-semibold text-[#F3EFE6] block"
+                      >
+                        Head Spa Harmonia
+                      </EditableText>
                     </div>
-                    <span className="text-[11px] text-[#F3EFE6]/60 block mt-0.5">Essencial + Revitalização Facial</span>
+                    <EditableText
+                      id="headSpa.pricing.card2.desc"
+                      defaultText="Essencial + Revitalização Facial"
+                      as="span"
+                      className="text-[11px] text-[#F3EFE6]/60 block mt-0.5"
+                    >
+                      Essencial + Revitalização Facial
+                    </EditableText>
                   </div>
                   <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
-                    <span className="text-[11px] text-[#7A8B7B]">80' min</span>
-                    <span className="text-sm font-serif font-bold text-[#D4AF37]">R$ 349,00</span>
+                    <EditableText
+                      id="headSpa.pricing.card2.duration"
+                      defaultText="80' min"
+                      as="span"
+                      className="text-[11px] text-[#7A8B7B]"
+                    >
+                      80' min
+                    </EditableText>
+                    <EditableText
+                      id="headSpa.pricing.card2.price"
+                      defaultText="R$ 349,00"
+                      as="span"
+                      className="text-sm font-serif font-bold text-[#D4AF37]"
+                    >
+                      R$ 349,00
+                    </EditableText>
                   </div>
                 </div>
 
                 <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#D4AF37]/40 flex flex-col justify-between relative overflow-hidden">
                   <div className="absolute top-0 right-0 px-2 py-0.5 bg-[#D4AF37] text-[#121C16] text-[9px] font-bold uppercase tracking-wider rounded-bl">
-                    Completo
+                    <EditableText
+                      id="headSpa.pricing.card3.badge"
+                      defaultText="Completo"
+                      as="span"
+                      darkBorder={true}
+                    >
+                      Completo
+                    </EditableText>
                   </div>
                   <div>
-                    <span className="text-xs font-semibold text-[#F3EFE6] block">Head Spa Plenitude</span>
-                    <span className="text-[11px] text-[#F3EFE6]/60 block mt-0.5">Head Spa + Facial + Esfoliação + Pedras Quentes</span>
+                    <EditableText
+                      id="headSpa.pricing.card3.name"
+                      defaultText="Head Spa Plenitude"
+                      as="span"
+                      className="text-xs font-semibold text-[#F3EFE6] block"
+                    >
+                      Head Spa Plenitude
+                    </EditableText>
+                    <EditableText
+                      id="headSpa.pricing.card3.desc"
+                      defaultText="Head Spa + Facial + Esfoliação + Pedras Quentes"
+                      as="span"
+                      className="text-[11px] text-[#F3EFE6]/60 block mt-0.5"
+                    >
+                      Head Spa + Facial + Esfoliação + Pedras Quentes
+                    </EditableText>
                   </div>
                   <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
-                    <span className="text-[11px] text-[#7A8B7B]">160' min</span>
-                    <span className="text-sm font-serif font-bold text-[#D4AF37]">R$ 577,00</span>
+                    <EditableText
+                      id="headSpa.pricing.card3.duration"
+                      defaultText="160' min"
+                      as="span"
+                      className="text-[11px] text-[#7A8B7B]"
+                    >
+                      160' min
+                    </EditableText>
+                    <EditableText
+                      id="headSpa.pricing.card3.price"
+                      defaultText="R$ 577,00"
+                      as="span"
+                      className="text-sm font-serif font-bold text-[#D4AF37]"
+                    >
+                      R$ 577,00
+                    </EditableText>
                   </div>
                 </div>
               </div>
 
               {/* Special Upsell Callout from Catalog page 10 */}
               <div className="p-3 rounded-xl bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-2.5 text-xs text-[#F3EFE6]/90">
-                <Sparkles className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
-                <span className="font-sans leading-tight">
-                  <strong className="text-[#D4AF37]">Dica Especial:</strong> Adicione o Spa dos Pés por <strong>50% do valor</strong> e torne sua experiência ainda mais especial.
+                <EditableIcon id="headSpa.upsell.icon" defaultIcon="Sparkles" className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
+                <span className="font-sans leading-tight flex-1">
+                  <EditableText
+                    id="headSpa.pricing.upsell"
+                    defaultText="**Dica Especial:** Adicione o Spa dos Pés por **50% do valor** e torne sua experiência ainda mais especial."
+                    as="span"
+                  >
+                    **Dica Especial:** Adicione o Spa dos Pés por **50% do valor** e torne sua experiência ainda mais especial.
+                  </EditableText>
                 </span>
               </div>
             </div>

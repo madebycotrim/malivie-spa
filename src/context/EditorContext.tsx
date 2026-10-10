@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { ServiceItem, FAQItem, ServiceCategory } from '../types';
 import { SERVICES_LIST, FAQ_ITEMS, AVAILABLE_SERVICE_IMAGES } from '../data/spaData';
+import { fetchD1Overrides, saveD1Override, deleteD1Override } from '../services/d1ContentService';
+import { verifyRemotePassword, changeRemotePassword } from '../services/authService';
+
+export type D1SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
 
 interface EditorContextType {
   isEditorActive: boolean;
@@ -8,19 +12,24 @@ interface EditorContextType {
   setEditorActive: (active: boolean) => void;
   overrides: Record<string, string>;
   getText: (id: string, defaultText: string) => string;
-  updateText: (id: string, newText: string) => void;
+  updateText: (id: string, newText: string) => Promise<boolean>;
   resetText: (id: string) => void;
   resetAll: () => void;
   isModified: (id: string) => boolean;
   modifiedCount: number;
-  isExportModalOpen: boolean;
-  setExportModalOpen: (open: boolean) => void;
+
+  // Sincronização Cloudflare D1
+  isD1Connected: boolean;
+  syncStatus: D1SyncStatus;
 
   // Autenticação & Modal de Senha
   isPasswordModalOpen: boolean;
   setPasswordModalOpen: (open: boolean) => void;
+  isChangePasswordModalOpen: boolean;
+  setChangePasswordModalOpen: (open: boolean) => void;
   requestOpenEditor: () => void;
   verifyPassword: (password: string) => Promise<boolean>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
 
   // Gerenciamento de Cards / Rituais
   services: ServiceItem[];
@@ -60,7 +69,7 @@ interface EditorContextType {
 const STORAGE_KEY_OVERRIDES = 'malivie_editor_content_v2';
 const STORAGE_KEY_IMAGES = 'malivie_editor_images_v1';
 const STORAGE_KEY_ICONS = 'malivie_editor_icons_v1';
-const STORAGE_KEY_SERVICES = 'malivie_editor_services_v2';
+const STORAGE_KEY_SERVICES = 'malivie_editor_services_v3';
 const STORAGE_KEY_FAQS = 'malivie_editor_faqs_v2';
 
 // Hash SHA-256 para senha (malivie2026 e malivie)
@@ -133,8 +142,10 @@ const playZenChime = (type: 'activate' | 'deactivate' | 'save') => {
 
 export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isEditorActive, setIsEditorActive] = useState(false);
-  const [isExportModalOpen, setExportModalOpen] = useState(false);
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [isD1Connected, setIsD1Connected] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<D1SyncStatus>('idle');
 
   // 1. Text Overrides
   const [overrides, setOverrides] = useState<Record<string, string>>(() => {
@@ -146,6 +157,39 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
     return {};
   });
+
+  // Inicialização e sincronização com Cloudflare D1
+  useEffect(() => {
+    let isMounted = true;
+    const syncRemoteOverrides = async () => {
+      try {
+        const remote = await fetchD1Overrides();
+        if (!isMounted) return;
+        if (remote && Object.keys(remote).length > 0) {
+          setOverrides((prev) => {
+            const merged = { ...prev, ...remote };
+            try {
+              localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(merged));
+            } catch (e) {
+              console.warn('[EditorContext] Falha ao gravar cache local:', e);
+            }
+            return merged;
+          });
+          setIsD1Connected(true);
+          setSyncStatus('synced');
+        } else if (remote !== null) {
+          setIsD1Connected(true);
+          setSyncStatus('idle');
+        }
+      } catch (err) {
+        console.warn('[EditorContext] Falha ao carregar textos do D1:', err);
+      }
+    };
+    syncRemoteOverrides();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // 2. Services List
   const [services, setServices] = useState<ServiceItem[]>(() => {
@@ -208,6 +252,16 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const verifyPassword = useCallback(async (password: string): Promise<boolean> => {
     try {
+      // 1. Tenta validação remota no Cloudflare D1
+      const isRemoteValid = await verifyRemotePassword(password);
+      if (isRemoteValid) {
+        setIsEditorActive(true);
+        setPasswordModalOpen(false);
+        playZenChime('activate');
+        return true;
+      }
+
+      // 2. Fallback de contingência caso servidor indisponível
       const hash = await computeSha256(password.trim());
       const envHash = import.meta.env.VITE_EDITOR_PASSWORD_HASH;
       const isMatch = ALLOWED_PASSWORD_HASHES.includes(hash) || (envHash && hash === envHash);
@@ -219,10 +273,26 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return true;
       }
     } catch (e) {
-      console.error('Erro ao verificar senha:', e);
+      console.error('[EditorContext] Erro ao verificar senha:', e);
     }
     return false;
   }, []);
+
+  const changePassword = useCallback(
+    async (currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> => {
+      try {
+        const result = await changeRemotePassword(currentPassword, newPassword);
+        if (result.success) {
+          playZenChime('save');
+        }
+        return result;
+      } catch (err: unknown) {
+        console.error('[EditorContext] Erro ao alterar senha:', err);
+        return { success: false, error: 'Falha na comunicação com o servidor' };
+      }
+    },
+    []
+  );
 
   const toggleEditor = useCallback(() => {
     setIsEditorActive((prev) => {
@@ -248,7 +318,10 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 
   const updateText = useCallback(
-    (id: string, newText: string) => {
+    async (id: string, newText: string): Promise<boolean> => {
+      const previousValue = overrides[id];
+
+      // Aplica alteração inicialmente
       setOverrides((prev) => {
         const next = { ...prev, [id]: newText };
         try {
@@ -258,9 +331,51 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
         return next;
       });
-      playZenChime('save');
+
+      // Ativa status de sincronização
+      setSyncStatus('syncing');
+
+      try {
+        const ok = await saveD1Override(id, newText);
+        if (ok) {
+          setIsD1Connected(true);
+          setSyncStatus('synced');
+          playZenChime('save');
+          setTimeout(() => {
+            setSyncStatus((current) => (current === 'synced' ? 'idle' : current));
+          }, 2500);
+          return true;
+        } else {
+          throw new Error('Falha ao persistir no Cloudflare D1');
+        }
+      } catch (err: unknown) {
+        console.warn(`[EditorContext] Erro ao sincronizar ${id} no D1:`, err);
+
+        // Desfaz a alteração imediatamente: reverte para previousValue
+        setOverrides((prev) => {
+          const reverted = { ...prev };
+          if (previousValue !== undefined) {
+            reverted[id] = previousValue;
+          } else {
+            delete reverted[id];
+          }
+          try {
+            localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(reverted));
+          } catch (e) {
+            console.warn('Falha ao atualizar localStorage após rollback:', e);
+          }
+          return reverted;
+        });
+
+        setSyncStatus('error');
+        playZenChime('deactivate');
+        setTimeout(() => {
+          setSyncStatus((current) => (current === 'error' ? 'idle' : current));
+        }, 3500);
+        return false;
+      }
     },
-    []
+    [overrides]
   );
 
   const resetText = useCallback(
@@ -275,6 +390,16 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
         return next;
       });
+
+      // Remove override no Cloudflare D1
+      setSyncStatus('syncing');
+      deleteD1Override(id)
+        .then((ok) => {
+          if (ok) setSyncStatus('synced');
+        })
+        .catch((err) => {
+          console.warn(`[EditorContext] Erro ao deletar ${id} no D1:`, err);
+        });
     },
     []
   );
@@ -560,7 +685,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setServices(SERVICES_LIST);
     try {
       localStorage.removeItem(STORAGE_KEY_SERVICES);
-    } catch {}
+    } catch (e) {
+      console.warn('[EditorContext] Falha ao limpar STORAGE_KEY_SERVICES:', e);
+    }
     playZenChime('deactivate');
   }, []);
 
@@ -629,11 +756,14 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setFaqs(FAQ_ITEMS);
     try {
       localStorage.removeItem(STORAGE_KEY_FAQS);
-    } catch {}
+    } catch (e) {
+      console.warn('[EditorContext] Falha ao limpar STORAGE_KEY_FAQS:', e);
+    }
     playZenChime('deactivate');
   }, []);
 
   const resetAll = useCallback(() => {
+    const idsToDelete = Object.keys(overrides);
     setOverrides({});
     setImageOverrides({});
     setIconOverrides({});
@@ -645,11 +775,21 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       localStorage.removeItem(STORAGE_KEY_ICONS);
       localStorage.removeItem(STORAGE_KEY_SERVICES);
       localStorage.removeItem(STORAGE_KEY_FAQS);
-    } catch {
-      // Ignora falhas de remoção
+    } catch (e) {
+      console.warn('[EditorContext] Falha ao limpar chaves do localStorage:', e);
     }
     playZenChime('deactivate');
-  }, []);
+
+    if (idsToDelete.length > 0) {
+      setSyncStatus('syncing');
+      Promise.all(idsToDelete.map((id) => deleteD1Override(id)))
+        .then(() => setSyncStatus('synced'))
+        .catch((err) => {
+          console.warn('[EditorContext] Erro ao resetar itens no Cloudflare D1:', err);
+          setSyncStatus('error');
+        });
+    }
+  }, [overrides]);
 
   const isModified = useCallback(
     (id: string) => {
@@ -715,6 +855,8 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         resetAll,
         isModified,
         modifiedCount,
+        isD1Connected,
+        syncStatus,
         imageOverrides,
         getImage,
         updateImage,
@@ -725,12 +867,13 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         updateIcon,
         resetIcon,
         isIconModified,
-        isExportModalOpen,
-        setExportModalOpen,
         isPasswordModalOpen,
         setPasswordModalOpen,
+        isChangePasswordModalOpen,
+        setChangePasswordModalOpen,
         requestOpenEditor,
         verifyPassword,
+        changePassword,
         services,
         addService,
         removeService,

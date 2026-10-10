@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Pencil, Check } from 'lucide-react';
+import { Pencil, Check, AlertCircle } from 'lucide-react';
 import { useEditor } from '../../context/EditorContext';
 
 interface HoveredTarget {
@@ -13,7 +13,7 @@ export const GlobalTextEditorOverlay: React.FC = () => {
   const { isEditorActive, updateText, overrides } = useEditor();
   const [hovered, setHovered] = useState<HoveredTarget | null>(null);
   const [activeEditingEl, setActiveEditingEl] = useState<HTMLElement | null>(null);
-  const [savedBadge, setSavedBadge] = useState<{ x: number; y: number } | null>(null);
+  const [savedBadge, setSavedBadge] = useState<{ x: number; y: number; type: 'success' | 'error' } | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   // Gera uma chave única e estável para qualquer elemento no DOM
@@ -52,8 +52,16 @@ export const GlobalTextEditorOverlay: React.FC = () => {
       const target = e.target as HTMLElement;
       if (!target || !(target instanceof HTMLElement)) return;
 
-      // Ignora elementos da UI do editor
-      if (target.closest('.editor-ui') || target.closest('[data-editor-ui]')) {
+      // Ignora elementos da UI do editor, ícones e imagens editáveis
+      if (
+        target.closest('.editor-ui') ||
+        target.closest('[data-editor-ui]') ||
+        target.closest('[data-editable-icon]') ||
+        target.closest('.group\\/icon-edit') ||
+        target.closest('[data-editable-image]') ||
+        target.closest('.group\\/image-edit') ||
+        target.closest('#icon-picker-modal')
+      ) {
         setHovered(null);
         return;
       }
@@ -170,11 +178,18 @@ export const GlobalTextEditorOverlay: React.FC = () => {
 
       const updatedText = el.innerText.trim();
       if (updatedText && updatedText !== initialText) {
-        updateText(id, updatedText);
-
-        const rect = el.getBoundingClientRect();
-        setSavedBadge({ x: rect.left + rect.width / 2, y: rect.top - 10 });
-        setTimeout(() => setSavedBadge(null), 1500);
+        updateText(id, updatedText).then((success) => {
+          const rect = el.getBoundingClientRect();
+          if (success) {
+            setSavedBadge({ x: rect.left + rect.width / 2, y: rect.top - 10, type: 'success' });
+            setTimeout(() => setSavedBadge(null), 2000);
+          } else {
+            // Reverte imediatamente o texto no DOM
+            el.innerText = initialText;
+            setSavedBadge({ x: rect.left + rect.width / 2, y: rect.top - 10, type: 'error' });
+            setTimeout(() => setSavedBadge(null), 3000);
+          }
+        });
       } else if (!updatedText) {
         el.innerText = initialText;
       }
@@ -205,15 +220,31 @@ export const GlobalTextEditorOverlay: React.FC = () => {
       const target = e.target as HTMLElement;
       if (!target || !(target instanceof HTMLElement)) return;
 
-      // Se clicou na UI do editor, deixa passar normalmente
-      if (target.closest('.editor-ui') || target.closest('[data-editor-ui]')) return;
+      // Se clicou na UI do editor, ícone editável, imagem editável ou modal, deixa o componente lidar
+      if (
+        target.closest('.editor-ui') ||
+        target.closest('[data-editor-ui]') ||
+        target.closest('[data-editable-icon]') ||
+        target.closest('.group\\/icon-edit') ||
+        target.closest('[data-editable-image]') ||
+        target.closest('.group\\/image-edit') ||
+        target.closest('#icon-picker-modal')
+      ) {
+        return;
+      }
 
       // Se clicou em um EditableText gerenciado pelo componente React, deixa o componente lidar
       if (target.closest('.group\\/editor')) return;
 
       // Se clicou em um link ou botão contendo texto, previne a ação de redirecionar para podermos editar
       const clickableParent = target.closest('a, button');
-      if (clickableParent && !clickableParent.closest('.editor-ui')) {
+      if (
+        clickableParent &&
+        !clickableParent.closest('.editor-ui') &&
+        !clickableParent.closest('[data-editor-ui]') &&
+        !target.closest('[data-editable-icon]') &&
+        !target.closest('.group\\/icon-edit')
+      ) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -244,21 +275,51 @@ export const GlobalTextEditorOverlay: React.FC = () => {
   if (!isEditorActive) return null;
 
   return (
-    <div ref={overlayRef} className="editor-ui pointer-events-none fixed inset-0 z-[9980]">
-      {/* Moldura dourada flutuante ao redor do elemento em hover */}
-      {hovered && !activeEditingEl && (
-        <div
-          style={{
-            position: 'fixed',
-            top: hovered.rect.top - 2,
-            left: hovered.rect.left - 2,
-            width: hovered.rect.width + 4,
-            height: hovered.rect.height + 4,
-          }}
-          className="border-2 border-dashed border-[#D4AF37] bg-[#D4AF37]/5 rounded pointer-events-none transition-all duration-75 shadow-[0_0_15px_rgba(212,175,55,0.25)]"
-        >
-          {/* Botão de Lápis Flutuante */}
-          <button
+    <div ref={overlayRef} className="editor-ui pointer-events-none fixed inset-0 z-[99995]">
+      {/* Moldura flutuante ao redor do elemento em hover */}
+      {hovered && !activeEditingEl && (() => {
+        let isGold = false;
+        let curr: HTMLElement | null = hovered.element;
+        while (curr && curr !== document.body) {
+          const cls = curr.className || '';
+          if (typeof cls === 'string' && (cls.includes('#D4AF37') || cls.includes('amber') || cls.includes('yellow') || cls.includes('bg-gold'))) {
+            isGold = true;
+            break;
+          }
+          try {
+            const bg = window.getComputedStyle(curr).backgroundColor;
+            if (
+              bg.includes('212, 175, 55') ||
+              bg.includes('212, 175') ||
+              bg.includes('234, 179, 8') ||
+              bg.includes('245, 158, 11')
+            ) {
+              isGold = true;
+              break;
+            }
+          } catch {
+            // ignore
+          }
+          curr = curr.parentElement;
+        }
+
+        return (
+          <div
+            style={{
+              position: 'fixed',
+              top: hovered.rect.top - 2,
+              left: hovered.rect.left - 2,
+              width: hovered.rect.width + 4,
+              height: hovered.rect.height + 4,
+            }}
+            className={`border-2 border-dashed ${
+              isGold
+                ? 'border-[#705312] bg-[#705312]/15 shadow-[0_0_15px_rgba(112,83,18,0.35)]'
+                : 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+            } rounded pointer-events-none transition-all duration-75`}
+          >
+            {/* Botão de Lápis Flutuante */}
+            <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
@@ -275,10 +336,11 @@ export const GlobalTextEditorOverlay: React.FC = () => {
           >
             <Pencil className="w-3 h-3" />
           </button>
-        </div>
-      )}
+          </div>
+        );
+      })()}
 
-      {/* Badge Flutuante de Salvo! */}
+      {/* Badge Flutuante de Salvo ou Erro */}
       {savedBadge && (
         <div
           style={{
@@ -287,10 +349,23 @@ export const GlobalTextEditorOverlay: React.FC = () => {
             top: savedBadge.y,
             transform: 'translate(-50%, -100%)',
           }}
-          className="bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/80 text-[11px] font-sans font-semibold px-2.5 py-1 rounded-full shadow-2xl flex items-center gap-1 pointer-events-none animate-in fade-in zoom-in duration-200 z-[9999]"
+          className={`text-[11px] font-sans font-semibold px-2.5 py-1 rounded-full shadow-2xl flex items-center gap-1 pointer-events-none animate-in fade-in zoom-in duration-200 z-[9999] ${
+            savedBadge.type === 'success'
+              ? 'bg-[#18251E] text-emerald-400 border border-emerald-500/80'
+              : 'bg-red-950/95 text-rose-300 border border-red-500/80'
+          }`}
         >
-          <Check className="w-3.5 h-3.5 text-[#D4AF37]" />
-          Salvo!
+          {savedBadge.type === 'success' ? (
+            <>
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Salvo!</span>
+            </>
+          ) : (
+            <>
+              <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+              <span>Erro ao salvar (desfeito)!</span>
+            </>
+          )}
         </div>
       )}
     </div>

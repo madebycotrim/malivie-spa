@@ -119,11 +119,212 @@ function assetUploadPlugin(): Plugin {
                 fileName: newFileName,
               })
             )
-          } catch (err: any) {
+          } catch (err: unknown) {
             console.error('[Upload] Erro ao processar upload:', err)
             res.statusCode = 500
             res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify({ error: err.message || 'Erro interno no upload' }))
+            res.end(JSON.stringify({ error: err instanceof Error ? err.message : 'Erro interno no upload' }))
+          }
+        })
+      })
+    },
+  }
+}
+
+function d1LocalMiddlewarePlugin(): Plugin {
+  return {
+    name: 'vite-plugin-d1-local',
+    configureServer(server) {
+      const storageFile = path.resolve(process.cwd(), 'src/data/d1-local-storage.json')
+
+      const loadStorage = (): Record<string, string> => {
+        try {
+          if (fs.existsSync(storageFile)) {
+            const raw = fs.readFileSync(storageFile, 'utf-8')
+            return JSON.parse(raw)
+          }
+        } catch (e) {
+          console.warn('[D1 Local Dev] Falha ao carregar d1-local-storage.json:', e)
+        }
+        return {}
+      }
+
+      const saveStorage = (data: Record<string, string>) => {
+        try {
+          const dir = path.dirname(storageFile)
+          if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+          fs.writeFileSync(storageFile, JSON.stringify(data, null, 2), 'utf-8')
+        } catch (e) {
+          console.error('[D1 Local Dev] Falha ao salvar d1-local-storage.json:', e)
+        }
+      }
+
+      server.middlewares.use('/api/content', async (req, res) => {
+        res.setHeader('Content-Type', 'application/json')
+
+        if (req.method === 'GET') {
+          const overrides = loadStorage()
+          res.statusCode = 200
+          res.end(JSON.stringify({ success: true, overrides, count: Object.keys(overrides).length }))
+          return
+        }
+
+        if (req.method === 'POST') {
+          let body = ''
+          req.on('data', (chunk) => {
+            body += chunk
+          })
+          req.on('end', () => {
+            try {
+              const parsed = JSON.parse(body || '{}')
+              const current = loadStorage()
+
+              if (parsed.overrides && typeof parsed.overrides === 'object') {
+                Object.assign(current, parsed.overrides)
+                saveStorage(current)
+                res.statusCode = 200
+                res.end(JSON.stringify({ success: true, updated: Object.keys(parsed.overrides).length }))
+                return
+              }
+
+              if (parsed.id && typeof parsed.content === 'string') {
+                current[parsed.id] = parsed.content
+                saveStorage(current)
+                res.statusCode = 200
+                res.end(JSON.stringify({ success: true, id: parsed.id }))
+                return
+              }
+
+              res.statusCode = 400
+              res.end(JSON.stringify({ success: false, error: 'Parâmetros inválidos' }))
+            } catch (err: unknown) {
+              console.error('[D1 Local Dev POST Error]:', err)
+              res.statusCode = 500
+              res.end(JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' }))
+            }
+          })
+          return
+        }
+
+        if (req.method === 'DELETE') {
+          let body = ''
+          req.on('data', (chunk) => {
+            body += chunk
+          })
+          req.on('end', () => {
+            try {
+              const parsed = JSON.parse(body || '{}')
+              const current = loadStorage()
+              if (parsed.id && typeof parsed.id === 'string') {
+                delete current[parsed.id]
+                saveStorage(current)
+                res.statusCode = 200
+                res.end(JSON.stringify({ success: true, id: parsed.id }))
+                return
+              }
+              res.statusCode = 400
+              res.end(JSON.stringify({ success: false, error: 'ID inválido' }))
+            } catch (err: unknown) {
+              console.error('[D1 Local Dev DELETE Error]:', err)
+              res.statusCode = 500
+              res.end(JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' }))
+            }
+          })
+          return
+        }
+
+        res.statusCode = 405
+        res.end(JSON.stringify({ success: false, error: 'Método não permitido' }))
+      })
+
+      async function hashLocalPassword(password: string, saltHex?: string) {
+        const enc = new TextEncoder()
+        const salt = saltHex
+          ? Uint8Array.from(saltHex.match(/.{1,2}/g) || [], (b) => parseInt(b, 16))
+          : crypto.getRandomValues(new Uint8Array(16))
+        const keyMaterial = await crypto.subtle.importKey(
+          'raw',
+          enc.encode(password),
+          { name: 'PBKDF2' },
+          false,
+          ['deriveBits']
+        )
+        const derivedBits = await crypto.subtle.deriveBits(
+          { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+          keyMaterial,
+          256
+        )
+        const hash = Array.from(new Uint8Array(derivedBits))
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
+        const saltStr = Array.from(salt)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
+        return { hash, salt: saltStr }
+      }
+
+      server.middlewares.use('/api/auth', async (req, res) => {
+        res.setHeader('Content-Type', 'application/json')
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          res.end(JSON.stringify({ success: false, error: 'Método não permitido' }))
+          return
+        }
+
+        let body = ''
+        req.on('data', (chunk) => {
+          body += chunk
+        })
+        req.on('end', async () => {
+          try {
+            const parsed = JSON.parse(body || '{}')
+            const current = loadStorage() as Record<string, any>
+            if (!current._auth) {
+              current._auth = await hashLocalPassword('malivie2026')
+              saveStorage(current)
+            }
+
+            if (parsed.action === 'verify') {
+              const pwd = typeof parsed.password === 'string' ? parsed.password.trim() : ''
+              const check = await hashLocalPassword(pwd, current._auth.salt)
+              const ok = check.hash === current._auth.hash
+              res.statusCode = ok ? 200 : 401
+              res.end(JSON.stringify({ success: ok }))
+              return
+            }
+
+            if (parsed.action === 'change-password') {
+              const currentPwd = typeof parsed.currentPassword === 'string' ? parsed.currentPassword.trim() : ''
+              const newPwd = typeof parsed.newPassword === 'string' ? parsed.newPassword.trim() : ''
+              if (!currentPwd || !newPwd) {
+                res.statusCode = 400
+                res.end(JSON.stringify({ success: false, error: 'Campos obrigatórios' }))
+                return
+              }
+              if (newPwd.length < 6) {
+                res.statusCode = 400
+                res.end(JSON.stringify({ success: false, error: 'Mínimo de 6 caracteres' }))
+                return
+              }
+              const verifyCurrent = await hashLocalPassword(currentPwd, current._auth.salt)
+              if (verifyCurrent.hash !== current._auth.hash) {
+                res.statusCode = 401
+                res.end(JSON.stringify({ success: false, error: 'Senha atual incorreta' }))
+                return
+              }
+              current._auth = await hashLocalPassword(newPwd)
+              saveStorage(current)
+              res.statusCode = 200
+              res.end(JSON.stringify({ success: true, message: 'Senha atualizada' }))
+              return
+            }
+
+            res.statusCode = 400
+            res.end(JSON.stringify({ success: false, error: 'Ação inválida' }))
+          } catch (err: unknown) {
+            console.error('[D1 Local Dev Auth Error]:', err)
+            res.statusCode = 500
+            res.end(JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Erro' }))
           }
         })
       })
@@ -137,6 +338,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     assetUploadPlugin(),
+    d1LocalMiddlewarePlugin(),
   ],
   resolve: {
     alias: {

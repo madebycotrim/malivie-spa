@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Pencil, Check, RotateCcw } from 'lucide-react';
+import { Pencil, Check, RotateCcw, AlertCircle } from 'lucide-react';
 import { useEditor } from '../../context/EditorContext';
 
 interface EditableTextProps {
@@ -9,6 +9,7 @@ interface EditableTextProps {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div' | 'blockquote';
   className?: string;
   multiline?: boolean;
+  darkBorder?: boolean;
 }
 
 // Extrai texto puro ou converte tags JSX existentes (strong, em) em sintaxe markdown
@@ -74,6 +75,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
   as: Tag = 'span',
   className = '',
   multiline,
+  darkBorder,
 }) => {
   const { isEditorActive, getText, updateText, resetText, isModified } = useEditor();
   const textRef = useRef<HTMLElement>(null);
@@ -88,6 +90,45 @@ export const EditableText: React.FC<EditableTextProps> = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [showSavedBadge, setShowSavedBadge] = useState(false);
+  const [showErrorBadge, setShowErrorBadge] = useState(false);
+  const [isOnGold, setIsOnGold] = useState(Boolean(darkBorder));
+
+  // Detecta automaticamente se o elemento está sobre card ou badge dourado/amarelo
+  useEffect(() => {
+    if (darkBorder) {
+      setIsOnGold(true);
+      return;
+    }
+    if (!textRef.current) return;
+    const checkGoldBg = () => {
+      let curr: HTMLElement | null = textRef.current;
+      while (curr && curr !== document.body) {
+        const cls = curr.className || '';
+        if (typeof cls === 'string' && (cls.includes('#D4AF37') || cls.includes('amber') || cls.includes('yellow') || cls.includes('bg-gold'))) {
+          setIsOnGold(true);
+          return;
+        }
+        try {
+          const bg = window.getComputedStyle(curr).backgroundColor;
+          if (
+            bg.includes('212, 175, 55') ||
+            bg.includes('212, 175') ||
+            bg.includes('234, 179, 8') ||
+            bg.includes('245, 158, 11') ||
+            bg.includes('217, 119, 6')
+          ) {
+            setIsOnGold(true);
+            return;
+          }
+        } catch {
+          // ignore
+        }
+        curr = curr.parentElement;
+      }
+      setIsOnGold(false);
+    };
+    checkGoldBg();
+  }, [isEditorActive, darkBorder]);
 
   // Decide comportamento padrão de multiline
   const isMulti = multiline !== undefined 
@@ -129,9 +170,19 @@ export const EditableText: React.FC<EditableTextProps> = ({
     if (textRef.current) {
       const newContent = textRef.current.innerText.trim();
       if (newContent && newContent !== currentText) {
-        updateText(id, newContent);
-        setShowSavedBadge(true);
-        setTimeout(() => setShowSavedBadge(false), 1500);
+        updateText(id, newContent).then((success) => {
+          if (success) {
+            setShowSavedBadge(true);
+            setTimeout(() => setShowSavedBadge(false), 2000);
+          } else {
+            // Desfaz alteração imediatamente se falhar na Cloudflare
+            if (textRef.current) {
+              textRef.current.innerText = currentText;
+            }
+            setShowErrorBadge(true);
+            setTimeout(() => setShowErrorBadge(false), 3000);
+          }
+        });
       } else if (!newContent) {
         // Se ficou vazio, restaura o texto anterior
         textRef.current.innerText = currentText;
@@ -224,9 +275,13 @@ export const EditableText: React.FC<EditableTextProps> = ({
         onKeyDown={handleKeyDown}
         className={`cursor-pointer transition-all duration-150 ${className} ${
           isEditing
-            ? 'outline-2 outline-solid outline-[#D4AF37] bg-[#121C16]/90 text-white rounded px-1.5 py-0.5 shadow-[0_0_20px_rgba(212,175,55,0.4)] z-20'
-            : 'border border-dashed border-[#D4AF37]/40 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 rounded px-1 py-0.5'
-        } ${modified ? 'border-b-2 border-b-[#D4AF37]' : ''}`}
+            ? isOnGold
+              ? 'outline-2 outline-solid outline-[#705312] bg-[#121C16]/95 text-white rounded px-1.5 py-0.5 shadow-[0_0_20px_rgba(112,83,18,0.5)] z-20'
+              : 'outline-2 outline-solid outline-[#D4AF37] bg-[#121C16]/90 text-white rounded px-1.5 py-0.5 shadow-[0_0_20px_rgba(212,175,55,0.4)] z-20'
+            : isOnGold
+            ? 'border border-dashed border-[#705312] hover:border-[#59420E] hover:bg-[#705312]/15 rounded px-1 py-0.5'
+            : 'border border-dashed border-[#D4AF37] hover:border-[#F6E05E] hover:bg-[#D4AF37]/20 rounded px-1 py-0.5'
+        } ${modified ? (isOnGold ? 'border-b-2 border-b-[#705312]' : 'border-b-2 border-b-[#D4AF37]') : ''}`}
         title="Clique para editar este texto (Use **texto** ou Ctrl+B para negrito)"
       >
         {isEditing ? currentText : renderFormattedText(currentText || baseText)}
@@ -262,11 +317,19 @@ export const EditableText: React.FC<EditableTextProps> = ({
         </span>
       )}
 
-      {/* Feedback animado quando salvo */}
+      {/* Feedback animado quando salvo com sucesso no Cloudflare */}
       {showSavedBadge && (
-        <span className="absolute -top-6 left-1/2 -translate-x-1/2 z-40 bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/60 text-[10px] font-sans font-medium px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 animate-in fade-in zoom-in duration-200 pointer-events-none whitespace-nowrap">
-          <Check className="w-3 h-3 text-[#D4AF37]" />
+        <span className="absolute -top-6 left-1/2 -translate-x-1/2 z-40 bg-[#18251E] text-emerald-400 border border-emerald-500/60 text-[10px] font-sans font-medium px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 animate-in fade-in zoom-in duration-200 pointer-events-none whitespace-nowrap">
+          <Check className="w-3 h-3 text-emerald-400" />
           Salvo!
+        </span>
+      )}
+
+      {/* Feedback animado quando erro no Cloudflare */}
+      {showErrorBadge && (
+        <span className="absolute -top-6 left-1/2 -translate-x-1/2 z-40 bg-red-950/90 text-rose-300 border border-red-500/60 text-[10px] font-sans font-medium px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 animate-in fade-in zoom-in duration-200 pointer-events-none whitespace-nowrap">
+          <AlertCircle className="w-3 h-3 text-rose-400" />
+          Erro ao salvar (desfeito)!
         </span>
       )}
     </span>

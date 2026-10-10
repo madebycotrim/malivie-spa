@@ -130,7 +130,7 @@ export const HeroSection: React.FC = () => {
             >
               Conhecer o Ritual de Boas-Vindas
             </EditableText>
-            <ChevronDown className="w-4 h-4 text-[#D4AF37] group-hover:translate-y-0.5 transition-transform" />
+            <EditableIcon id="hero.secondaryCta.icon" defaultIcon="ChevronDown" className="w-4 h-4 text-[#D4AF37] group-hover:translate-y-0.5 transition-transform" />
           </MagneticButton>
         </motion.div>
       </div>

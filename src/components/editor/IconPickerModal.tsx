@@ -96,7 +96,8 @@ export const IconPickerModal: React.FC<IconPickerModalProps> = ({
   const filteredIcons = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
     return Object.values(ICON_REGISTRY).filter((icon) => {
-      const matchesCategory = selectedCategory === 'all' || icon.category === selectedCategory;
+      // Se digitou uma busca, pesquisa no catálogo inteiro; se não, filtra pela aba de categoria
+      const matchesCategory = term ? true : (selectedCategory === 'all' || icon.category === selectedCategory);
       if (!matchesCategory) return false;
 
       if (!term) return true;

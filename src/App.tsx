@@ -15,7 +15,6 @@ import { MobileActionDock } from './components/MobileActionDock';
 
 import { EditorProvider } from './context/EditorContext';
 import { EditorToolbar } from './components/editor/EditorToolbar';
-import { ExportModal } from './components/editor/ExportModal';
 
 function App() {
   // Initialize Lenis smooth inertia scroll
@@ -24,9 +23,8 @@ function App() {
   return (
     <EditorProvider>
       <div className="min-h-screen bg-[#121C16] text-[#F3EFE6] selection:bg-[#7A8B7B] selection:text-[#121C16] relative overflow-x-hidden font-sans">
-        {/* Editor Floating Toolbar & Export Modal */}
+        {/* Editor Floating Toolbar */}
         <EditorToolbar />
-        <ExportModal />
 
         {/* SEO & Structured Data */}
         <SEOHead />

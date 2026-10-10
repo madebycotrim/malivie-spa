@@ -1012,31 +1012,70 @@ export const SERVICES_LIST: ServiceItem[] = [
 
   // 11. COMPLEMENTOS
   {
-    id: 'complementos-personalizacao',
-    name: 'Complementos de Experiência',
-    tagline: 'Personalize e potencialize o seu momento de cuidado',
+    id: 'banho-imersao-terapeutico',
+    name: 'Banho de Imersão Terapêutico',
+    tagline: 'Relaxamento em água aquecida, sais aromáticos e brinde de espumante',
     category: 'complementos',
     categoryLabel: 'Complementos',
-    duration: 'Adicionais',
-    price: 'A partir de R$ 49,00',
-    priceOptions: [
-      { duration: "30' min", price: 'R$ 129,00', note: 'Banho de Imersão Terapêutico (por pessoa)' },
-      { duration: 'Durante a massagem', price: '+R$ 49,00', note: 'Pindas Aromáticas aquecidas com ervas' },
-      { duration: "25' min", price: 'R$ 79,00', note: 'Ventosaterapia descompressiva' }
-    ],
-    courtesyNote: 'Combine com qualquer massagem ou Head Spa do catálogo',
-    description: 'Personalize sua experiência com complementos especiais: Banho de Imersão Terapêutico (R$ 129/pessoa), Pindas Aromáticas (+R$ 49) e Ventosaterapia (R$ 79).',
-    longDescription: 'Turbine seu momento de autocuidado adicionando técnicas complementares que prolongam a sensação de aconchego, desinflamam tecidos musculares e acolhem o corpo com calor aromático.',
-    image: malivieBandejaReflexaoImg,
+    duration: "30' min",
+    price: 'R$ 129,00 (por pessoa)',
+    courtesyNote: 'Aromaterapia inclusa • Brinde de espumante',
+    description: 'Um momento de relaxamento em água aquecida, com sais de banho, aromaterapia e um brinde de espumante para acompanhar.',
+    longDescription: 'Imersão revigorante em banheira aquecida individual enriquecida com sais minerais e óleos botânicos. Perfeito para desacelerar o corpo e brindar com espumante em atmosfera de absoluta tranquilidade.',
+    image: daySpaChaImg,
     includedItems: [
-      'Banho de Imersão: água aquecida, sais de banho, aromaterapia e brinde de espumante',
-      'Pindas Aromáticas: bolsas aquecidas com ervas medicinais aplicadas na massagem',
-      'Ventosaterapia: alívio muscular de pontos de tensão',
-      'Consulte disponibilidade para encaixe no seu horário'
+      'Banheira aquecida com sais aromáticos relaxantes',
+      'Aromaterapia botânica com óleos essenciais puros',
+      'Brinde de espumante gelado',
+      'Toalhas aquecidas e roupão confortável'
     ],
     therapists: ['Andressa', 'Luciana'],
-    whatsappMessage: 'Complementos de Experiência',
-    priceHint: 'Banho R$ 129 · Pindas +R$ 49 · Ventosas R$ 79',
+    whatsappMessage: 'Banho de Imersão Terapêutico',
+    priceHint: "30' min · R$ 129,00 (por pessoa)",
+  },
+  {
+    id: 'pindas-aromaticas',
+    name: 'Pindas Aromáticas',
+    tagline: 'Bolsas aquecidas com ervas aplicadas durante a massagem',
+    category: 'complementos',
+    categoryLabel: 'Complementos',
+    duration: 'Durante a massagem',
+    price: '+R$ 49,00',
+    courtesyNote: 'Técnica complementar para qualquer massagem',
+    description: 'Bolsas aquecidas com ervas aromáticas aplicadas durante a massagem para promover conforto, relaxamento e bem-estar.',
+    longDescription: 'Técnica oriental milenar com saquinhos de algodão aquecidos repletos de ervas medicinais aromáticas e especiarias. Pressionadas suavemente ao longo do corpo, aliviam pontos de tensão e aquecem a musculatura.',
+    image: malivieBandejaReflexaoImg,
+    includedItems: [
+      'Bolsas aquecidas de ervas aromáticas medicinais',
+      'Aplicação harmonizada com manobras de massagem',
+      'Alívio térmico e aromático profundo',
+      'Compatível com qualquer massagem do menu'
+    ],
+    therapists: ['Andressa', 'Luciana'],
+    whatsappMessage: 'Pindas Aromáticas (Complemento)',
+    priceHint: '+R$ 49,00 durante a massagem',
+  },
+  {
+    id: 'ventosaterapia',
+    name: 'Ventosaterapia',
+    tagline: 'Descompressão tecidual e alívio localizado de tensões',
+    category: 'complementos',
+    categoryLabel: 'Complementos',
+    duration: "25' min",
+    price: 'R$ 79,00',
+    courtesyNote: 'Técnica complementar para alívio muscular',
+    description: 'Técnica complementar que auxilia no alívio das tensões musculares e potencializa os benefícios da massagem.',
+    longDescription: 'Aplicação de campânulas de sucção que promovem a oxigenação dos tecidos musculares, liberam fáscias e desfazem nós de tensão causados pelo estresse e pela rotina postural.',
+    image: ritualBoasVindasImg,
+    includedItems: [
+      'Descompressão a vácuo em áreas de tensão e contratura',
+      'Estímulo da circulação e oxigenação celular',
+      'Potencializa o efeito relaxante ou terapêutico',
+      'Toalhas aquecidas e acolhimento personalizado'
+    ],
+    therapists: ['Andressa', 'Luciana'],
+    whatsappMessage: 'Ventosaterapia (Complemento)',
+    priceHint: "25' min · R$ 79,00",
   }
 ];
 

@@ -135,7 +135,7 @@ export const GiftCardSection: React.FC = () => {
 
             {/* The 3 Personas - Inspiração Editorial */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
+              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#7A8B7B]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#7A8B7B] font-sans">
                   <EditableText id="giftCard.personaAmiga.label" defaultText="A Amiga" as="span">
                     A Amiga
@@ -150,7 +150,7 @@ export const GiftCardSection: React.FC = () => {
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
+              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#B99887]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#B99887] font-sans">
                   <EditableText id="giftCard.personaMae.label" defaultText="A Mãe" as="span">
                     A Mãe
@@ -165,7 +165,7 @@ export const GiftCardSection: React.FC = () => {
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex flex-col justify-between space-y-2">
+              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#D4AF37]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] font-sans">
                   <EditableText id="giftCard.personaMulher.label" defaultText="A Mulher Admirada" as="span">
                     A Mulher Admirada

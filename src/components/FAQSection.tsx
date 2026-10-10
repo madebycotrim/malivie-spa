@@ -6,13 +6,12 @@ import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { trackWhatsAppClick } from '../services/analytics';
 import { EditableText } from './editor/EditableText';
 import { EditableIcon } from './editor/EditableIcon';
+import { ConfirmPopover } from './editor/ConfirmPopover';
 import { useEditor } from '../context/EditorContext';
 
 export const FAQSection: React.FC = () => {
   const { faqs, addFaq, removeFaq, moveFaq, isEditorActive } = useEditor();
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
-    'faq-quimica': true, // Primeiro item aberto por padrão para affordance imediata
-  });
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const toggleItem = (id: string) => {
@@ -31,15 +30,8 @@ export const FAQSection: React.FC = () => {
   };
 
   const handleDeleteFaq = (id: string) => {
-    if (confirmDeleteId === id) {
-      removeFaq(id);
-      setConfirmDeleteId(null);
-    } else {
-      setConfirmDeleteId(id);
-      setTimeout(() => {
-        setConfirmDeleteId((prev) => (prev === id ? null : prev));
-      }, 3500);
-    }
+    removeFaq(id);
+    setConfirmDeleteId(null);
   };
 
   return (
@@ -96,33 +88,87 @@ export const FAQSection: React.FC = () => {
         {/* Diretrizes & Informações Importantes Oficiais (Página 20) */}
         <div className="mb-10 p-5 sm:p-7 rounded-3xl bg-[#18251E] border border-[#D4AF37]/35 shadow-[0_15px_40px_rgba(0,0,0,0.35)] space-y-4">
           <div className="flex items-center gap-2.5 border-b border-[#F3EFE6]/10 pb-3 text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-            <Sparkles className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
-            <span>Informações Importantes & Diretrizes Oficiais</span>
+            <EditableIcon id="faq.guidelines.icon" defaultIcon="Sparkles" className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
+            <EditableText
+              id="faq.guidelines.title"
+              defaultText="Informações Importantes & Diretrizes Oficiais"
+              as="span"
+            >
+              Informações Importantes & Diretrizes Oficiais
+            </EditableText>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs text-[#F3EFE6]/85 font-sans leading-relaxed">
             <div className="flex items-start gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-1.5 flex-shrink-0" />
-              <span><strong className="text-[#F3EFE6]">Agendamento Prévio:</strong> Todos os atendimentos são realizados com exclusividade mediante agendamento.</span>
+              <span className="flex-1">
+                <EditableText
+                  id="faq.guidelines.item1"
+                  defaultText="**Agendamento Prévio:** Todos os atendimentos são realizados com exclusividade mediante agendamento."
+                  as="span"
+                >
+                  **Agendamento Prévio:** Todos os atendimentos são realizados com exclusividade mediante agendamento.
+                </EditableText>
+              </span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] mt-1.5 flex-shrink-0" />
-              <span><strong className="text-[#F3EFE6]">Ritual de Boas-Vindas:</strong> Chegue com 10 minutos de antecedência para desfrutar do escalda-pés de boas-vindas cortesia.</span>
+              <span className="flex-1">
+                <EditableText
+                  id="faq.guidelines.item2"
+                  defaultText="**Ritual de Boas-Vindas:** Chegue com 10 minutos de antecedência para desfrutar do escalda-pés de boas-vindas cortesia."
+                  as="span"
+                >
+                  **Ritual de Boas-Vindas:** Chegue com 10 minutos de antecedência para desfrutar do escalda-pés de boas-vindas cortesia.
+                </EditableText>
+              </span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-1.5 flex-shrink-0" />
-              <span><strong className="text-[#F3EFE6]">Cancelamentos & Remarcações:</strong> Mínimo de 12 horas de antecedência. Caso contrário, será considerado como sessão realizada.</span>
+              <span className="flex-1">
+                <EditableText
+                  id="faq.guidelines.item3"
+                  defaultText="**Cancelamentos & Remarcações:** Mínimo de 12 horas de antecedência. Caso contrário, será considerado como sessão realizada."
+                  as="span"
+                >
+                  **Cancelamentos & Remarcações:** Mínimo de 12 horas de antecedência. Caso contrário, será considerado como sessão realizada.
+                </EditableText>
+              </span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] mt-1.5 flex-shrink-0" />
-              <span><strong className="text-[#F3EFE6]">Validade dos Planos:</strong> Planos de sessões e horas possuem validade de 90 dias após a contratação.</span>
+              <span className="flex-1">
+                <EditableText
+                  id="faq.guidelines.item4"
+                  defaultText="**Validade dos Planos:** Planos de sessões e horas possuem validade de 90 dias após a contratação."
+                  as="span"
+                >
+                  **Validade dos Planos:** Planos de sessões e horas possuem validade de 90 dias após a contratação.
+                </EditableText>
+              </span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-1.5 flex-shrink-0" />
-              <span><strong className="text-[#F3EFE6]">Vouchers-Presente:</strong> Validade de 60 dias a partir da data de emissão (retirada física ou formato digital).</span>
+              <span className="flex-1">
+                <EditableText
+                  id="faq.guidelines.item5"
+                  defaultText="**Vouchers-Presente:** Validade de 60 dias a partir da data de emissão (retirada física ou formato digital)."
+                  as="span"
+                >
+                  **Vouchers-Presente:** Validade de 60 dias a partir da data de emissão (retirada física ou formato digital).
+                </EditableText>
+              </span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] mt-1.5 flex-shrink-0" />
-              <span><strong className="text-[#F3EFE6]">Condições de Pagamento:</strong> Opções de parcelamento em até 4x sem juros conforme o plano ou ritual.</span>
+              <span className="flex-1">
+                <EditableText
+                  id="faq.guidelines.item6"
+                  defaultText="**Condições de Pagamento:** Opções de parcelamento em até 4x sem juros conforme o plano ou ritual."
+                  as="span"
+                >
+                  **Condições de Pagamento:** Opções de parcelamento em até 4x sem juros conforme o plano ou ritual.
+                </EditableText>
+              </span>
             </div>
           </div>
         </div>
@@ -139,7 +185,11 @@ export const FAQSection: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, ease: EASE_ORGANIC }}
-                className={`rounded-2xl transition-all duration-300 border overflow-hidden ${
+                className={`rounded-2xl transition-all duration-300 border ${
+                  confirmDeleteId === faq.id
+                    ? 'relative z-50 overflow-visible'
+                    : 'relative z-10 overflow-hidden'
+                } ${
                   isOpen
                     ? 'bg-[#18251E] border-[#7A8B7B]/50 shadow-[0_10px_30px_rgba(0,0,0,0.35)]'
                     : 'bg-[#18251E]/45 border-[#F3EFE6]/10 hover:border-[#F3EFE6]/25'
@@ -167,51 +217,62 @@ export const FAQSection: React.FC = () => {
                   <div className="flex items-center gap-2">
                     {/* Botões de Ação no Modo Editor */}
                     {isEditorActive && (
-                      <div className="flex items-center gap-1 mr-1">
-                        {/* Mover Para Cima */}
-                        <button
-                          type="button"
-                          disabled={idx === 0}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveFaq(faq.id, 'up');
-                          }}
-                          className="p-1.5 rounded-full bg-[#121C16] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#121C16] border border-white/10 hover:border-[#D4AF37] disabled:opacity-25 disabled:cursor-not-allowed transition-all cursor-pointer"
-                          title="Mover pergunta para cima"
-                        >
-                          <ArrowUp className="w-3.5 h-3.5" />
-                        </button>
+                      <div className="flex items-center gap-1.5 mr-1">
+                        {/* Setinhas de Direção / Reordenação (Pílula dourada idêntica ao card) */}
+                        <div className="flex items-center gap-0.5 bg-[#121C16]/90 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-[#D4AF37]/40 shadow-md">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveFaq(faq.id, 'up');
+                            }}
+                            className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] disabled:opacity-20 disabled:hover:text-[#F3EFE6]/80 hover:bg-white/10 transition-all cursor-pointer"
+                            title="Mover pergunta para cima"
+                            aria-label="Mover pergunta para cima"
+                          >
+                            <ArrowUp className="w-3 h-3" />
+                          </button>
 
-                        {/* Mover Para Baixo */}
-                        <button
-                          type="button"
-                          disabled={idx === faqs.length - 1}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveFaq(faq.id, 'down');
-                          }}
-                          className="p-1.5 rounded-full bg-[#121C16] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#121C16] border border-white/10 hover:border-[#D4AF37] disabled:opacity-25 disabled:cursor-not-allowed transition-all cursor-pointer"
-                          title="Mover pergunta para baixo"
-                        >
-                          <ArrowDown className="w-3.5 h-3.5" />
-                        </button>
+                          <button
+                            type="button"
+                            disabled={idx === faqs.length - 1}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveFaq(faq.id, 'down');
+                            }}
+                            className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] disabled:opacity-20 disabled:hover:text-[#F3EFE6]/80 hover:bg-white/10 transition-all cursor-pointer"
+                            title="Mover pergunta para baixo"
+                            aria-label="Mover pergunta para baixo"
+                          >
+                            <ArrowDown className="w-3 h-3" />
+                          </button>
+                        </div>
 
-                        {/* Excluir Pergunta */}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteFaq(faq.id);
-                          }}
-                          className={`p-1.5 rounded-full border transition-all cursor-pointer ${
-                            confirmDeleteId === faq.id
-                              ? 'bg-red-600 text-white border-red-400 animate-pulse'
-                              : 'bg-[#121C16] text-[#94A595] hover:text-red-300 hover:bg-red-950/60 border-white/10'
-                          }`}
-                          title={confirmDeleteId === faq.id ? 'Clique novamente para CONFIRMAR exclusão' : 'Remover esta pergunta do FAQ'}
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        {/* Excluir Pergunta (Botão circular idêntico ao card) */}
+                        <div className={`relative ${confirmDeleteId === faq.id ? 'z-50' : ''}`}>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmDeleteId((prev) => (prev === faq.id ? null : faq.id));
+                            }}
+                            className="p-1.5 rounded-full border shadow-md transition-all cursor-pointer bg-[#121C16]/85 hover:bg-red-950 text-[#94A595] hover:text-red-200 border-white/20 hover:border-red-500/50"
+                            title="Remover esta pergunta do FAQ"
+                            aria-label="Remover pergunta"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          <ConfirmPopover
+                            isOpen={confirmDeleteId === faq.id}
+                            onConfirm={() => handleDeleteFaq(faq.id)}
+                            onCancel={() => setConfirmDeleteId(null)}
+                            message="Deseja excluir?"
+                            position="bottom"
+                            align="right"
+                          />
+                        </div>
                       </div>
                     )}
 

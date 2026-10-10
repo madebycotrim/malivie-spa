@@ -72,6 +72,10 @@ export const ReviewsSection: React.FC = () => {
 
   return (
     <section id="depoimentos" className="relative py-24 sm:py-32 bg-[#121C16] text-[#F3EFE6] overflow-hidden">
+      {/* Botanical ambient halos com respiração suave */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#7A8B7B]/10 rounded-full blur-[140px] pointer-events-none animate-zen-breathe" />
+      <div className="absolute bottom-1/4 right-1/4 w-[420px] h-[420px] bg-[#D4AF37]/10 rounded-full blur-[130px] pointer-events-none animate-zen-breathe-delayed" />
+
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* ========================================================================= */}
@@ -131,10 +135,13 @@ export const ReviewsSection: React.FC = () => {
               {TESTIMONIALS.map((review: ReviewItem) => {
                 return (
                   <div key={review.id} className="flex-[0_0_100%] min-w-0 px-2 sm:px-4">
-                    <div className="rounded-3xl bg-[#18261E] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/35 p-6 sm:p-9 shadow-lg flex flex-col justify-between overflow-hidden relative group transition-all duration-300">
+                    <div className="rounded-3xl bg-[#18261E] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 p-6 sm:p-9 shadow-lg hover:shadow-[0_25px_60px_rgba(0,0,0,0.55),_0_0_25px_rgba(212,175,55,0.12)] hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden relative group transition-all duration-500 ease-out">
                       
-                      {/* Linha dourada suave no topo */}
-                      <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent pointer-events-none" />
+                      {/* Linha dourada suave no topo que brilha no hover */}
+                      <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                      {/* Varredura de luz suave ao passar o mouse */}
+                      <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
 
                       {/* 1. CLIENTE NO TOPO (PADRÃO GOOGLE AVALIAÇÕES) */}
                       {/* 1. CABEÇALHO DO CARD: AVATAR + NOME/CIDADE */}

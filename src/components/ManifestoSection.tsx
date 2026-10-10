@@ -122,11 +122,11 @@ export const ManifestoSection: React.FC = () => {
             className="lg:col-span-7 flex flex-col justify-center space-y-8"
           >
             {/* The Quote Block */}
-            <div className="relative p-7 sm:p-9 rounded-3xl bg-[#F0EAE1]/70 border border-[#7A8B7B]/20 shadow-sm space-y-4">
-              <span className="font-serif text-5xl sm:text-6xl text-[#7A8B7B]/30 leading-none select-none absolute top-4 left-6">
+            <div className="relative p-7 sm:p-9 rounded-3xl bg-[#F0EAE1]/70 border border-[#D4AF37]/25 shadow-sm space-y-4">
+              <span className="font-serif text-5xl sm:text-6xl text-[#D4AF37]/35 leading-none select-none absolute top-4 left-6">
                 “
               </span>
-              <p className="font-serif text-lg sm:text-2xl text-[#2C2C2C] italic font-light leading-relaxed relative z-10 pt-3">
+              <p className="font-serif text-lg sm:text-2xl text-[#8C6D1F] italic font-normal leading-relaxed relative z-10 pt-3">
                 <EditableText
                   id="manifesto.mainQuote"
                   defaultText={OFFICIAL_COPIES.manifestoMain}
@@ -135,10 +135,6 @@ export const ManifestoSection: React.FC = () => {
                   {OFFICIAL_COPIES.manifestoMain}
                 </EditableText>
               </p>
-              <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-widest text-[#7A8B7B] font-semibold">
-                <span className="w-8 h-[1px] bg-[#7A8B7B]" />
-                <span>Maliviê SPA • Filosofia do Desacelerar</span>
-              </div>
             </div>
 
             {/* The 4 pillars of the Arrival Experience */}

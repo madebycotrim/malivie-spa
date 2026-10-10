@@ -4,6 +4,7 @@ import { Menu, X, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { trackWhatsAppClick } from '../services/analytics';
 import { EditableText } from './editor/EditableText';
+import { EditableIcon } from './editor/EditableIcon';
 import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
 
 interface NavbarProps {
@@ -100,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
               }`}
             >
               <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-              <MessageCircle className="w-3.5 h-3.5 text-[#121C16] relative z-10" />
+              <EditableIcon id="nav.cta.icon" defaultIcon="MessageCircle" className="w-3.5 h-3.5 text-[#121C16] relative z-10" />
               <EditableText id="nav.cta" defaultText="Agendar um horário!" as="span" className="relative z-10 font-semibold">
                 Agendar um horário!
               </EditableText>
@@ -169,7 +170,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#7A8B7B] text-[#121C16] font-semibold text-sm tracking-wide shadow-lg cursor-pointer"
               >
-                <MessageCircle className="w-4 h-4" />
+                <EditableIcon id="nav.mobileCta.icon" defaultIcon="MessageCircle" className="w-4 h-4" />
                 <span>Agendar um horário!</span>
               </a>
 

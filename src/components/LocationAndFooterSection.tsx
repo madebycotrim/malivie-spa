@@ -11,7 +11,7 @@ import {
   ArrowUpRight,
   Sparkles,
 } from 'lucide-react';
-import { InstagramIcon, FacebookIcon, TikTokIcon } from './SocialIcons';
+import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from './SocialIcons';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { isAbertoAgora } from '../utils/businessHours';
@@ -71,7 +71,9 @@ export const LocationAndFooterSection: React.FC = () => {
   return (
     <footer id="localizacao" className="relative bg-[#121C16] text-[#F3EFE6] pt-28 pb-28 md:pb-16 overflow-hidden border-t border-[#F3EFE6]/10">
       {/* Botanical ambient gradient aura com respiração suave */}
-      <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-[#7A8B7B]/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-0 left-1/3 w-[650px] h-[650px] bg-[#7A8B7B]/15 rounded-full blur-[160px] pointer-events-none animate-zen-breathe" />
+      <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-[140px] pointer-events-none animate-zen-breathe-delayed" />
+      <div className="absolute bottom-10 left-10 w-[420px] h-[420px] bg-[#D3B8AA]/10 rounded-full blur-[130px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         {/* Section Heading */}
@@ -81,9 +83,9 @@ export const LocationAndFooterSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4 hover:border-[#D4AF37]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-300"
           >
-            <Compass className="w-3.5 h-3.5 text-[#7A8B7B]" />
+            <EditableIcon id="location.badge.icon" defaultIcon="Compass" className="w-3.5 h-3.5 text-[#7A8B7B]" />
             <EditableText id="location.badge" defaultText="Visite Nosso Santuário" as="span">
               Visite Nosso Santuário
             </EditableText>
@@ -121,7 +123,16 @@ export const LocationAndFooterSection: React.FC = () => {
         {/* 3-Column Luxury Matrix: Real Facade, Interactive Map, Address & Official Schedule */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 items-stretch mb-16">
           {/* Card 1: Authentic Spa Facade Photo */}
-          <div className="lg:col-span-4 rounded-3xl bg-[#18251E] border border-[#F3EFE6]/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden group hover:border-[#D4AF37]/30 transition-all">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_LUXURY }}
+            className="lg:col-span-4 rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.55),_0_0_30px_rgba(212,175,55,0.15)] hover:-translate-y-1.5 transition-all duration-500 ease-out flex flex-col overflow-hidden group relative"
+          >
+            {/* Linha dourada suave no topo que brilha ao hover */}
+            <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
             {/* Header */}
             <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#F3EFE6]/10">
               <div className="flex items-center gap-2">
@@ -148,14 +159,14 @@ export const LocationAndFooterSection: React.FC = () => {
             </div>
 
             {/* Photo Viewport - Fills full card height down to bottom padding, showing sidewalk and cutting off parking lot */}
-            <div className="relative w-full flex-1 min-h-[320px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group">
+            <div className="relative w-full flex-1 min-h-[320px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group/photo">
               <EditableImage
                 id="location.facade"
                 defaultImage={fachadaImg}
                 alt="Fachada do Maliviê SPA no Núcleo Bandeirante, Brasília"
                 prefix="fachada"
                 style={{ objectPosition: 'center 60%' }}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/20 pointer-events-none" />
               
@@ -164,7 +175,7 @@ export const LocationAndFooterSection: React.FC = () => {
                 className="absolute top-3 left-3 z-30 pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg hover:scale-105 transition-transform duration-300">
                   <EditableIcon id="location.facadeBadge.icon" defaultIcon="MapPin" className="w-3.5 h-3.5 text-[#D4AF37]" />
                   <EditableText id="location.facadeBadge" defaultText="Fachada do Maliviê SPA" as="span">
                     Fachada do Maliviê SPA
@@ -172,10 +183,19 @@ export const LocationAndFooterSection: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Card 2: Real Interactive Google Map */}
-          <div className="lg:col-span-4 flex flex-col justify-between rounded-3xl bg-[#18251E] border border-[#F3EFE6]/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] relative overflow-hidden hover:border-[#D4AF37]/30 transition-all">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.8, delay: 0.2, ease: EASE_LUXURY }}
+            className="lg:col-span-4 flex flex-col justify-between rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.55),_0_0_30px_rgba(212,175,55,0.15)] hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group"
+          >
+            {/* Linha dourada suave no topo que brilha ao hover */}
+            <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
             {/* Header */}
             <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#F3EFE6]/10">
               <div className="flex items-center gap-2">
@@ -203,7 +223,7 @@ export const LocationAndFooterSection: React.FC = () => {
             </div>
 
             {/* Real Interactive Google Maps Viewport matching exact start of Facade */}
-            <div className="relative w-full flex-1 min-h-[300px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group">
+            <div className="relative w-full flex-1 min-h-[300px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group/map">
               <iframe
                 title="Google Maps Interativo - Maliviê SPA"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3838.285497217522!2d-47.96985782390618!3d-15.872212384777598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a2fec33e25ea5%3A0xc3918d2ad9f06bdc!2sMalivi%C3%AA%20SPA!5e0!3m2!1spt-BR!2sbr!4v1710000000000!5m2!1spt-BR!2sbr"
@@ -213,7 +233,7 @@ export const LocationAndFooterSection: React.FC = () => {
                 allowFullScreen={true}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full filter contrast-[1.02]"
+                className="w-full h-full filter contrast-[1.02] transition-opacity duration-500"
               />
 
               {/* Floating Address Tag Pill */}
@@ -221,7 +241,7 @@ export const LocationAndFooterSection: React.FC = () => {
                 className="absolute top-3 left-3 z-30 pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg hover:scale-105 transition-transform duration-300">
                   <EditableIcon id="location.mapBadge.icon" defaultIcon="MapPin" className="w-3.5 h-3.5 text-[#D4AF37]" />
                   <EditableText id="location.mapBadge" defaultText="Maliviê SPA • 3ª Avenida, 1124 - Lote 1208-A, Loja 3" as="span">
                     Maliviê SPA • 3ª Avenida, 1124 - Lote 1208-A, Loja 3
@@ -236,38 +256,48 @@ export const LocationAndFooterSection: React.FC = () => {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37]/50 transition-all shadow-sm group"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37]/50 hover:shadow-[0_8px_20px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-98 transition-all duration-300 group/btn"
               >
-                <EditableIcon id="location.map.mapsBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#7A8B7B] group-hover:text-[#D4AF37] transition-colors" />
+                <EditableIcon id="location.map.mapsBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#7A8B7B] group-hover/btn:text-[#D4AF37] group-hover/btn:scale-110 transition-all" />
                 <EditableText id="location.map.mapsBtn" defaultText="Abrir no Maps" as="span">
                   Abrir no Maps
                 </EditableText>
-                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65" />
+                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65 group-hover/btn:text-[#D4AF37] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-all" />
               </a>
 
               <a
                 href={wazeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#7A8B7B]/50 transition-all shadow-sm group"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#7A8B7B]/60 hover:shadow-[0_8px_20px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-98 transition-all duration-300 group/btn"
               >
-                <EditableIcon id="location.map.wazeBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#D4AF37] group-hover:text-[#7A8B7B] transition-colors" />
+                <EditableIcon id="location.map.wazeBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#D4AF37] group-hover/btn:text-[#7A8B7B] group-hover/btn:scale-110 transition-all" />
                 <EditableText id="location.map.wazeBtn" defaultText="Traçar no Waze" as="span">
                   Traçar no Waze
                 </EditableText>
-                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65" />
+                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65 group-hover/btn:text-[#D4AF37] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-all" />
               </a>
             </div>
-          </div>
+          </motion.div>
 
           {/* Column 3: 2 Separate Cards (Top & Bottom) */}
-          <div className="lg:col-span-4 flex flex-col justify-between gap-5 h-full">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.8, delay: 0.3, ease: EASE_LUXURY }}
+            className="lg:col-span-4 flex flex-col justify-between gap-5 h-full"
+          >
             {/* Card Top: Endereço Físico */}
-            <div className="rounded-3xl bg-[#18251E] border border-[#F3EFE6]/15 p-4 sm:p-4.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex flex-col justify-between overflow-hidden hover:border-[#D4AF37]/30 transition-all flex-[0.75]">
+            <div className="rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/45 p-4 sm:p-4.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_55px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.1)] hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col justify-between overflow-hidden relative group flex-[0.75]">
+              {/* Linha dourada suave no topo que brilha ao hover */}
+              <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
               {/* Header */}
               <div className="flex items-center justify-between pb-2 mb-1.5 border-b border-[#F3EFE6]/10">
                 <div className="flex items-center gap-2">
                   <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-60" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
                   </span>
                   <EditableText
@@ -295,7 +325,7 @@ export const LocationAndFooterSection: React.FC = () => {
                   id="location.address.street"
                   defaultText={SPA_BUSINESS_DATA.address.street}
                   as="p"
-                  className="font-serif text-base sm:text-lg text-[#F3EFE6] font-light leading-snug"
+                  className="font-serif text-base sm:text-lg text-[#F3EFE6] font-light leading-snug group-hover:text-[#F3EFE6] transition-colors"
                 >
                   {SPA_BUSINESS_DATA.address.street}
                 </EditableText>
@@ -331,7 +361,10 @@ export const LocationAndFooterSection: React.FC = () => {
             </div>
 
             {/* Card Bottom: Horários de Funcionamento */}
-            <div className="rounded-3xl bg-[#18251E] border border-[#F3EFE6]/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex flex-col justify-between overflow-hidden hover:border-[#D4AF37]/30 transition-all flex-[1.25]">
+            <div className="rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/45 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_55px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.1)] hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col justify-between overflow-hidden relative group flex-[1.25]">
+              {/* Linha dourada suave no topo que brilha ao hover */}
+              <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
               {/* Header */}
               <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-[#F3EFE6]/10">
                 <div className="flex items-center gap-2">
@@ -346,8 +379,11 @@ export const LocationAndFooterSection: React.FC = () => {
                   </EditableText>
                 </div>
                 {abertoAgora ? (
-                  <span className="text-[10px] uppercase font-sans font-bold text-[#7A8B7B] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] animate-pulse" />
+                  <span className="text-[10px] uppercase font-sans font-bold text-[#7A8B7B] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-1.5 shadow-[0_0_12px_rgba(122,139,123,0.3)]">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7A8B7B] opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7A8B7B]" />
+                    </span>
                     <EditableText id="location.schedule.openNowBadge" defaultText="Aberto agora" as="span">
                       Aberto agora
                     </EditableText>
@@ -364,7 +400,7 @@ export const LocationAndFooterSection: React.FC = () => {
               {/* Schedule Rows */}
               <div className="space-y-2 py-1">
                 {/* Segunda-feira */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/50 border border-[#F3EFE6]/5 transition-all">
+                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/50 hover:bg-[#1A2820] border border-[#F3EFE6]/5 hover:border-[#D4AF37]/25 transition-all duration-300 hover:scale-[1.01] cursor-default">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#F3EFE6]/25" />
                     <EditableText
@@ -387,7 +423,7 @@ export const LocationAndFooterSection: React.FC = () => {
                 </div>
 
                 {/* Terça a Sábado */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 border border-[#7A8B7B]/20 hover:border-[#7A8B7B]/35 transition-all shadow-sm">
+                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 hover:bg-[#1E2E24] border border-[#7A8B7B]/20 hover:border-[#7A8B7B]/45 transition-all duration-300 hover:scale-[1.01] shadow-sm cursor-default">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B]" />
                     <EditableText
@@ -410,7 +446,7 @@ export const LocationAndFooterSection: React.FC = () => {
                 </div>
 
                 {/* Domingo */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 border border-[#D4AF37]/20 hover:border-[#D4AF37]/35 transition-all shadow-sm">
+                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 hover:bg-[#202E24] border border-[#D4AF37]/20 hover:border-[#D4AF37]/45 transition-all duration-300 hover:scale-[1.01] shadow-sm cursor-default">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
                     <EditableText
@@ -445,11 +481,17 @@ export const LocationAndFooterSection: React.FC = () => {
                 </EditableText>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Social Media & Official Channels Showcase */}
-        <div className="py-14 border-t border-b border-[#F3EFE6]/10">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.85, ease: EASE_LUXURY }}
+          className="py-14 border-t border-b border-[#F3EFE6]/10"
+        >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-6 px-1">
             <div className="flex items-center gap-2">
               <EditableIcon id="location.channels.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -491,9 +533,9 @@ export const LocationAndFooterSection: React.FC = () => {
                 handle: SPA_BUSINESS_DATA.whatsapp.formattedDisplay,
                 desc: abertoAgora ? 'Atendimento e recepção direta' : 'Mensagens 24h • Retorno no expediente',
                 href: SPA_BUSINESS_DATA.whatsapp.defaultUrl,
-                icon: <MessageCircle className="w-5 h-5 text-[#D4AF37]" />,
+                icon: <EditableIcon id="location.channel.whatsapp.icon" defaultIcon="WhatsApp" fallbackComponent={WhatsAppIcon} className="w-5 h-5 text-[#D4AF37]" />,
                 badge: abertoAgora ? (
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 text-[10px] text-[#F3EFE6] font-sans font-medium">
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 text-[10px] text-[#F3EFE6] font-sans font-medium shadow-[0_0_12px_rgba(122,139,123,0.25)]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B] animate-pulse" />
                     <span>Atendimento agora</span>
                   </div>
@@ -513,21 +555,21 @@ export const LocationAndFooterSection: React.FC = () => {
                 onClick={channel.onClick}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`relative p-6 sm:p-7 rounded-2xl border shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:-translate-y-1 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group flex flex-col justify-between overflow-hidden cursor-pointer ${
+                className={`relative p-6 sm:p-7 rounded-2xl border shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:-translate-y-1.5 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group flex flex-col justify-between overflow-hidden cursor-pointer ${
                   channel.highlight
-                    ? 'bg-gradient-to-br from-[#1C2C22] to-[#121C16] border-[#7A8B7B]/40 hover:border-[#D4AF37]/80 hover:shadow-[0_15px_40px_rgba(0,0,0,0.5),_0_0_25px_rgba(122,139,123,0.2)]'
-                    : 'bg-gradient-to-br from-[#18251E] to-[#121C16] border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:shadow-[0_15px_40px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.1)]'
+                    ? 'bg-gradient-to-br from-[#1C2C22] to-[#121C16] border-[#7A8B7B]/40 hover:border-[#D4AF37]/80 hover:shadow-[0_20px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(122,139,123,0.25)]'
+                    : 'bg-gradient-to-br from-[#18251E] to-[#121C16] border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.15)]'
                 }`}
               >
                 <span
                   className={`absolute inset-0 w-full h-full bg-gradient-to-r -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none ${
-                    channel.highlight ? 'from-transparent via-[#D4AF37]/10 to-transparent' : 'from-transparent via-white/5 to-transparent'
+                    channel.highlight ? 'from-transparent via-[#D4AF37]/15 to-transparent' : 'from-transparent via-white/5 to-transparent'
                   }`}
                 />
 
                 <div className="flex items-start justify-between mb-5">
                   <div
-                    className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                    className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all duration-400 group-hover:scale-110 group-hover:rotate-6 ${
                       channel.highlight
                         ? 'bg-[#7A8B7B]/20 border-[#7A8B7B]/50 text-[#D4AF37]'
                         : 'bg-[#1F3026] border-[#7A8B7B]/30 text-[#7A8B7B] group-hover:text-[#D4AF37] group-hover:border-[#D4AF37]/50'
@@ -538,7 +580,7 @@ export const LocationAndFooterSection: React.FC = () => {
                   {channel.badge ? (
                     channel.badge
                   ) : (
-                    <ArrowUpRight className="w-4 h-4 text-[#F3EFE6]/60 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    <ArrowUpRight className="w-4 h-4 text-[#F3EFE6]/60 group-hover:text-[#D4AF37] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
                   )}
                 </div>
 
@@ -588,7 +630,7 @@ export const LocationAndFooterSection: React.FC = () => {
               </a>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Bottom Bar: Copyright & Back to Top */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F3EFE6]/65">
@@ -651,15 +693,19 @@ export const LocationAndFooterSection: React.FC = () => {
           <button
             type="button"
             onClick={scrollToTop}
-            className="inline-flex items-center gap-1.5 text-xs text-[#F3EFE6]/70 hover:text-[#D4AF37] transition-colors focus:outline-none cursor-pointer"
+            className="group/top inline-flex items-center gap-2 text-xs text-[#F3EFE6]/70 hover:text-[#D4AF37] transition-all duration-300 focus:outline-none cursor-pointer py-1.5 px-3.5 rounded-full hover:bg-[#18251E] border border-transparent hover:border-[#D4AF37]/30 hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] active:scale-95"
           >
             <EditableText id="footer.backToTop" defaultText="Voltar ao topo" as="span">
               Voltar ao topo
             </EditableText>
-            <ArrowUp className="w-3.5 h-3.5" />
+            <span className="transform group-hover/top:-translate-y-1 transition-transform duration-300 ease-out">
+              <EditableIcon id="location.backToTop.icon" defaultIcon="ArrowUp" className="w-3.5 h-3.5" />
+            </span>
           </button>
         </div>
       </div>
     </footer>
   );
 };
+
+export default LocationAndFooterSection;

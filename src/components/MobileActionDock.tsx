@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { MessageCircle, Navigation, Volume2, VolumeX } from 'lucide-react';
+import { Navigation, Volume2, VolumeX } from 'lucide-react';
+import { WhatsAppIcon } from './SocialIcons';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { asmrEngine } from '../services/soundEngine';
 import { trackWhatsAppClick } from '../services/analytics';
 import { EditableText } from './editor/EditableText';
+import { EditableIcon } from './editor/EditableIcon';
 
 export const MobileActionDock: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -35,7 +37,7 @@ export const MobileActionDock: React.FC = () => {
           rel="noopener noreferrer"
           className="flex-[1.4] flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#7A8B7B] text-[#121C16] font-bold text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
         >
-          <MessageCircle className="w-4 h-4" />
+          <EditableIcon id="dock.cta.icon" defaultIcon="WhatsApp" fallbackComponent={WhatsAppIcon} className="w-4 h-4 text-[#121C16]" />
           <EditableText id="dock.cta" defaultText="Agendar um horário!" as="span" className="whitespace-nowrap">
             Agendar um horário!
           </EditableText>
@@ -47,7 +49,7 @@ export const MobileActionDock: React.FC = () => {
           onClick={handleScrollToLocation}
           className="flex-1 flex items-center justify-center gap-1.5 py-3 px-2 rounded-full bg-[#18251E] text-[#F3EFE6] border border-[#F3EFE6]/15 text-xs font-medium active:scale-95 transition-transform"
         >
-          <Navigation className="w-3.5 h-3.5 text-[#D4AF37]" />
+          <EditableIcon id="dock.directions.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#D4AF37]" />
           <EditableText id="dock.directions" defaultText="Como Chegar" as="span">
             Como Chegar
           </EditableText>

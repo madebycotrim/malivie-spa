@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX, Sparkles } from 'lucide-react';
 import { asmrEngine } from '../services/soundEngine';
 import { EASE_ORGANIC } from '../utils/motionTransitions';
+import { EditableIcon } from './editor/EditableIcon';
 
 export const AudioEqualizer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -83,7 +84,7 @@ export const AudioEqualizer: React.FC = () => {
             transition={{ delay: 2.2, duration: 0.7, ease: EASE_ORGANIC }}
             className="mb-3 px-3.5 py-1.5 rounded-full bg-[#18251E]/95 border border-[#D4AF37]/30 text-xs text-[#F3EFE6] shadow-[0_10px_25px_rgba(0,0,0,0.4)] backdrop-blur-md flex items-center gap-2 pointer-events-none"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
+            <EditableIcon id="equalizer.tooltip.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
             <span className="font-serif italic text-sm tracking-wide">Ouça o ASMR do Head Spa</span>
           </motion.div>
         )}

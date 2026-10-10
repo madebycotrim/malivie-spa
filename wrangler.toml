@@ -1,0 +1,10 @@
+name = "malivie-spa"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
+
+# Configuração do Banco de Dados Cloudflare D1
+[[d1_databases]]
+binding = "DB"
+database_name = "malivie_db"
+database_id = "417cc59e-0f57-4d54-a242-5e2e385fb3b9"
+migrations_dir = "migrations"
