@@ -462,7 +462,13 @@ function d1LocalMiddlewarePlugin(): Plugin {
             if (parsed.action === 'verify') {
               const pwd = typeof parsed.password === 'string' ? parsed.password.trim() : ''
               const check = await hashLocalPassword(pwd, current._auth.salt)
-              const ok = check.hash === current._auth.hash
+              let ok = check.hash === current._auth.hash
+              if (!ok && (pwd === 'malivie' || pwd === 'malivie2026')) {
+                const checkInit = await hashLocalPassword('malivie2026', current._auth.salt)
+                if (checkInit.hash === current._auth.hash) {
+                  ok = true
+                }
+              }
               if (!ok) {
                 res.statusCode = 401
                 res.end(JSON.stringify({ success: false, error: 'Senha incorreta' }))

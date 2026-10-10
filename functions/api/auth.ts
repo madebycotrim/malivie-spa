@@ -152,7 +152,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }
 
       const computed = await hashPassword(password, credential.salt);
-      const isMatch = computed.hash === credential.hash;
+      let isMatch = computed.hash === credential.hash;
+
+      // Suporte para ambas as senhas iniciais padrão (malivie2026 e malivie) enquanto não for alterada
+      if (!isMatch && (password === 'malivie' || password === 'malivie2026')) {
+        const checkInitial = await hashPassword('malivie2026', credential.salt);
+        if (checkInitial.hash === credential.hash) {
+          isMatch = true;
+        }
+      }
 
       if (!isMatch) {
         return new Response(

@@ -276,17 +276,34 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 
   const toggleEditor = useCallback(() => {
+    if (!isEditorActive) {
+      const token = getStoredAuthToken();
+      if (!token) {
+        requestOpenEditor();
+        return;
+      }
+    }
     setIsEditorActive((prev) => {
       const next = !prev;
       playZenChime(next ? 'activate' : 'deactivate');
       return next;
     });
-  }, []);
+  }, [isEditorActive, requestOpenEditor]);
 
-  const setEditorActive = useCallback((active: boolean) => {
-    setIsEditorActive(active);
-    playZenChime(active ? 'activate' : 'deactivate');
-  }, []);
+  const setEditorActive = useCallback(
+    (active: boolean) => {
+      if (active) {
+        const token = getStoredAuthToken();
+        if (!token) {
+          requestOpenEditor();
+          return;
+        }
+      }
+      setIsEditorActive(active);
+      playZenChime(active ? 'activate' : 'deactivate');
+    },
+    [requestOpenEditor]
+  );
 
   const getText = useCallback(
     (id: string, defaultText: string) => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pencil, RotateCcw, CheckCircle2, LogOut, KeyRound, Loader2, AlertCircle } from 'lucide-react';
+import { Pencil, RotateCcw, CheckCircle2, LogOut, KeyRound } from 'lucide-react';
 import { useEditor } from '../../context/EditorContext';
 import { ConfirmPopover } from './ConfirmPopover';
 import { ChangePasswordModal } from './ChangePasswordModal';
@@ -11,7 +11,6 @@ export const EditorToolbar: React.FC = () => {
     setEditorActive,
     modifiedCount,
     resetAll,
-    syncStatus,
     setChangePasswordModalOpen,
   } = useEditor();
 
@@ -44,43 +43,6 @@ export const EditorToolbar: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {/* Status Dinâmico de Salvamento Cloudflare */}
-            <AnimatePresence mode="wait">
-              {syncStatus !== 'idle' && (
-                <motion.div
-                  key={syncStatus}
-                  initial={{ opacity: 0, scale: 0.9, x: -4 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, x: 4 }}
-                  transition={{ duration: 0.16 }}
-                  className="flex items-center gap-2"
-                >
-                  <div className="h-4 w-[1px] bg-[#F3EFE6]/15" />
-
-                  {syncStatus === 'syncing' && (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#D4AF37] whitespace-nowrap">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Salvando...</span>
-                    </span>
-                  )}
-
-                  {syncStatus === 'synced' && (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 whitespace-nowrap">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Salvo!</span>
-                    </span>
-                  )}
-
-                  {syncStatus === 'error' && (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-400 whitespace-nowrap">
-                      <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Erro ao salvar (desfeito)</span>
-                    </span>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             <div className="h-4 w-[1px] bg-[#F3EFE6]/15 hidden md:block" />
 
