@@ -40,6 +40,72 @@ import { getStoredAuthToken } from '../services/authService';
 
 type MenuCollectionKey = 'todos' | 'head-spa' | 'massagens-corporais' | 'day-spa';
 
+export type IntentKey = 'enxaqueca' | 'presente' | 'casal' | 'burnout';
+
+interface IntentPreset {
+  key: IntentKey;
+  label: string;
+  emoji: string;
+  serviceIds: string[];
+}
+
+const INTENT_PRESETS: IntentPreset[] = [
+  {
+    key: 'enxaqueca',
+    label: 'Alívio de Enxaqueca & Tensão',
+    emoji: '🌿',
+    serviceIds: [
+      'head-spa-essencial',
+      'head-spa-harmonia',
+      'express-cabeca-pescoco-colo',
+      'massagem-pedras-quentes',
+      'massagem-terapeutica',
+      'protocolo-anti-dor',
+      'express-costas-bracos',
+    ],
+  },
+  {
+    key: 'presente',
+    label: 'Presente Especial',
+    emoji: '🎁',
+    serviceIds: [
+      'day-spa-ambar',
+      'day-spa-safira',
+      'day-spa-esmeralda',
+      'head-spa-plenitude',
+      'ritual-aniversario',
+      'ritual-dois-coracoes',
+    ],
+  },
+  {
+    key: 'casal',
+    label: 'Experiência a Dois (Casal)',
+    emoji: '🕯️',
+    serviceIds: [
+      'ritual-dois-coracoes',
+      'day-spa-esmeralda',
+      'day-spa-citrino',
+      'day-spa-diamante',
+      'head-spa-harmonia',
+      'head-spa-plenitude',
+      'spa-banho-gold',
+    ],
+  },
+  {
+    key: 'burnout',
+    label: 'Cansaço Mental / Burnout',
+    emoji: '💆‍♀️',
+    serviceIds: [
+      'head-spa-plenitude',
+      'head-spa-essencial',
+      'massagem-relaxante-classica',
+      'day-spa-ambar',
+      'spa-dos-pes-calmante',
+      'banho-imersao-terapeutico',
+    ],
+  },
+];
+
 export const ServicesMenuSection: React.FC = () => {
   const {
     services,
@@ -55,6 +121,8 @@ export const ServicesMenuSection: React.FC = () => {
   } = useEditor();
 
   const [selectedCollection, setSelectedCollection] = useState<MenuCollectionKey>('todos');
+  const [selectedIntent, setSelectedIntent] = useState<IntentKey | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -235,10 +303,38 @@ export const ServicesMenuSection: React.FC = () => {
     return DEFAULT_CATEGORY_LABELS[key] || 'Ritual';
   };
 
+  const isDestaque = (item: ServiceItem): boolean => {
+    return Boolean(item.popular || item.featured || item.badge);
+  };
+
   const filteredServices = services.filter((item) => {
+    if (selectedIntent) {
+      const intentConfig = INTENT_PRESETS.find((p) => p.key === selectedIntent);
+      if (intentConfig) {
+        return intentConfig.serviceIds.includes(item.id);
+      }
+    }
     if (selectedCollection === 'todos') return true;
     return normalizeCategory(item.category) === selectedCollection;
   });
+
+  // Prioriza itens em destaque (popular, featured ou com selo) para garantir presença nos 6 principais
+  const prioritizedServices = isEditorActive
+    ? filteredServices
+    : [...filteredServices].sort((a, b) => {
+        const aDestaque = isDestaque(a);
+        const bDestaque = isDestaque(b);
+        if (aDestaque && !bDestaque) return -1;
+        if (!aDestaque && bDestaque) return 1;
+        return 0;
+      });
+
+  const INITIAL_VISIBLE_COUNT = 6;
+  const shouldShowLoadMore = !isEditorActive && prioritizedServices.length > INITIAL_VISIBLE_COUNT;
+  const displayedServices =
+    isEditorActive || isExpanded
+      ? prioritizedServices
+      : prioritizedServices.slice(0, INITIAL_VISIBLE_COUNT);
 
   const handleCategorySelect = (serviceId: string, newCategoryKey: ServiceCategory) => {
     const newLabel = getCategoryLabel(newCategoryKey);
@@ -355,6 +451,7 @@ export const ServicesMenuSection: React.FC = () => {
       return;
     }
     setSelectedCollection(key);
+    setIsExpanded(false);
     const filterEl = document.getElementById('menu-filtros');
     if (filterEl) {
       filterEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -375,12 +472,24 @@ export const ServicesMenuSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#2D4536] border border-[#2D4536]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
+            className="flex flex-wrap items-center justify-center gap-2.5 mb-4"
           >
-            <EditableIcon id="menu.badge.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <EditableText id="menu.badge" defaultText="Cardápio de Experiências" as="span">
-              Cardápio de Experiências
-            </EditableText>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#2D4536] border border-[#2D4536]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em]">
+              <EditableIcon id="menu.badge.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <EditableText id="menu.badge" defaultText="Cardápio de Experiências" as="span">
+                Cardápio de Experiências
+              </EditableText>
+            </div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121C16]/5 border border-[#D4AF37]/35 text-[11px] sm:text-xs font-sans text-[#2D4536] font-medium shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
+              <EditableText
+                id="menu.urgencyBadge"
+                defaultText="Atendimento com hora marcada • Poucos horários para este sábado"
+                as="span"
+              >
+                Atendimento com hora marcada • Poucos horários para este sábado
+              </EditableText>
+            </div>
           </motion.div>
 
           <motion.h2
@@ -580,15 +689,84 @@ export const ServicesMenuSection: React.FC = () => {
           </div>
         </div>
 
+        {/* Filtros por "Dor do Cliente" / Intenção Direta (Lei de Hick) */}
+        <div className="max-w-4xl mx-auto mb-8 px-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F0EAE1]/75 border border-[#D4AF37]/30 rounded-2xl p-3 sm:p-4 backdrop-blur-sm shadow-xs">
+            <div className="flex items-center gap-2 text-xs font-sans text-[#2D4536] font-semibold tracking-wide shrink-0">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>O que você busca aliviar hoje?</span>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+              {INTENT_PRESETS.map((intent) => {
+                const isActive = selectedIntent === intent.key;
+                return (
+                  <button
+                    key={intent.key}
+                    type="button"
+                    onClick={() => {
+                      if (isActive) {
+                        setSelectedIntent(null);
+                      } else {
+                        setSelectedIntent(intent.key);
+                        setSelectedCollection('todos');
+                        setIsExpanded(false);
+                      }
+                    }}
+                    className={`px-3.5 py-2 min-h-[40px] rounded-full text-xs font-sans transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                      isActive
+                        ? 'bg-[#2D4536] text-[#F3EFE6] font-bold shadow-md ring-2 ring-[#D4AF37]'
+                        : 'bg-white/85 hover:bg-white text-[#2C2C2C] font-medium border border-[#2D4536]/10 hover:border-[#D4AF37]/50 shadow-2xs'
+                    }`}
+                  >
+                    <span>{intent.emoji}</span>
+                    <span>{intent.label}</span>
+                  </button>
+                );
+              })}
+              {selectedIntent && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedIntent(null)}
+                  className="px-2.5 py-1.5 text-xs font-sans text-[#7A8B7B] hover:text-[#2D4536] underline cursor-pointer"
+                >
+                  Ver todos
+                </button>
+              )}
+            </div>
+          </div>
+          {selectedIntent === 'presente' && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-2.5 px-4 py-2.5 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-xs font-sans text-[#2D4536] flex flex-wrap items-center justify-between gap-2"
+            >
+              <span className="flex items-center gap-2">
+                <Gift className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <span>Também oferecemos <strong>Gift Card físico em caixa de linho com cera dourada</strong> ou versão digital instantânea.</span>
+              </span>
+              <a
+                href="#gift-card"
+                className="font-bold underline text-[#121C16] hover:text-[#D4AF37] transition-colors"
+              >
+                Conhecer Gift Cards →
+              </a>
+            </motion.div>
+          )}
+        </div>
+
         {/* Cohesive Collections Tabs Filter */}
         <div id="menu-filtros" className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 max-w-5xl mx-auto mb-12 px-2">
           {collections.map((cat) => {
-            const isActive = selectedCollection === cat.key;
+            const isActive = !selectedIntent && selectedCollection === cat.key;
             return (
               <button
                 key={cat.key}
                 type="button"
-                onClick={() => setSelectedCollection(cat.key)}
+                onClick={() => {
+                  setSelectedCollection(cat.key);
+                  setSelectedIntent(null);
+                  setIsExpanded(false);
+                }}
                 className={`relative px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs font-sans font-semibold tracking-wider uppercase transition-all duration-300 cursor-pointer select-none ${
                   isActive
                     ? 'bg-[#121C16] text-[#F3EFE6] shadow-[0_4px_20px_rgba(18,28,22,0.25)]'
@@ -612,7 +790,6 @@ export const ServicesMenuSection: React.FC = () => {
               </button>
             );
           })}
-
         </div>
 
         {/* Services Grid with Full Card Affordance */}
@@ -621,7 +798,7 @@ export const ServicesMenuSection: React.FC = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {filteredServices.map((service) => (
+            {displayedServices.map((service) => (
               <motion.div
                 key={service.id}
                 role="button"
@@ -1094,6 +1271,41 @@ export const ServicesMenuSection: React.FC = () => {
             )}
           </AnimatePresence>
         </motion.div>
+
+        {/* Botão Expansor de Catálogo (Lei de Hick, Redução de Fadiga de Rolagem & Zeigarnik) */}
+        {shouldShowLoadMore && (
+          <div className="mt-10 sm:mt-12 text-center flex flex-col items-center justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                if (isExpanded) {
+                  setIsExpanded(false);
+                  const el = document.getElementById('menu-filtros');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  setIsExpanded(true);
+                }
+              }}
+              className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-[#18251E] hover:bg-[#223328] text-[#F3EFE6] border border-[#D4AF37]/50 hover:border-[#D4AF37] shadow-[0_10px_25px_rgba(0,0,0,0.25)] hover:shadow-[0_15px_35px_rgba(212,175,55,0.2)] text-xs sm:text-sm font-sans font-semibold uppercase tracking-wider transition-all duration-300 hover:scale-102 active:scale-95 cursor-pointer group"
+            >
+              <span>
+                {isExpanded
+                  ? 'Mostrar Menos Rituais'
+                  : `Ver Mais Rituais (+${prioritizedServices.length - INITIAL_VISIBLE_COUNT} opções)`}
+              </span>
+              <ChevronDown
+                className={`w-4 h-4 text-[#D4AF37] transition-transform duration-300 ${
+                  isExpanded ? 'rotate-180' : 'group-hover:translate-y-0.5'
+                }`}
+              />
+            </button>
+            <p className="mt-2.5 text-xs text-[#555555] font-sans">
+              {isExpanded
+                ? `Exibindo todos os ${prioritizedServices.length} rituais disponíveis.`
+                : `Exibindo ${INITIAL_VISIBLE_COUNT} de ${prioritizedServices.length} experiências terapêuticas.`}
+            </p>
+          </div>
+        )}
 
         {/* Concierge Banner de Transparência de Investimento & Acolhimento */}
         <div className="mt-16 sm:mt-20 max-w-4xl mx-auto p-7 sm:p-9 rounded-3xl bg-gradient-to-br from-[#F0EAE1] via-[#EFE8DF] to-[#E8E0D5] border border-[#D3B8AA]/60 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_15px_35px_rgba(18,28,22,0.06)] relative overflow-hidden">

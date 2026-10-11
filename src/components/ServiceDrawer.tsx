@@ -34,9 +34,28 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
     };
   }, [isOpen]);
 
+  const [guests, setGuests] = React.useState<'individual' | 'dupla'>('individual');
+  const [timePreference, setTimePreference] = React.useState<'manha' | 'tarde' | 'sabado'>('manha');
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setGuests('individual');
+      setTimePreference('manha');
+    }
+  }, [isOpen, service?.id]);
+
   if (!service) return null;
 
-  const whatsappBookingUrl = SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name);
+  const guestsLabel = guests === 'dupla' ? 'em Dupla / Casal' : 'Individual';
+  const timeLabel =
+    timePreference === 'manha'
+      ? 'no período da Manhã (08h às 12h)'
+      : timePreference === 'tarde'
+      ? 'no período da Tarde (13h às 20h)'
+      : 'no Sábado';
+
+  const customWhatsAppText = `Olá! Gostaria de agendar o ritual *${service.name}* (${guestsLabel}, preferência ${timeLabel}). Como está a disponibilidade de horários?`;
+  const whatsappBookingUrl = `https://wa.me/5561999569214?text=${encodeURIComponent(customWhatsAppText)}`;
 
   if (typeof document === 'undefined') return null;
 
@@ -262,20 +281,94 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
 
             {/* Drawer Sticky Footer with Direct Parameterized WhatsApp CTA */}
             <div className="p-5 sm:p-7 border-t border-[#F3EFE6]/10 bg-[#121C16]/95 backdrop-blur-md space-y-3">
+              {/* Seletor de Preferência em 2 Toques (Item 1) */}
+              <div className="space-y-2.5 bg-[#18251E]/90 border border-[#F3EFE6]/10 rounded-2xl p-3 sm:p-3.5">
+                <div>
+                  <span className="block text-[10.5px] font-sans font-semibold uppercase tracking-wider text-[#D4AF37] mb-1.5">
+                    1. Formato do Atendimento
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setGuests('individual')}
+                      className={`py-2 px-3 min-h-[44px] rounded-xl text-xs font-sans transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        guests === 'individual'
+                          ? 'bg-[#D4AF37] text-[#121C16] font-bold shadow-md'
+                          : 'bg-[#121C16] text-[#F3EFE6]/80 border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <span>👤 Individual</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGuests('dupla')}
+                      className={`py-2 px-3 min-h-[44px] rounded-xl text-xs font-sans transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        guests === 'dupla'
+                          ? 'bg-[#D4AF37] text-[#121C16] font-bold shadow-md'
+                          : 'bg-[#121C16] text-[#F3EFE6]/80 border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <span>👥 Em Dupla / Casal</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="block text-[10.5px] font-sans font-semibold uppercase tracking-wider text-[#D4AF37] mb-1.5">
+                    2. Período Preferido
+                  </span>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setTimePreference('manha')}
+                      className={`py-2 px-1.5 min-h-[44px] rounded-xl text-[11px] sm:text-xs font-sans transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                        timePreference === 'manha'
+                          ? 'bg-[#D4AF37] text-[#121C16] font-bold shadow-md'
+                          : 'bg-[#121C16] text-[#F3EFE6]/80 border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <span>☀️ Manhã</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTimePreference('tarde')}
+                      className={`py-2 px-1.5 min-h-[44px] rounded-xl text-[11px] sm:text-xs font-sans transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                        timePreference === 'tarde'
+                          ? 'bg-[#D4AF37] text-[#121C16] font-bold shadow-md'
+                          : 'bg-[#121C16] text-[#F3EFE6]/80 border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <span>🌤️ Tarde</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTimePreference('sabado')}
+                      className={`py-2 px-1.5 min-h-[44px] rounded-xl text-[11px] sm:text-xs font-sans transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                        timePreference === 'sabado'
+                          ? 'bg-[#D4AF37] text-[#121C16] font-bold shadow-md'
+                          : 'bg-[#121C16] text-[#F3EFE6]/80 border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <span>📅 Sábado</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Efeito Zeigarnik & Gradiente de Meta (75% concluído) */}
               <div className="bg-[#18251E]/95 border border-[#D4AF37]/30 rounded-2xl p-3.5 space-y-2">
                 <div className="flex items-center justify-between text-xs font-sans">
                   <span className="flex items-center gap-1.5 font-bold text-[#D4AF37]">
                     <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
-                    Etapa 1 de 2: Ritual Selecionado
+                    Etapa 1 de 2: Ritual & Preferências
                   </span>
-                  <span className="text-[11px] text-[#7A8B7B] font-semibold">75% Concluído</span>
+                  <span className="text-[11px] text-[#7A8B7B] font-semibold">80% Concluído</span>
                 </div>
                 <div className="w-full bg-[#121C16] h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-gradient-to-r from-[#7A8B7B] via-[#D4AF37] to-[#E5C158] h-full w-3/4 rounded-full transition-all duration-500" />
+                  <div className="bg-gradient-to-r from-[#7A8B7B] via-[#D4AF37] to-[#E5C158] h-full w-[80%] rounded-full transition-all duration-500" />
                 </div>
                 <p className="text-[11px] text-[#F3EFE6]/70 leading-relaxed font-sans">
-                  Falta apenas confirmar seu melhor dia e horário diretamente com a recepção no WhatsApp.
+                  Pronto! Falta apenas confirmar a disponibilidade exata no WhatsApp oficial.
                 </p>
               </div>
 
