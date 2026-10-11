@@ -642,12 +642,14 @@ export const ServicesMenuSection: React.FC = () => {
                   confirmDeleteId === service.id ? 'relative z-50' : 'relative z-10'
                 } ${
                   service.popular || service.badge
-                    ? 'border border-[#D4AF37]/50 shadow-[0_8px_25px_rgba(212,175,55,0.08)]'
+                    ? 'border-2 border-[#D4AF37]/60 shadow-[0_10px_30px_rgba(212,175,55,0.12)] ring-1 ring-[#D4AF37]/30'
                     : 'border border-[#E8E0D5] hover:border-[#7A8B7B]/50'
                 }`}
               >
-                {/* Linha dourada suave no topo que brilha ao hover */}
-                <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-30" />
+                {/* Linha dourada no topo que brilha ou permanece visível no destaque */}
+                <div className={`absolute inset-x-8 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent pointer-events-none z-30 transition-opacity duration-500 ${
+                  service.popular || service.badge ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`} />
 
                 {/* Image Section */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-[#18251E]">

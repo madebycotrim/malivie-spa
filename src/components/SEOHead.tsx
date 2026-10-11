@@ -1,72 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { FAQ_ITEMS, SPA_BUSINESS_DATA } from '../data/spaData';
-
 export const SEOHead: React.FC = () => {
-  const schemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'DaySpa',
-    name: SPA_BUSINESS_DATA.name,
-    slogan: SPA_BUSINESS_DATA.slogan,
-    url: 'https://maliviespa.pages.dev',
-    telephone: '+5561999569214',
-    priceRange: '$$',
-    image: 'https://maliviespa.pages.dev/og-malivie.webp',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: '3ª Avenida, 1124 - lote 1208-A, Loja 3',
-      addressLocality: 'Núcleo Bandeirante',
-      addressRegion: 'DF',
-      postalCode: '71720-565',
-      addressCountry: 'BR',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: -15.8697,
-      longitude: -47.9689,
-    },
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        opens: '08:00',
-        closes: '20:00',
-      },
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Sunday'],
-        opens: '08:00',
-        closes: '13:00',
-      },
-    ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '5.0',
-      reviewCount: '128',
-      bestRating: '5.0',
-      worstRating: '1.0',
-    },
-    sameAs: [
-      SPA_BUSINESS_DATA.social.instagram,
-      SPA_BUSINESS_DATA.social.linktree,
-      SPA_BUSINESS_DATA.social.facebook,
-      SPA_BUSINESS_DATA.social.tiktok,
-    ],
-  };
-
-  const faqSchemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ_ITEMS.map((item) => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.answer,
-      },
-    })),
-  };
-
   return (
     <Helmet>
       <title>Maliviê SPA | Head SPA Coreano e Day SPA em Brasília</title>
@@ -103,10 +37,6 @@ export const SEOHead: React.FC = () => {
         content="Sua pausa de desaceleração e reconexão no Núcleo Bandeirante, Brasília. Head Spa Coreano, Rituais Day SPA e experiências sensoriais."
       />
       <meta property="twitter:image" content="https://maliviespa.pages.dev/og-malivie.webp" />
-
-      {/* Schema.org Structured Data */}
-      <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
-      <script type="application/ld+json">{JSON.stringify(faqSchemaData)}</script>
     </Helmet>
   );
 };

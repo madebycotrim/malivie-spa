@@ -66,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
             <img
               src={logoMalivieWhite}
               alt="Maliviê SPA Logotipo"
-              width={160}
+              width={73}
               height={48}
               decoding="async"
               className={`w-auto object-contain transition-all duration-300 group-hover:scale-105 filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] ${

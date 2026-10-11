@@ -47,9 +47,9 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
   };
 
   const sizeStyles = {
-    sm: 'px-4 py-2 text-xs tracking-wider uppercase',
-    md: 'px-6 py-3.5 text-sm tracking-wide',
-    lg: 'px-8 py-4 text-base tracking-wide',
+    sm: 'px-4 py-2 min-h-[44px] text-xs tracking-wider uppercase',
+    md: 'px-6 py-3.5 min-h-[48px] text-sm tracking-wide',
+    lg: 'px-8 py-4 min-h-[52px] text-base tracking-wide',
   };
 
   const content = (

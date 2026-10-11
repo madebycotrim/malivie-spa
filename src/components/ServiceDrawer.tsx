@@ -261,14 +261,31 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({
             </div>
 
             {/* Drawer Sticky Footer with Direct Parameterized WhatsApp CTA */}
-            <div className="p-6 sm:p-8 border-t border-[#F3EFE6]/10 bg-[#121C16]/90 backdrop-blur-md space-y-3">
+            <div className="p-5 sm:p-7 border-t border-[#F3EFE6]/10 bg-[#121C16]/95 backdrop-blur-md space-y-3">
+              {/* Efeito Zeigarnik & Gradiente de Meta (75% concluído) */}
+              <div className="bg-[#18251E]/95 border border-[#D4AF37]/30 rounded-2xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between text-xs font-sans">
+                  <span className="flex items-center gap-1.5 font-bold text-[#D4AF37]">
+                    <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+                    Etapa 1 de 2: Ritual Selecionado
+                  </span>
+                  <span className="text-[11px] text-[#7A8B7B] font-semibold">75% Concluído</span>
+                </div>
+                <div className="w-full bg-[#121C16] h-1.5 rounded-full overflow-hidden">
+                  <div className="bg-gradient-to-r from-[#7A8B7B] via-[#D4AF37] to-[#E5C158] h-full w-3/4 rounded-full transition-all duration-500" />
+                </div>
+                <p className="text-[11px] text-[#F3EFE6]/70 leading-relaxed font-sans">
+                  Falta apenas confirmar seu melhor dia e horário diretamente com a recepção no WhatsApp.
+                </p>
+              </div>
+
               <a
                 href={whatsappBookingUrl}
                 onClick={() => trackWhatsAppClick('servico_drawer', service?.name)}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Agendar ${service?.name || 'Ritual'} via WhatsApp`}
-                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#121C16] font-semibold text-sm tracking-wide transition-all duration-300 shadow-[0_10px_25px_rgba(212,175,55,0.3)] hover:shadow-[0_14px_30px_rgba(212,175,55,0.45)] group cursor-pointer"
+                className="w-full min-h-[48px] flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#121C16] font-semibold text-sm tracking-wide transition-all duration-300 shadow-[0_10px_25px_rgba(212,175,55,0.3)] hover:shadow-[0_14px_30px_rgba(212,175,55,0.45)] group cursor-pointer"
               >
                 <EditableIcon id={`drawer.${service.id}.whatsappCta.icon`} defaultIcon="MessageCircle" className="w-5 h-5 text-[#121C16] group-hover:scale-110 transition-transform" />
                 <EditableText id="drawer.ctaBtn" defaultText="Agendar este Ritual via WhatsApp" as="span" className="text-[#121C16] font-bold">

@@ -33,5 +33,7 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-# Localização do Sitemap e LLMs Context
+# Localização do Sitemap e Recursos Agênticos (ARD / LLMs)
 Sitemap: https://maliviespa.pages.dev/sitemap.xml
+AI-Catalog: https://maliviespa.pages.dev/ai-catalog.json
+LLMs-Txt: https://maliviespa.pages.dev/llms.txt
