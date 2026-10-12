@@ -203,34 +203,6 @@ export const HeadSpaSection: React.FC = () => {
               </p>
             </div>
 
-            {/* Indicador de Progresso das Fases (Efeito Gradiente de Meta & Lei de Miller) */}
-            <div className="bg-[#18251E]/60 border border-[#F3EFE6]/10 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-sans font-semibold text-[#D4AF37] tracking-wider uppercase">
-                  Fase {activeStep + 1} de 4
-                </span>
-                <span className="text-[11px] text-[#F3EFE6]/60 hidden sm:inline">
-                  • {HEAD_SPA_STEPS[activeStep]?.subtitle}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5" role="tablist" aria-label="Progresso das etapas">
-                {[0, 1, 2, 3].map((stepIdx) => (
-                  <button
-                    key={stepIdx}
-                    type="button"
-                    onClick={() => setActiveStep(stepIdx)}
-                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                      stepIdx === activeStep
-                        ? 'w-7 bg-[#D4AF37]'
-                        : stepIdx < activeStep
-                        ? 'w-3.5 bg-[#7A8B7B]'
-                        : 'w-2 bg-[#F3EFE6]/20'
-                    }`}
-                    aria-label={`Ir para a etapa ${stepIdx + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
 
             {HEAD_SPA_STEPS.map((step, idx) => {
               const isOpen = activeStep === idx;
