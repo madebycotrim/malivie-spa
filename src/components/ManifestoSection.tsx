@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GlassWater, Sparkles, Lamp, CheckCircle2 } from 'lucide-react';
+import { GlassWater, Sparkles, CheckCircle2 } from 'lucide-react';
 import { OFFICIAL_COPIES, WELCOME_RITUAL_STEPS } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { EditableText } from './editor/EditableText';
@@ -171,18 +171,6 @@ export const ManifestoSection: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Ambient Lighting & Temperature note */}
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#E8E0D5]/50 border border-[#D3B8AA]/40 text-xs text-[#2C2C2C]">
-              <EditableIcon id="manifesto.atmosphere.icon" defaultIcon="Sparkles" className="w-5 h-5 text-[#D4AF37] flex-shrink-0" fallbackComponent={Lamp} />
-              <EditableText
-                id="manifesto.atmosphereNote"
-                defaultText="**Atmosfera Sensorial:** Luzes indiretas em temperatura de cor aquecida de 3000K, aromatização com sálvia e lavanda, toalhas aquecidas e chinelos aveludados antes de qualquer procedimento."
-                as="span"
-              >
-                **Atmosfera Sensorial:** Luzes indiretas em temperatura de cor aquecida de 3000K, aromatização com sálvia e lavanda, toalhas aquecidas e chinelos aveludados antes de qualquer procedimento.
-              </EditableText>
             </div>
           </motion.div>
         </div>

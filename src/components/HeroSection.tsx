@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, ChevronDown } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
 import { trackWhatsAppClick } from '../services/analytics';
@@ -11,10 +11,6 @@ const heroImage = '/hero-head-spa.webp';
 const logoMalivieWhite = '/logo-malivie-white.webp';
 
 export const HeroSection: React.FC = () => {
-  const scrollToManifesto = () => {
-    const el = document.getElementById('manifesto');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-[#121C16] pt-20 pb-[calc(5.75rem+env(safe-area-inset-bottom,0px))] sm:pt-28 sm:pb-16 px-5 sm:px-8">
@@ -99,64 +95,29 @@ export const HeroSection: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Magnetic CTAs */}
+        {/* Magnetic CTA */}
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.95, delay: 0.8, ease: EASE_LUXURY }}
-          className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+          className="flex items-center justify-center w-full sm:w-auto"
         >
-          <div className="hidden sm:block">
-            <MagneticButton
-              href={SPA_BUSINESS_DATA.whatsapp.heroUrl}
-              onClick={() => trackWhatsAppClick('hero')}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="sage"
-              size="lg"
-              className="w-full sm:w-auto font-medium"
-            >
-              <EditableIcon id="hero.cta.icon" defaultIcon="MessageCircle" className="w-5 h-5 text-[#121C16]" />
-              <EditableText id="hero.cta" defaultText={OFFICIAL_COPIES.ctaButton} as="span">
-                {OFFICIAL_COPIES.ctaButton}
-              </EditableText>
-            </MagneticButton>
-          </div>
-
           <MagneticButton
-            onClick={scrollToManifesto}
-            variant="glass"
+            href={SPA_BUSINESS_DATA.whatsapp.heroUrl}
+            onClick={() => trackWhatsAppClick('hero')}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="sage"
             size="lg"
-            className="w-full sm:w-auto border-[#D4AF37]/35 hover:border-[#D4AF37]/60 shadow-[0_10px_30px_rgba(0,0,0,0.4)]"
+            className="w-full sm:w-auto font-medium shadow-[0_10px_35px_rgba(212,175,55,0.25)]"
           >
-            <EditableText
-              id="hero.secondaryCta"
-              defaultText="Conhecer o Ritual de Boas-Vindas"
-              as="span"
-              className="text-[#F3EFE6] font-medium"
-            >
-              Conhecer o Ritual de Boas-Vindas
+            <EditableIcon id="hero.cta.icon" defaultIcon="MessageCircle" className="w-5 h-5 text-[#121C16]" />
+            <EditableText id="hero.cta" defaultText={OFFICIAL_COPIES.ctaButton} as="span">
+              {OFFICIAL_COPIES.ctaButton}
             </EditableText>
-            <EditableIcon id="hero.secondaryCta.icon" defaultIcon="ChevronDown" className="w-4 h-4 text-[#D4AF37] group-hover:translate-y-0.5 transition-transform" />
           </MagneticButton>
         </motion.div>
       </div>
-
-      {/* Subtle Sensory Scroll Indicator (Apenas em telas desktop/tablet para liberar respiro zen no mobile) */}
-      <motion.button
-        type="button"
-        onClick={scrollToManifesto}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1 }}
-        className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 text-[#F3EFE6]/65 hover:text-[#D4AF37] transition-colors p-2 focus:outline-none flex-col items-center gap-1.5 z-10 group cursor-pointer"
-        aria-label="Rolar para a próxima seção"
-      >
-        <span className="text-[10px] uppercase tracking-widest font-sans font-medium text-[#F3EFE6]/60 group-hover:text-[#D4AF37] transition-colors">Deslize</span>
-        <div className="w-5 h-8 rounded-full border border-[#F3EFE6]/25 group-hover:border-[#D4AF37]/50 flex items-start justify-center p-1 transition-colors">
-          <div className="w-1.5 h-2 rounded-full bg-[#D4AF37] animate-water-drop" />
-        </div>
-      </motion.button>
     </section>
   );
 };

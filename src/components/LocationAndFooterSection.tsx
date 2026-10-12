@@ -8,7 +8,6 @@ import {
   Navigation,
   Compass,
   ArrowUp,
-  ArrowUpRight,
   Sparkles,
 } from 'lucide-react';
 import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from './SocialIcons';
@@ -486,148 +485,64 @@ export const LocationAndFooterSection: React.FC = () => {
 
         {/* Social Media & Official Channels Showcase */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.85, ease: EASE_LUXURY }}
-          className="py-14 border-t border-b border-[#F3EFE6]/10"
+          transition={{ duration: 0.7, ease: EASE_LUXURY }}
+          className="py-8 border-t border-b border-[#F3EFE6]/10 flex flex-col sm:flex-row items-center justify-between gap-4"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-6 px-1">
-            <div className="flex items-center gap-2">
-              <EditableIcon
-                id="location.channels.icon"
-                defaultIcon="Sparkles"
-                className="w-3.5 h-3.5 text-[#D4AF37]"
-              />
-              <EditableText
-                id="location.channels.title"
-                defaultText="Canais Oficiais & Redes Sociais"
-                as="span"
-                className="text-[11px] uppercase tracking-[0.25em] font-sans font-semibold text-[#F3EFE6]/90"
-              >
-                Canais Oficiais & Redes Sociais
-              </EditableText>
-            </div>
-            <EditableText
-              id="location.channels.subtitle"
-              defaultText="Conecte-se com o santuário e acompanhe nossos rituais diários"
-              as="span"
-              className="text-xs font-serif italic text-[#7A8B7B]"
-            >
-              Conecte-se com o santuário e acompanhe nossos rituais diários
-            </EditableText>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {[
-              {
-                id: 'instagram',
-                name: 'Instagram',
-                handle: SPA_BUSINESS_DATA.social.instagramHandle,
-                desc: 'Fotos, rituais e bastidores de autocuidado',
-                href: SPA_BUSINESS_DATA.social.instagram,
-                icon: <InstagramIcon className="w-5 h-5" />,
-                badge: null,
-                highlight: false,
-                onClick: undefined,
-              },
-              {
-                id: 'whatsapp',
-                name: 'WhatsApp Oficial',
-                handle: SPA_BUSINESS_DATA.whatsapp.formattedDisplay,
-                desc: abertoAgora ? 'Atendimento e recepção direta' : 'Mensagens 24h • Retorno no expediente',
-                href: SPA_BUSINESS_DATA.whatsapp.defaultUrl,
-                icon: <WhatsAppIcon className="w-5 h-5 text-[#D4AF37]" />,
-                badge: null,
-                highlight: true,
-                onClick: () => trackWhatsAppClick('rodape_canais'),
-              },
-            ].map((channel) => (
-              <a
-                key={channel.id}
-                href={channel.href}
-                onClick={channel.onClick}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`relative p-6 sm:p-7 rounded-2xl border shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:-translate-y-1.5 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group flex flex-col justify-between overflow-hidden cursor-pointer ${
-                  channel.highlight
-                    ? 'bg-gradient-to-br from-[#1C2C22] to-[#121C16] border-[#7A8B7B]/40 hover:border-[#D4AF37]/80 hover:shadow-[0_20px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(122,139,123,0.25)]'
-                    : 'bg-gradient-to-br from-[#18251E] to-[#121C16] border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.15)]'
-                }`}
-              >
-                <span
-                  className={`absolute inset-0 w-full h-full bg-gradient-to-r -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none ${
-                    channel.highlight ? 'from-transparent via-[#D4AF37]/15 to-transparent' : 'from-transparent via-white/5 to-transparent'
-                  }`}
-                />
-
-                <div className="flex items-start justify-between mb-5">
-                  <div
-                    className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all duration-400 group-hover:scale-110 group-hover:rotate-6 ${
-                      channel.highlight
-                        ? 'bg-[#7A8B7B]/20 border-[#7A8B7B]/50 text-[#D4AF37]'
-                        : 'bg-[#1F3026] border-[#7A8B7B]/30 text-[#7A8B7B] group-hover:text-[#D4AF37] group-hover:border-[#D4AF37]/50'
-                    }`}
-                  >
-                    {channel.icon}
-                  </div>
-                  {channel.badge ? (
-                    channel.badge
-                  ) : (
-                    <ArrowUpRight className="w-4 h-4 text-[#F3EFE6]/60 group-hover:text-[#D4AF37] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
-                  )}
-                </div>
-
-                <div>
-                  <span
-                    className={`text-[10px] uppercase font-sans tracking-[0.2em] font-semibold block mb-1 ${
-                      channel.highlight ? 'text-[#D4AF37]' : 'text-[#7A8B7B]'
-                    }`}
-                  >
-                    {channel.name}
-                  </span>
-                  <p className="font-serif text-lg sm:text-xl text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug font-medium">
-                    {channel.handle}
-                  </p>
-                  <EditableText
-                    id={`location.channel.${channel.id}.desc`}
-                    defaultText={channel.desc}
-                    as="p"
-                    className="text-xs text-[#F3EFE6]/65 font-sans mt-1"
-                  >
-                    {channel.desc}
-                  </EditableText>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          {/* Secondary Channels in Discrete 1-Line Row */}
-          <div className="mt-5 pt-4 border-t border-[#F3EFE6]/5 flex flex-wrap items-center justify-between gap-3 text-xs text-[#F3EFE6]/55">
-            <span className="text-[11px] font-sans">
-              Outros canais oficiais:
+          <div className="flex items-center gap-2">
+            <EditableIcon
+              id="location.channels.icon"
+              defaultIcon="Sparkles"
+              className="w-3.5 h-3.5 text-[#D4AF37]"
+            />
+            <span className="text-xs uppercase tracking-[0.2em] font-sans font-semibold text-[#F3EFE6]/90">
+              Canais Oficiais:
             </span>
-            <div className="flex items-center gap-4">
-              <a
-                href={SPA_BUSINESS_DATA.social.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group"
-              >
-                <FacebookIcon className="w-3.5 h-3.5 text-[#F3EFE6]/50 group-hover:text-[#D4AF37] group-hover:scale-110 transition-transform" />
-                <span>Facebook</span>
-              </a>
-              <span className="text-[#F3EFE6]/20">•</span>
-              <a
-                href={SPA_BUSINESS_DATA.social.tiktok}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group"
-              >
-                <TikTokIcon className="w-3.5 h-3.5 text-[#F3EFE6]/50 group-hover:text-[#D4AF37] group-hover:scale-110 transition-transform" />
-                <span>TikTok</span>
-              </a>
-            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-[#F3EFE6]/80 font-sans">
+            <a
+              href={SPA_BUSINESS_DATA.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all"
+            >
+              <InstagramIcon className="w-4 h-4 text-[#D4AF37]" />
+              <span className="font-medium">Instagram {SPA_BUSINESS_DATA.social.instagramHandle}</span>
+            </a>
+
+            <a
+              href={SPA_BUSINESS_DATA.whatsapp.defaultUrl}
+              onClick={() => trackWhatsAppClick('rodape_canais')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#18251E] border border-[#7A8B7B]/30 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all"
+            >
+              <WhatsAppIcon className="w-4 h-4 text-[#7A8B7B]" />
+              <span className="font-medium">WhatsApp {SPA_BUSINESS_DATA.whatsapp.formattedDisplay}</span>
+            </a>
+
+            <a
+              href={SPA_BUSINESS_DATA.social.tiktok}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all"
+            >
+              <TikTokIcon className="w-3.5 h-3.5 text-[#F3EFE6]/60" />
+              <span>TikTok</span>
+            </a>
+
+            <a
+              href={SPA_BUSINESS_DATA.social.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all"
+            >
+              <FacebookIcon className="w-3.5 h-3.5 text-[#F3EFE6]/60" />
+              <span>Facebook</span>
+            </a>
           </div>
         </motion.div>
 

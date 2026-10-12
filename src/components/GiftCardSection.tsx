@@ -133,54 +133,6 @@ export const GiftCardSection: React.FC = () => {
               </h3>
             </div>
 
-            {/* The 3 Personas - Inspiração Editorial */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#2D4536]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#2D4536] font-sans">
-                  <EditableText id="giftCard.personaAmiga.label" defaultText="A Amiga" as="span">
-                    A Amiga
-                  </EditableText>
-                </span>
-                <p className="text-xs text-[#555555] font-sans leading-relaxed">
-                  "
-                  <EditableText id="giftCard.personaAmiga" defaultText={OFFICIAL_COPIES.giftCardPersonaAmiga} as="span">
-                    {OFFICIAL_COPIES.giftCardPersonaAmiga}
-                  </EditableText>
-                  "
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#B99887]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#966B57] font-sans">
-                  <EditableText id="giftCard.personaMae.label" defaultText="A Mãe" as="span">
-                    A Mãe
-                  </EditableText>
-                </span>
-                <p className="text-xs text-[#555555] font-sans leading-relaxed">
-                  "
-                  <EditableText id="giftCard.personaMae" defaultText={OFFICIAL_COPIES.giftCardPersonaMae} as="span">
-                    {OFFICIAL_COPIES.giftCardPersonaMae}
-                  </EditableText>
-                  "
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] hover:border-[#D4AF37]/60 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_rgba(211,184,170,0.18)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between space-y-2 cursor-default">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#8A7020] font-sans">
-                  <EditableText id="giftCard.personaMulher.label" defaultText="A Mulher Admirada" as="span">
-                    A Mulher Admirada
-                  </EditableText>
-                </span>
-                <p className="text-xs text-[#555555] font-sans leading-relaxed">
-                  "
-                  <EditableText id="giftCard.personaMulher" defaultText={OFFICIAL_COPIES.giftCardPersonaMulher} as="span">
-                    {OFFICIAL_COPIES.giftCardPersonaMulher}
-                  </EditableText>
-                  "
-                </p>
-              </div>
-            </div>
-
             {/* Core Message Card */}
             <div className="p-6 sm:p-7 rounded-3xl bg-[#F0EAE1]/80 border border-[#D3B8AA]/40 space-y-4 shadow-sm">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#2D4536]">
@@ -219,19 +171,6 @@ export const GiftCardSection: React.FC = () => {
                   </EditableText>
                 </div>
               </div>
-            </div>
-
-            {/* Official Baseline Note */}
-            <div className="p-4 rounded-2xl bg-white border border-[#E8E0D5] flex items-center gap-3 text-xs text-[#555555] shadow-xs">
-              <EditableIcon id="giftCard.officialNote.icon" defaultIcon="Gift" className="w-5 h-5 text-[#B99887] flex-shrink-0" />
-              <EditableText
-                id="giftCard.officialNote"
-                defaultText={OFFICIAL_COPIES.giftCardOfficial}
-                as="p"
-                className="leading-relaxed"
-              >
-                {OFFICIAL_COPIES.giftCardOfficial}
-              </EditableText>
             </div>
 
             {/* CTA Button */}

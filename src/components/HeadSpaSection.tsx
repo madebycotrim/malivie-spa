@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Droplets, Sparkles, MessageCircle, ShieldCheck, Check, Headphones, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { ChevronDown, Droplets, Sparkles, MessageCircle, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { HEAD_SPA_STEPS, SPA_BUSINESS_DATA, OFFICIAL_COPIES } from '../data/spaData';
 import { MagneticButton } from './MagneticButton';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
@@ -152,24 +152,6 @@ export const HeadSpaSection: React.FC = () => {
             "
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.85, delay: 0.3, ease: EASE_ORGANIC }}
-            className="mt-6 p-5 rounded-2xl bg-[#18251E]/90 border border-[#7A8B7B]/30 text-xs sm:text-sm text-[#F3EFE6]/90 max-w-3xl mx-auto leading-relaxed flex items-start gap-3 text-left shadow-lg"
-          >
-            <EditableIcon id="headSpa.quote.icon" defaultIcon="Headphones" className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-            <p className="font-sans leading-relaxed">
-              <EditableText
-                id="headSpa.quote"
-                defaultText={OFFICIAL_COPIES.headSpaQuote}
-                as="span"
-              >
-                {OFFICIAL_COPIES.headSpaQuote}
-              </EditableText>
-            </p>
-          </motion.div>
         </div>
 
         {/* 2-Column Showcase: 3D Tilt Asymmetric Gallery on Left + Unlumen Accordion on Right */}
@@ -194,70 +176,9 @@ export const HeadSpaSection: React.FC = () => {
                   containerClassName="w-full h-full"
                 />
                 
-                {/* Visual Gradient Shimmer */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#121C16] via-transparent to-black/20 pointer-events-none" />
-
-                {/* Floating Tag inside the photo */}
-                <div
-                  className="absolute top-4 left-4 z-30 pointer-events-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121C16]/80 backdrop-blur-md border border-[#F3EFE6]/20 text-[11px] text-[#F3EFE6]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <EditableIcon id="headSpa.photoBadge.icon" defaultIcon="Sparkles" className="w-3 h-3 text-[#D4AF37]" />
-                  <EditableText id="headSpa.photoBadge" defaultText="Arco Hídrico Terapêutico ASMR" as="span">
-                    Arco Hídrico Terapêutico ASMR
-                  </EditableText>
-                </div>
-
-                {/* Bottom Overlay Info Card */}
-                <div
-                  className="absolute bottom-4 left-4 right-4 z-30 pointer-events-auto p-4 rounded-xl bg-[#121C16]/90 backdrop-blur-md border border-[#F3EFE6]/10 text-xs"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-serif italic text-[#D4AF37] text-sm">
-                      <EditableText id="headSpa.photoCardTitle" defaultText="Sensação da Sessão" as="span">
-                        Sensação da Sessão
-                      </EditableText>
-                    </span>
-                    <span className="text-[10px] uppercase font-sans tracking-widest text-[#7A8B7B]">
-                      <EditableText id="headSpa.photoCardDuration" defaultText="80 Minutos" as="span">
-                        80 Minutos
-                      </EditableText>
-                    </span>
-                  </div>
-                  <p className="text-[#F3EFE6]/80 text-[11px] leading-relaxed">
-                    "
-                    <EditableText
-                      id={`headSpa.step.${activeStep}.sensoryNote`}
-                      defaultText={HEAD_SPA_STEPS[activeStep].sensoryNote}
-                      as="span"
-                    >
-                      {HEAD_SPA_STEPS[activeStep].sensoryNote}
-                    </EditableText>
-                    "
-                  </p>
-                </div>
+                {/* Subtle Luxury Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#121C16]/50 via-transparent to-black/10 pointer-events-none" />
               </div>
-
-            </div>
-
-            {/* Micro Benefits Badge (Regulatório Seguro) */}
-            <div className="mt-4 p-3.5 rounded-2xl bg-[#18251E]/60 border border-[#F3EFE6]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#F3EFE6]/85">
-              <div className="flex items-center gap-2">
-                <EditableIcon id="headSpa.benefit.icon" defaultIcon="ShieldCheck" className="w-4 h-4 text-[#7A8B7B] shrink-0" />
-                <EditableText
-                  id="headSpa.benefitText"
-                  defaultText="Alívio de tensões na cabeça, estresse e fadiga mental"
-                  as="span"
-                >
-                  Alívio de tensões na cabeça, estresse e fadiga mental
-                </EditableText>
-              </div>
-              <span className="text-[#D4AF37] font-semibold text-[11px] shrink-0 sm:ml-2">
-                <EditableText id="headSpa.benefitHighlight" defaultText="Puro bem-estar" as="span">
-                  Puro bem-estar
-                </EditableText>
-              </span>
             </div>
           </motion.div>
 
@@ -493,18 +414,6 @@ export const HeadSpaSection: React.FC = () => {
                               </div>
                             )}
                           </div>
-
-                          <div className="pt-2 flex items-center justify-between text-xs border-t border-[#F3EFE6]/5">
-                            <span className="text-[#D4AF37] font-serif italic text-sm">
-                              <EditableText
-                                id={`headSpa.step.${idx}.therapists`}
-                                defaultText="Terapeutas Especialistas: Andressa & Luciana"
-                                as="span"
-                              >
-                                Terapeutas Especialistas: Andressa & Luciana
-                              </EditableText>
-                            </span>
-                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -513,170 +422,49 @@ export const HeadSpaSection: React.FC = () => {
               );
             })}
 
-            {/* Modalidades Oficiais Head Spa & Oferta Especial */}
-            <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-[#18251E] border border-[#D4AF37]/30 space-y-4 shadow-lg">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F3EFE6]/10 pb-3">
-                <span className="text-xs uppercase font-sans font-bold tracking-widest text-[#D4AF37]">
-                  <EditableText
-                    id="headSpa.pricing.headerTitle"
-                    defaultText="Escolha Sua Experiência Head SPA"
-                    as="span"
-                  >
-                    Escolha Sua Experiência Head SPA
-                  </EditableText>
-                </span>
-                <span className="text-[11px] text-[#7A8B7B] font-medium">
-                  <EditableText
-                    id="headSpa.pricing.headerSubtitle"
-                    defaultText="Aromaterapia Inclusa • Escalda-pés cortesia com antecedência*"
-                    as="span"
-                  >
-                    Aromaterapia Inclusa • Escalda-pés cortesia com antecedência*
-                  </EditableText>
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#F3EFE6]/10 flex flex-col justify-between">
-                  <div>
+            {/* Modalidades Oficiais Head Spa & Preço */}
+            <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-[#18251E] border border-[#D4AF37]/30 space-y-3.5 shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F3EFE6]/10 pb-3.5">
+                <div>
+                  <span className="text-xs uppercase font-sans font-bold tracking-widest text-[#D4AF37] block">
                     <EditableText
-                      id="headSpa.pricing.card1.name"
-                      defaultText="Head Spa Essencial"
+                      id="headSpa.pricing.headerTitle"
+                      defaultText="3 Rituais Oficiais: Essencial • Harmonia • Plenitude"
                       as="span"
-                      className="text-xs font-semibold text-[#F3EFE6] block"
                     >
-                      Head Spa Essencial
+                      3 Rituais Oficiais: Essencial • Harmonia • Plenitude
                     </EditableText>
+                  </span>
+                  <span className="text-[11px] text-[#7A8B7B] font-medium mt-0.5 block">
                     <EditableText
-                      id="headSpa.pricing.card1.desc"
-                      defaultText="Couro cabeludo & fios com ozonioterapia"
+                      id="headSpa.pricing.headerSubtitle"
+                      defaultText="Aromaterapia Inclusa • Welcome Drink em Cristal"
                       as="span"
-                      className="text-[11px] text-[#F3EFE6]/60 block mt-0.5"
                     >
-                      Couro cabeludo & fios com ozonioterapia
+                      Aromaterapia Inclusa • Welcome Drink em Cristal
                     </EditableText>
-                  </div>
-                  <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
-                    <EditableText
-                      id="headSpa.pricing.card1.duration"
-                      defaultText="45' min"
-                      as="span"
-                      className="text-[11px] text-[#7A8B7B]"
-                    >
-                      45' min
-                    </EditableText>
-                    <EditableText
-                      id="headSpa.pricing.card1.price"
-                      defaultText="R$ 239,00"
-                      as="span"
-                      className="text-sm font-serif font-bold text-[#D4AF37]"
-                    >
-                      R$ 239,00
-                    </EditableText>
-                  </div>
+                  </span>
                 </div>
-
-                <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#7A8B7B]/40 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between gap-1">
-                      <EditableText
-                        id="headSpa.pricing.card2.name"
-                        defaultText="Head Spa Harmonia"
-                        as="span"
-                        className="text-xs font-semibold text-[#F3EFE6] block"
-                      >
-                        Head Spa Harmonia
-                      </EditableText>
-                    </div>
-                    <EditableText
-                      id="headSpa.pricing.card2.desc"
-                      defaultText="Essencial + Revitalização Facial"
-                      as="span"
-                      className="text-[11px] text-[#F3EFE6]/60 block mt-0.5"
-                    >
-                      Essencial + Revitalização Facial
-                    </EditableText>
-                  </div>
-                  <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
-                    <EditableText
-                      id="headSpa.pricing.card2.duration"
-                      defaultText="80' min"
-                      as="span"
-                      className="text-[11px] text-[#7A8B7B]"
-                    >
-                      80' min
-                    </EditableText>
-                    <EditableText
-                      id="headSpa.pricing.card2.price"
-                      defaultText="R$ 349,00"
-                      as="span"
-                      className="text-sm font-serif font-bold text-[#D4AF37]"
-                    >
-                      R$ 349,00
-                    </EditableText>
-                  </div>
-                </div>
-
-                <div className="p-3.5 rounded-xl bg-[#121C16]/80 border border-[#D4AF37]/40 flex flex-col justify-between relative overflow-hidden">
-                  <div className="absolute top-0 right-0 px-2 py-0.5 bg-[#D4AF37] text-[#121C16] text-[9px] font-bold uppercase tracking-wider rounded-bl">
-                    <EditableText
-                      id="headSpa.pricing.card3.badge"
-                      defaultText="Completo"
-                      as="span"
-                      darkBorder={true}
-                    >
-                      Completo
-                    </EditableText>
-                  </div>
-                  <div>
-                    <EditableText
-                      id="headSpa.pricing.card3.name"
-                      defaultText="Head Spa Plenitude"
-                      as="span"
-                      className="text-xs font-semibold text-[#F3EFE6] block"
-                    >
-                      Head Spa Plenitude
-                    </EditableText>
-                    <EditableText
-                      id="headSpa.pricing.card3.desc"
-                      defaultText="Head Spa + Facial + Esfoliação + Pedras Quentes"
-                      as="span"
-                      className="text-[11px] text-[#F3EFE6]/60 block mt-0.5"
-                    >
-                      Head Spa + Facial + Esfoliação + Pedras Quentes
-                    </EditableText>
-                  </div>
-                  <div className="mt-3 pt-2 border-t border-[#F3EFE6]/5 flex items-baseline justify-between">
-                    <EditableText
-                      id="headSpa.pricing.card3.duration"
-                      defaultText="160' min"
-                      as="span"
-                      className="text-[11px] text-[#7A8B7B]"
-                    >
-                      160' min
-                    </EditableText>
-                    <EditableText
-                      id="headSpa.pricing.card3.price"
-                      defaultText="R$ 577,00"
-                      as="span"
-                      className="text-sm font-serif font-bold text-[#D4AF37]"
-                    >
-                      R$ 577,00
-                    </EditableText>
-                  </div>
+                <div className="sm:text-right shrink-0">
+                  <span className="text-[10px] uppercase font-sans tracking-wider text-[#94A595] block">
+                    A partir de
+                  </span>
+                  <span className="font-serif text-lg font-bold text-[#D4AF37]">
+                    R$ 239,00
+                  </span>
                 </div>
               </div>
 
-              {/* Special Upsell Callout from Catalog page 10 */}
-              <div className="p-3 rounded-xl bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-2.5 text-xs text-[#F3EFE6]/90">
+              {/* Special Upsell Callout */}
+              <div className="p-3.5 rounded-xl bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-2.5 text-xs text-[#F3EFE6]/90">
                 <EditableIcon id="headSpa.upsell.icon" defaultIcon="Sparkles" className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
-                <span className="font-sans leading-tight flex-1">
+                <span className="font-sans leading-relaxed flex-1">
                   <EditableText
                     id="headSpa.pricing.upsell"
-                    defaultText="**Dica Especial:** Adicione o Spa dos Pés por **50% do valor** e torne sua experiência ainda mais especial."
+                    defaultText="Adicione o Spa dos Pés por **50% do valor** e torne sua experiência ainda mais completa."
                     as="span"
                   >
-                    **Dica Especial:** Adicione o Spa dos Pés por **50% do valor** e torne sua experiência ainda mais especial.
+                    Adicione o Spa dos Pés por **50% do valor** e torne sua experiência ainda mais completa.
                   </EditableText>
                 </span>
               </div>

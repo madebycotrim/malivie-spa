@@ -21,10 +21,14 @@ import {
   Droplets,
   Footprints,
   HeartHandshake,
+  Heart,
+  Moon,
+  X,
   Crown,
   PlusCircle,
   Calendar,
-  Gift
+  Gift,
+  FileText
 } from 'lucide-react';
 import { ServiceItem, ServiceCategory } from '../types';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
@@ -38,14 +42,14 @@ import { ConfirmPopover } from './editor/ConfirmPopover';
 import { useEditor } from '../context/EditorContext';
 import { getStoredAuthToken } from '../services/authService';
 
-type MenuCollectionKey = 'todos' | 'head-spa' | 'massagens-corporais' | 'day-spa';
+type MenuCollectionKey = 'todos' | 'head-spa' | 'massagens' | 'day-spa';
 
 export type IntentKey = 'enxaqueca' | 'presente' | 'casal' | 'burnout';
 
 interface IntentPreset {
   key: IntentKey;
   label: string;
-  emoji: string;
+  icon: React.ComponentType<{ className?: string }>;
   serviceIds: string[];
 }
 
@@ -53,7 +57,7 @@ const INTENT_PRESETS: IntentPreset[] = [
   {
     key: 'enxaqueca',
     label: 'Alívio de Enxaqueca & Tensão',
-    emoji: '🌿',
+    icon: Feather,
     serviceIds: [
       'head-spa-essencial',
       'head-spa-harmonia',
@@ -67,7 +71,7 @@ const INTENT_PRESETS: IntentPreset[] = [
   {
     key: 'presente',
     label: 'Presente Especial',
-    emoji: '🎁',
+    icon: Gift,
     serviceIds: [
       'day-spa-ambar',
       'day-spa-safira',
@@ -80,7 +84,7 @@ const INTENT_PRESETS: IntentPreset[] = [
   {
     key: 'casal',
     label: 'Experiência a Dois (Casal)',
-    emoji: '🕯️',
+    icon: Heart,
     serviceIds: [
       'ritual-dois-coracoes',
       'day-spa-esmeralda',
@@ -94,7 +98,7 @@ const INTENT_PRESETS: IntentPreset[] = [
   {
     key: 'burnout',
     label: 'Cansaço Mental / Burnout',
-    emoji: '💆‍♀️',
+    icon: Moon,
     serviceIds: [
       'head-spa-plenitude',
       'head-spa-essencial',
@@ -189,31 +193,11 @@ export const ServicesMenuSection: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  type MenuCollectionKey =
-    | 'todos'
-    | 'head-spa'
-    | 'relaxamento'
-    | 'terapias'
-    | 'corporal-facial'
-    | 'spa-pes'
-    | 'day-spa'
-    | 'especiais'
-    | 'complementos'
-    | 'planos';
-
-  const [isGuideOpen, setIsGuideOpen] = useState(false);
-
   const DEFAULT_CATEGORY_LABELS: Record<MenuCollectionKey, string> = {
     'todos': 'Todos os Rituais',
-    'head-spa': 'Head SPA',
-    'relaxamento': 'Relaxamento & Express',
-    'terapias': 'Terapias Corporais',
-    'corporal-facial': 'Corporal & Facial',
-    'spa-pes': 'Spa dos Pés',
-    'day-spa': 'Day SPA',
-    'especiais': 'Rituais Especiais',
-    'complementos': 'Complementos',
-    'planos': 'Planos de Sessões & Horas',
+    'head-spa': 'Head SPA Coreano',
+    'massagens': 'Massagens & Terapias',
+    'day-spa': 'Day SPA & Rituais',
   };
 
   const cleanCategoryName = (text: string) => {
@@ -232,44 +216,14 @@ export const ServicesMenuSection: React.FC = () => {
       defaultLabel: DEFAULT_CATEGORY_LABELS['head-spa'],
     },
     {
-      key: 'relaxamento',
-      label: cleanCategoryName(getText('services.tab.relaxamento', DEFAULT_CATEGORY_LABELS['relaxamento'])),
-      defaultLabel: DEFAULT_CATEGORY_LABELS['relaxamento'],
-    },
-    {
-      key: 'terapias',
-      label: cleanCategoryName(getText('services.tab.terapias', DEFAULT_CATEGORY_LABELS['terapias'])),
-      defaultLabel: DEFAULT_CATEGORY_LABELS['terapias'],
-    },
-    {
-      key: 'corporal-facial',
-      label: cleanCategoryName(getText('services.tab.corporal-facial', DEFAULT_CATEGORY_LABELS['corporal-facial'])),
-      defaultLabel: DEFAULT_CATEGORY_LABELS['corporal-facial'],
-    },
-    {
-      key: 'spa-pes',
-      label: cleanCategoryName(getText('services.tab.spa-pes', DEFAULT_CATEGORY_LABELS['spa-pes'])),
-      defaultLabel: DEFAULT_CATEGORY_LABELS['spa-pes'],
+      key: 'massagens',
+      label: cleanCategoryName(getText('services.tab.massagens', DEFAULT_CATEGORY_LABELS['massagens'])),
+      defaultLabel: DEFAULT_CATEGORY_LABELS['massagens'],
     },
     {
       key: 'day-spa',
       label: cleanCategoryName(getText('services.tab.day-spa', DEFAULT_CATEGORY_LABELS['day-spa'])),
       defaultLabel: DEFAULT_CATEGORY_LABELS['day-spa'],
-    },
-    {
-      key: 'especiais',
-      label: cleanCategoryName(getText('services.tab.especiais', DEFAULT_CATEGORY_LABELS['especiais'])),
-      defaultLabel: DEFAULT_CATEGORY_LABELS['especiais'],
-    },
-    {
-      key: 'complementos',
-      label: cleanCategoryName(getText('services.tab.complementos', DEFAULT_CATEGORY_LABELS['complementos'])),
-      defaultLabel: DEFAULT_CATEGORY_LABELS['complementos'],
-    },
-    {
-      key: 'planos',
-      label: cleanCategoryName(getText('services.tab.planos', DEFAULT_CATEGORY_LABELS['planos'])),
-      defaultLabel: DEFAULT_CATEGORY_LABELS['planos'],
     },
   ];
 
@@ -287,15 +241,22 @@ export const ServicesMenuSection: React.FC = () => {
 
   const normalizeCategory = (cat: string): MenuCollectionKey => {
     if (cat === 'head-spa') return 'head-spa';
-    if (cat === 'relaxamento' || cat === 'massagens' || cat === 'pedras-quentes') return 'relaxamento';
-    if (cat === 'terapias' || cat === 'acupuntura') return 'terapias';
-    if (cat === 'corporal-facial') return 'corporal-facial';
-    if (cat === 'spa-pes') return 'spa-pes';
-    if (cat === 'day-spa') return 'day-spa';
-    if (cat === 'especiais') return 'especiais';
-    if (cat === 'complementos') return 'complementos';
-    if (cat === 'planos-horas' || cat === 'planos') return 'planos';
-    return 'relaxamento';
+    if (
+      cat === 'relaxamento' ||
+      cat === 'massagens' ||
+      cat === 'pedras-quentes' ||
+      cat === 'terapias' ||
+      cat === 'acupuntura' ||
+      cat === 'corporal-facial' ||
+      cat === 'spa-pes' ||
+      cat === 'complementos'
+    ) {
+      return 'massagens';
+    }
+    if (cat === 'day-spa' || cat === 'especiais' || cat === 'planos-horas' || cat === 'planos') {
+      return 'day-spa';
+    }
+    return 'massagens';
   };
 
   const getCategoryLabel = (cat: string): string => {
@@ -348,114 +309,14 @@ export const ServicesMenuSection: React.FC = () => {
 
   const handleCreateService = () => {
     let targetCat: ServiceCategory = 'head-spa';
-    if (selectedCollection === 'relaxamento') targetCat = 'relaxamento';
-    else if (selectedCollection === 'terapias') targetCat = 'terapias';
-    else if (selectedCollection === 'corporal-facial') targetCat = 'corporal-facial';
-    else if (selectedCollection === 'spa-pes') targetCat = 'spa-pes';
+    if (selectedCollection === 'massagens') targetCat = 'relaxamento';
     else if (selectedCollection === 'day-spa') targetCat = 'day-spa';
-    else if (selectedCollection === 'especiais') targetCat = 'especiais';
-    else if (selectedCollection === 'complementos') targetCat = 'complementos';
-    else if (selectedCollection === 'planos') targetCat = 'planos-horas';
     addService(targetCat);
   };
 
   const handleDeleteService = (id: string) => {
     removeService(id);
     setConfirmDeleteId(null);
-  };
-
-  const GUIDE_CHOICES: {
-    key: MenuCollectionKey | 'voucher';
-    title: string;
-    description: string;
-    defaultIcon: string;
-    tag: string;
-  }[] = [
-    {
-      key: 'relaxamento',
-      title: 'Relaxamento',
-      description: 'Massagens para relaxar e desacelerar.',
-      defaultIcon: 'Feather',
-      tag: 'Págs. 4 e 5',
-    },
-    {
-      key: 'terapias',
-      title: 'Terapias Corporais',
-      description: 'Alívio de dores e tensões musculares.',
-      defaultIcon: 'Activity',
-      tag: 'Págs. 6 e 7',
-    },
-    {
-      key: 'corporal-facial',
-      title: 'Bem-Estar Corporal & Facial',
-      description: 'Cuidados para corpo, rosto e autoestima.',
-      defaultIcon: 'Sparkles',
-      tag: 'Págs. 8 e 9',
-    },
-    {
-      key: 'head-spa',
-      title: 'Head SPA',
-      description: 'Saúde capilar e relaxamento profundo.',
-      defaultIcon: 'Droplets',
-      tag: 'Pág. 10',
-    },
-    {
-      key: 'spa-pes',
-      title: 'Spa dos Pés',
-      description: 'Relaxamento e cuidado para pés e pernas.',
-      defaultIcon: 'Footprints',
-      tag: 'Pág. 11',
-    },
-    {
-      key: 'day-spa',
-      title: 'Rituais de Bem-Estar',
-      description: 'Experiências completas de bem-estar.',
-      defaultIcon: 'HeartHandshake',
-      tag: 'Págs. 12 e 13',
-    },
-    {
-      key: 'complementos',
-      title: 'Complementos',
-      description: 'Personalize sua experiência com imersão e pindas.',
-      defaultIcon: 'PlusCircle',
-      tag: 'Pág. 14',
-    },
-    {
-      key: 'especiais',
-      title: 'Rituais Especiais',
-      description: 'Experiências criadas para ocasiões marcantes.',
-      defaultIcon: 'Crown',
-      tag: 'Págs. 15 e 16',
-    },
-    {
-      key: 'planos',
-      title: 'Planos de Sessões & Horas',
-      description: 'Benefícios para quem cuida de si com frequência.',
-      defaultIcon: 'Calendar',
-      tag: 'Págs. 17 e 18',
-    },
-    {
-      key: 'voucher',
-      title: 'Voucher Presente',
-      description: 'Presentes personalizados para qualquer ocasião.',
-      defaultIcon: 'Gift',
-      tag: 'Pág. 19',
-    },
-  ];
-
-
-  const handleGuideClick = (key: MenuCollectionKey | 'voucher') => {
-    if (key === 'voucher') {
-      const el = document.getElementById('gift-card');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
-    setSelectedCollection(key);
-    setIsExpanded(false);
-    const filterEl = document.getElementById('menu-filtros');
-    if (filterEl) {
-      filterEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
   };
 
   return (
@@ -472,23 +333,28 @@ export const ServicesMenuSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-            className="flex flex-wrap items-center justify-center gap-2.5 mb-4"
+            className="flex items-center justify-center mb-5"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F0EAE1] text-[#2D4536] border border-[#2D4536]/20 text-xs font-sans font-semibold uppercase tracking-[0.25em]">
-              <EditableIcon id="menu.badge.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <EditableText id="menu.badge" defaultText="Cardápio de Experiências" as="span">
-                Cardápio de Experiências
-              </EditableText>
-            </div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121C16]/5 border border-[#D4AF37]/35 text-[11px] sm:text-xs font-sans text-[#2D4536] font-medium shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
-              <EditableText
-                id="menu.urgencyBadge"
-                defaultText="Atendimento com hora marcada • Poucos horários para este sábado"
-                as="span"
-              >
-                Atendimento com hora marcada • Poucos horários para este sábado
-              </EditableText>
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 border border-[#D4AF37]/35 text-xs font-sans shadow-xs backdrop-blur-sm">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
+              </span>
+              <span className="text-[10px] sm:text-[11px] font-sans font-semibold tracking-wider uppercase text-[#7A8B7B] shrink-0">
+                <EditableText id="menu.badge" defaultText="Rituais Exclusivos" as="span">
+                  Rituais Exclusivos
+                </EditableText>
+              </span>
+              <span className="w-px h-3.5 bg-[#121C16]/15 shrink-0" />
+              <span className="text-[11px] sm:text-xs font-sans text-[#2D4536] font-medium">
+                <EditableText
+                  id="menu.urgencyBadge"
+                  defaultText="Atendimento com hora marcada • Poucos horários disponíveis"
+                  as="span"
+                >
+                  Atendimento com hora marcada • Poucos horários disponíveis
+                </EditableText>
+              </span>
             </div>
           </motion.div>
 
@@ -521,183 +387,41 @@ export const ServicesMenuSection: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* GUIA DE ESCOLHA INTERATIVO (Página 3 Oficial) */}
-        <div className="max-w-4xl mx-auto mb-10 px-2">
-          <div className="rounded-2xl border border-[#D4AF37]/35 bg-[#F0EAE1]/75 backdrop-blur-sm overflow-hidden shadow-xs">
-            <button
-              type="button"
-              onClick={() => setIsGuideOpen((prev) => !prev)}
-              className="w-full p-4 sm:p-5 flex items-center justify-between text-left transition-colors hover:bg-[#EAE2D7]/80 cursor-pointer focus:outline-none"
-              aria-expanded={isGuideOpen}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-xl bg-[#121C16] text-[#D4AF37] shadow-sm">
-                  <EditableIcon id="services.guide.icon" defaultIcon="Compass" className="w-5 h-5" />
+        {/* Filtros por "Dor do Cliente" / Intenção Direta (Lei de Hick & Fitts) */}
+        <div className="max-w-5xl mx-auto mb-10 px-2 sm:px-4">
+          <div className="rounded-3xl bg-[#F7F4EE]/90 backdrop-blur-md border border-[#D4AF37]/30 p-4 sm:p-5 shadow-[0_10px_35px_rgba(212,175,55,0.06)]">
+            {/* Header: Título elegante + Ação de Limpar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#121C16]/8">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-full bg-[#18251E] flex items-center justify-center text-[#D4AF37] shadow-xs shrink-0">
+                  <Sparkles className="w-3.5 h-3.5" />
                 </div>
-                <div onClick={(e) => isEditorActive && e.stopPropagation()}>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-serif text-base sm:text-lg text-[#2C2C2C] font-medium">
-                      <EditableText
-                        id="services.guide.headerTitle"
-                        defaultText="Guia de Escolha Maliviê"
-                        as="span"
-                      >
-                        Guia de Escolha Maliviê
-                      </EditableText>
-                    </h3>
-                    <span className="text-[10px] uppercase font-sans font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#2D4536]/15 text-[#213529]">
-                      <EditableText
-                        id="services.guide.headerBadge"
-                        defaultText="Página 3 do Menu"
-                        as="span"
-                      >
-                        Página 3 do Menu
-                      </EditableText>
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#444444] font-sans mt-0.5">
-                    <EditableText
-                      id="services.guide.headerSubtitle"
-                      defaultText="Encontre a opção ideal para o seu momento • Toque para ver as recomendações"
-                      as="span"
-                    >
-                      Encontre a opção ideal para o seu momento • Toque para ver as recomendações
-                    </EditableText>
-                  </p>
+                <div>
+                  <h3 className="text-sm sm:text-base font-serif font-medium text-[#121C16] leading-none">
+                    O que você busca aliviar hoje?
+                  </h3>
+                  <span className="text-[11px] font-sans text-[#7A8B7B] tracking-wide mt-1 block">
+                    Selecione uma intenção para encontrar o ritual perfeito
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#2D4536]">
-                <span className="hidden sm:inline">
-                  {isGuideOpen ? 'Ocultar Guia' : 'Explorar Guia'}
-                </span>
-                <ChevronDown
-                  className={`w-4 h-4 text-[#2D4536] transition-transform duration-300 ${
-                    isGuideOpen ? 'rotate-180' : ''
-                  }`}
-                />
-              </div>
-            </button>
 
-            <AnimatePresence>
-              {isGuideOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.35, ease: EASE_ORGANIC }}
-                  className="overflow-hidden border-t border-[#E8E0D5]"
+              {selectedIntent && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedIntent(null)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-sans font-medium text-[#7A8B7B] hover:text-[#18251E] bg-white/70 hover:bg-white border border-[#18251E]/10 transition-all cursor-pointer self-start sm:self-auto shadow-2xs"
                 >
-                  <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-[#FBF9F6]">
-                    {GUIDE_CHOICES.map((choice) => {
-                      const isCurrent = choice.key !== 'voucher' && selectedCollection === choice.key;
-                      return (
-                        <div
-                          key={choice.key}
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => {
-                            if (!isEditorActive) {
-                              handleGuideClick(choice.key);
-                            }
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              if (!isEditorActive) {
-                                handleGuideClick(choice.key);
-                              }
-                            }
-                          }}
-                          className={`p-3.5 rounded-xl text-left transition-all duration-200 border flex flex-col justify-between space-y-2 cursor-pointer group select-none ${
-                            isCurrent
-                              ? 'bg-[#121C16] text-[#F3EFE6] border-[#D4AF37]/60 shadow-md'
-                              : 'bg-white hover:bg-[#F0EAE1] text-[#2C2C2C] border-[#E8E0D5] hover:border-[#7A8B7B]/40'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <EditableIcon
-                                id={`services.guide.${choice.key}.icon`}
-                                defaultIcon={choice.defaultIcon}
-                                className={`w-4 h-4 ${
-                                  isCurrent ? 'text-[#D4AF37]' : 'text-[#7A8B7B] group-hover:text-[#D4AF37]'
-                                } transition-colors`}
-                              />
-                              <span className="font-serif font-semibold text-xs sm:text-sm leading-tight">
-                                <EditableText
-                                  id={`services.guide.${choice.key}.title`}
-                                  defaultText={choice.title}
-                                  as="span"
-                                >
-                                  {choice.title}
-                                </EditableText>
-                              </span>
-                            </div>
-                            <span
-                              className={`text-[9px] font-sans uppercase font-bold tracking-wider px-1.5 py-0.5 rounded ${
-                                isCurrent
-                                  ? 'bg-white/10 text-[#D4AF37]'
-                                  : 'bg-[#F0EAE1] text-[#2D4536]'
-                              }`}
-                            >
-                              <EditableText
-                                id={`services.guide.${choice.key}.tag`}
-                                defaultText={choice.tag}
-                                as="span"
-                              >
-                                {choice.tag}
-                              </EditableText>
-                            </span>
-                          </div>
-                          <p
-                            className={`text-xs font-sans leading-relaxed line-clamp-2 ${
-                              isCurrent ? 'text-[#F3EFE6]/80' : 'text-[#555555]'
-                            }`}
-                          >
-                            <EditableText
-                              id={`services.guide.${choice.key}.desc`}
-                              defaultText={choice.description}
-                              as="span"
-                            >
-                              {choice.description}
-                            </EditableText>
-                          </p>
-                          <div className="pt-1 flex items-center gap-1 text-[11px] font-sans font-medium">
-                            <span className={isCurrent ? 'text-[#D4AF37]' : 'text-[#7A8B7B]'}>
-                              <EditableText
-                                id={`services.guide.${choice.key}.action`}
-                                defaultText={choice.key === 'voucher' ? 'Ver vouchers' : 'Ver rituais'}
-                                as="span"
-                              >
-                                {choice.key === 'voucher' ? 'Ver vouchers' : 'Ver rituais'}
-                              </EditableText>
-                            </span>
-                            <EditableIcon
-                              id={`services.guide.${choice.key}.arrow.icon`}
-                              defaultIcon="ArrowRight"
-                              className={`w-3 h-3 group-hover:translate-x-1 transition-transform ${
-                                isCurrent ? 'text-[#D4AF37]' : 'text-[#7A8B7B]'
-                              }`}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </motion.div>
+                  <X className="w-3.5 h-3.5" />
+                  <span>Limpar filtro</span>
+                </button>
               )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Filtros por "Dor do Cliente" / Intenção Direta (Lei de Hick) */}
-        <div className="max-w-4xl mx-auto mb-8 px-2">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F0EAE1]/75 border border-[#D4AF37]/30 rounded-2xl p-3 sm:p-4 backdrop-blur-sm shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-sans text-[#2D4536] font-semibold tracking-wide shrink-0">
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>O que você busca aliviar hoje?</span>
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+
+            {/* Grid 4 Colunas Perfeitas (Sem quebras desajeitadas) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
               {INTENT_PRESETS.map((intent) => {
+                const Icon = intent.icon;
                 const isActive = selectedIntent === intent.key;
                 return (
                   <button
@@ -712,46 +436,59 @@ export const ServicesMenuSection: React.FC = () => {
                         setIsExpanded(false);
                       }
                     }}
-                    className={`px-3.5 py-2 min-h-[40px] rounded-full text-xs font-sans transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                    className={`group relative p-3 sm:p-3.5 rounded-2xl text-left transition-all duration-300 cursor-pointer flex items-center gap-3 border ${
                       isActive
-                        ? 'bg-[#2D4536] text-[#F3EFE6] font-bold shadow-md ring-2 ring-[#D4AF37]'
-                        : 'bg-white/85 hover:bg-white text-[#2C2C2C] font-medium border border-[#2D4536]/10 hover:border-[#D4AF37]/50 shadow-2xs'
+                        ? 'bg-[#18251E] text-[#F3EFE6] border-[#D4AF37] shadow-md ring-1 ring-[#D4AF37]/50'
+                        : 'bg-white/90 hover:bg-white text-[#2C2C2C] border-[#18251E]/8 hover:border-[#D4AF37]/60 hover:shadow-xs'
                     }`}
                   >
-                    <span>{intent.emoji}</span>
-                    <span>{intent.label}</span>
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
+                        isActive
+                          ? 'bg-[#D4AF37]/20 text-[#D4AF37]'
+                          : 'bg-[#F2ECE4] text-[#7A8B7B] group-hover:bg-[#18251E] group-hover:text-[#D4AF37]'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <span
+                        className={`text-xs block font-sans leading-snug ${
+                          isActive ? 'text-[#F3EFE6] font-semibold' : 'text-[#2C2C2C] font-medium'
+                        }`}
+                      >
+                        {intent.label}
+                      </span>
+                    </div>
+
+                    {isActive && (
+                      <span className="w-2 h-2 rounded-full bg-[#D4AF37] shrink-0 animate-pulse" />
+                    )}
                   </button>
                 );
               })}
-              {selectedIntent && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedIntent(null)}
-                  className="px-2.5 py-1.5 text-xs font-sans text-[#7A8B7B] hover:text-[#2D4536] underline cursor-pointer"
-                >
-                  Ver todos
-                </button>
-              )}
             </div>
-          </div>
-          {selectedIntent === 'presente' && (
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-2.5 px-4 py-2.5 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-xs font-sans text-[#2D4536] flex flex-wrap items-center justify-between gap-2"
-            >
-              <span className="flex items-center gap-2">
-                <Gift className="w-4 h-4 text-[#D4AF37] shrink-0" />
-                <span>Também oferecemos <strong>Gift Card físico em caixa de linho com cera dourada</strong> ou versão digital instantânea.</span>
-              </span>
-              <a
-                href="#gift-card"
-                className="font-bold underline text-[#121C16] hover:text-[#D4AF37] transition-colors"
+
+            {selectedIntent === 'presente' && (
+              <motion.div
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-3.5 px-4 py-3 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-xs font-sans text-[#2D4536] flex flex-wrap items-center justify-between gap-2"
               >
-                Conhecer Gift Cards →
-              </a>
-            </motion.div>
-          )}
+                <span className="flex items-center gap-2">
+                  <Gift className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                  <span>Também oferecemos <strong>Gift Card físico em caixa de linho com cera dourada</strong> ou versão digital instantânea.</span>
+                </span>
+                <a
+                  href="#gift-card"
+                  className="font-bold underline text-[#121C16] hover:text-[#D4AF37] transition-colors"
+                >
+                  Conhecer Gift Cards →
+                </a>
+              </motion.div>
+            )}
+          </div>
         </div>
 
         {/* Cohesive Collections Tabs Filter */}
@@ -1307,43 +1044,16 @@ export const ServicesMenuSection: React.FC = () => {
           </div>
         )}
 
-        {/* Concierge Banner de Transparência de Investimento & Acolhimento */}
-        <div className="mt-16 sm:mt-20 max-w-4xl mx-auto p-7 sm:p-9 rounded-3xl bg-gradient-to-br from-[#F0EAE1] via-[#EFE8DF] to-[#E8E0D5] border border-[#D3B8AA]/60 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_15px_35px_rgba(18,28,22,0.06)] relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="space-y-2 text-center sm:text-left relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[#2D4536]/30 text-[11px] font-sans font-semibold uppercase tracking-[0.2em] text-[#2D4536]">
-              <EditableIcon id="services.conciergeBadge.icon" defaultIcon="Sparkles" className="w-3 h-3 text-[#D4AF37]" />
-              <EditableText id="services.conciergeBadge" defaultText="Atendimento Concierge & Valores" as="span">
-                Atendimento Concierge & Valores
-              </EditableText>
-            </div>
-            <h3 className="font-serif text-2xl sm:text-3xl text-[#2C2C2C] font-light leading-snug">
-              <EditableText id="services.conciergeTitle" defaultText="Tabela da Temporada & Agendamento Privativo" as="span">
-                Tabela da Temporada & Agendamento Privativo
-              </EditableText>
-            </h3>
-            <EditableText
-              id="services.conciergeDesc"
-              defaultText="Todas as sessões são privativas e já incluem taça de boas-vindas, toalhas aquecidas, roupão bordado e cerimonial do chá. Fale com a recepção para consultar horários livres e receber a tabela completa sem compromisso."
-              as="p"
-              className="text-xs sm:text-sm text-[#555555] font-sans max-w-xl leading-relaxed"
-            >
-              Todas as sessões são privativas e já incluem taça de boas-vindas, toalhas aquecidas, roupão bordado e cerimonial do chá. Fale com a recepção para consultar horários livres e receber a tabela completa sem compromisso.
-            </EditableText>
-          </div>
-
+        {/* Link discreto para catálogo oficial em PDF */}
+        <div className="mt-10 text-center">
           <a
-            href={SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl ? SPA_BUSINESS_DATA.whatsapp.pricingInquiryUrl() : SPA_BUSINESS_DATA.whatsapp.defaultUrl}
-            onClick={() => trackWhatsAppClick('menu_tabela_valores')}
+            href="/menu-malivie-spa.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-shrink-0 relative z-10 inline-flex items-center justify-center gap-2.5 py-3.5 px-7 rounded-full bg-[#121C16] hover:bg-[#1C2C22] text-[#F3EFE6] text-xs font-bold tracking-wider uppercase transition-all duration-300 shadow-[0_10px_25px_rgba(18,28,22,0.25)] hover:shadow-[0_12px_30px_rgba(18,28,22,0.35)] hover:scale-[1.02] active:scale-98 group cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/80 hover:bg-white text-[#2C2C2C] border border-[#18251E]/10 hover:border-[#D4AF37]/50 shadow-2xs hover:shadow-xs text-xs font-sans font-medium transition-all duration-300 group"
           >
-            <EditableIcon id="services.conciergeCta.icon" defaultIcon="MessageCircle" className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform" />
-            <EditableText id="services.conciergeCta" defaultText="Consultar Tabela no WhatsApp" as="span">
-              Consultar Tabela no WhatsApp
-            </EditableText>
+            <FileText className="w-3.5 h-3.5 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+            <span>Visualizar Catálogo Completo em PDF (20 páginas)</span>
           </a>
         </div>
       </div>

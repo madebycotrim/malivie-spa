@@ -17,9 +17,6 @@ import { Toaster } from 'sonner';
 const EditorToolbar = React.lazy(() =>
   import('./components/editor/EditorToolbar').then((m) => ({ default: m.EditorToolbar }))
 );
-const AudioEqualizer = React.lazy(() =>
-  import('./components/AudioEqualizer').then((m) => ({ default: m.AudioEqualizer }))
-);
 
 function App() {
   // Initialize Lenis smooth inertia scroll
@@ -66,10 +63,7 @@ function App() {
           <LocationAndFooterSection />
         </main>
 
-        {/* Floating ASMR Audio Equalizer (Desktop & Tablet) */}
-        <React.Suspense fallback={null}>
-          <AudioEqualizer />
-        </React.Suspense>
+
 
         {/* Sticky Mobile Action Dock (Fixed Bottom-0 on Mobile) */}
         <MobileActionDock />
