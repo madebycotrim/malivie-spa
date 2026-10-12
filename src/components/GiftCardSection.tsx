@@ -13,9 +13,8 @@ import giftCardImg from '../assets/images/malivie-gift-card-instagram.webp';
 export const GiftCardSection: React.FC = () => {
   return (
     <section id="gift-card" className="relative py-28 sm:py-36 bg-[#FBF9F6] text-[#2C2C2C] overflow-hidden">
-      {/* Rose & Nude Terracotta Ambient Glows com respiração suave */}
-      <div className="absolute top-1/3 right-0 w-[550px] h-[550px] bg-[#D3B8AA]/25 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-[#F0EAE1] rounded-full blur-[120px] pointer-events-none" />
+      {/* Rose & Nude Terracotta Ambient Glow suave */}
+      <div className="absolute top-1/3 right-0 w-[550px] h-[550px] bg-[#D3B8AA]/20 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         {/* Header */}

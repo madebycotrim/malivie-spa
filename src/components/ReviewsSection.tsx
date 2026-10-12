@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import { 
   Star, 
   ChevronLeft, 
-  ChevronRight 
+  ChevronRight,
+  Quote
 } from 'lucide-react';
 import { TESTIMONIALS } from '../data/spaData';
 import { ReviewItem } from '../types';
@@ -72,10 +73,6 @@ export const ReviewsSection: React.FC = () => {
 
   return (
     <section id="depoimentos" className="relative py-24 sm:py-32 bg-[#121C16] text-[#F3EFE6] overflow-hidden">
-      {/* Botanical ambient halos com respiração suave */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#7A8B7B]/10 rounded-full blur-[140px] pointer-events-none animate-zen-breathe" />
-      <div className="absolute bottom-1/4 right-1/4 w-[420px] h-[420px] bg-[#D4AF37]/10 rounded-full blur-[130px] pointer-events-none animate-zen-breathe-delayed" />
-
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* ========================================================================= */}
@@ -130,15 +127,15 @@ export const ReviewsSection: React.FC = () => {
         {/* CARROSSEL DE AVALIAÇÕES                                                   */}
         {/* ========================================================================= */}
         <div className="relative max-w-4xl mx-auto">
-          <div className="overflow-hidden py-2" ref={emblaRef}>
+          <div className="overflow-hidden py-6 sm:py-8 px-2 sm:px-3 -my-3 sm:-my-4" ref={emblaRef}>
             <div className="flex">
               {TESTIMONIALS.map((review: ReviewItem) => {
                 return (
                   <div key={review.id} className="flex-[0_0_100%] min-w-0 px-2 sm:px-4">
-                    <div className="rounded-3xl bg-[#18261E] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 p-6 sm:p-9 shadow-lg hover:shadow-[0_25px_60px_rgba(0,0,0,0.55),_0_0_25px_rgba(212,175,55,0.12)] hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden relative group transition-all duration-500 ease-out">
+                    <div className="rounded-3xl bg-gradient-to-b from-[#1C2C23] to-[#15231B] border border-white/10 hover:border-white/20 p-6 sm:p-9 flex flex-col justify-between overflow-hidden relative group transition-all duration-300 ease-out">
                       
-                      {/* Linha dourada suave no topo que brilha no hover */}
-                      <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      {/* Linha sutil no topo */}
+                      <div className="absolute inset-x-8 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#F3EFE6]/25 to-transparent opacity-40 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                       {/* Varredura de luz suave ao passar o mouse */}
                       <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
@@ -148,7 +145,7 @@ export const ReviewsSection: React.FC = () => {
                       <div className="flex items-center gap-3.5">
                         {/* Avatar */}
                         <div className="relative flex-shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#7A8B7B] to-[#18251E] border border-[#D4AF37]/50 flex items-center justify-center font-serif text-lg text-[#F3EFE6] font-semibold shadow-inner">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#7A8B7B] to-[#18251E] border border-white/20 flex items-center justify-center font-serif text-lg text-[#F3EFE6] font-semibold shadow-inner">
                             {review.avatarInitials}
                           </div>
                         </div>
@@ -207,18 +204,18 @@ export const ReviewsSection: React.FC = () => {
             <button
               type="button"
               onClick={scrollPrev}
-              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-[#18251E]/95 hover:bg-[#203328] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37] transition-all pointer-events-auto shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-[#18261E] hover:bg-[#22362A] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#F3EFE6]/50 transition-all pointer-events-auto shadow-[0_4px_16px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-105 active:scale-95"
               aria-label="Avaliação anterior"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5 text-[#F3EFE6]" />
             </button>
             <button
               type="button"
               onClick={scrollNext}
-              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-[#18251E]/95 hover:bg-[#203328] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37] transition-all pointer-events-auto shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-[#18261E] hover:bg-[#22362A] text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#F3EFE6]/50 transition-all pointer-events-auto shadow-[0_4px_16px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-105 active:scale-95"
               aria-label="Próxima avaliação"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-5 h-5 text-[#F3EFE6]" />
             </button>
           </div>
 

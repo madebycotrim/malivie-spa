@@ -1,30 +1,18 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import {
   MapPin,
   Clock,
   ExternalLink,
-  MessageCircle,
   Navigation,
-  Compass,
-  ArrowUp,
-  Sparkles,
 } from 'lucide-react';
-import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from './SocialIcons';
+import { InstagramIcon, WhatsAppIcon } from './SocialIcons';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
-import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
-import { isAbertoAgora } from '../utils/businessHours';
 import { trackWhatsAppClick } from '../services/analytics';
 import { useEditor } from '../context/EditorContext';
 import { EditableText } from './editor/EditableText';
-import { EditableImage } from './editor/EditableImage';
-import { EditableIcon } from './editor/EditableIcon';
 import { PasswordModal } from './editor/PasswordModal';
-import logoMalivieWhite from '../assets/images/logo-malivie-white.webp';
-import fachadaImg from '../assets/images/malivie-fachada-oficial.webp';
 
 export const LocationAndFooterSection: React.FC = () => {
-  const abertoAgora = isAbertoAgora();
   const { toggleEditor, requestOpenEditor, isEditorActive, isPasswordModalOpen } = useEditor();
   const clickCountRef = React.useRef(0);
   const clickTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -53,572 +41,294 @@ export const LocationAndFooterSection: React.FC = () => {
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const exactStoreAddress = 'Maliviê SPA, 3ª Avenida, 1124 - lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, 71720-565';
-
+  const exactStoreAddress = '3ª Avenida, 1124 - Lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, CEP: 71720-565';
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    exactStoreAddress
-  )}`;
-
-  const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(
-    exactStoreAddress
+    'Maliviê SPA, 3ª Avenida, 1124 - lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, 71720-565'
   )}`;
 
   return (
-    <footer id="localizacao" className="relative bg-[#121C16] text-[#F3EFE6] pt-28 pb-28 md:pb-16 overflow-hidden border-t border-[#F3EFE6]/10">
-      {/* Botanical ambient gradient aura com respiração suave */}
-      <div className="absolute top-0 left-1/3 w-[650px] h-[650px] bg-[#7A8B7B]/15 rounded-full blur-[160px] pointer-events-none animate-zen-breathe" />
-      <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-[140px] pointer-events-none animate-zen-breathe-delayed" />
-      <div className="absolute bottom-10 left-10 w-[420px] h-[420px] bg-[#D3B8AA]/10 rounded-full blur-[130px] pointer-events-none" />
-
+    <footer id="localizacao" className="relative bg-[#0E1611] text-[#F3EFE6] pt-16 sm:pt-20 pb-12 sm:pb-16 overflow-hidden border-t border-[#F3EFE6]/10">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
-        {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4 hover:border-[#D4AF37]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-300"
-          >
-            <EditableIcon id="location.badge.icon" defaultIcon="Compass" className="w-3.5 h-3.5 text-[#7A8B7B]" />
-            <EditableText id="location.badge" defaultText="Visite Nosso Santuário" as="span">
-              Visite Nosso Santuário
-            </EditableText>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 22 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
-            className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#F3EFE6] font-light leading-tight"
-          >
-            <EditableText id="location.title" defaultText="Localização & Horários" as="span">
-              Localização & <span className="italic font-normal text-[#D4AF37]">Horários</span>
-            </EditableText>
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
-            className="mt-4 text-xs sm:text-sm text-[#F3EFE6]/70 font-sans max-w-xl mx-auto leading-relaxed"
-          >
-            <EditableText
-              id="location.description"
-              defaultText="Fácil acesso e conveniência no coração do Núcleo Bandeirante, com tranquilidade e discrição garantidas."
-              as="span"
-            >
-              Fácil acesso e conveniência no coração do Núcleo Bandeirante, com tranquilidade e discrição garantidas.
-            </EditableText>
-          </motion.p>
-        </div>
-
-        {/* 3-Column Luxury Matrix: Real Facade, Interactive Map, Address & Official Schedule */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 items-stretch mb-16">
-          {/* Card 1: Authentic Spa Facade Photo */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_LUXURY }}
-            className="lg:col-span-4 rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.55),_0_0_30px_rgba(212,175,55,0.15)] hover:-translate-y-1.5 transition-all duration-500 ease-out flex flex-col overflow-hidden group relative"
-          >
-            {/* Linha dourada suave no topo que brilha ao hover */}
-            <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-            {/* Header */}
-            <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#F3EFE6]/10">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
-                </span>
-                <EditableText
-                  id="location.facade.header"
-                  defaultText="Fachada & Espaço Físico"
-                  as="span"
-                  className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
-                >
-                  Fachada & Espaço Físico
-                </EditableText>
-              </div>
-              <EditableText
-                id="location.facade.tag"
-                defaultText="Loja 3 • Térreo"
-                as="span"
-                className="text-[11px] text-[#7A8B7B] font-mono font-medium"
-              >
-                Loja 3 • Térreo
-              </EditableText>
-            </div>
-
-            {/* Photo Viewport - Fills full card height down to bottom padding, showing sidewalk and cutting off parking lot */}
-            <div className="relative w-full flex-1 min-h-[320px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group/photo">
-              <EditableImage
-                id="location.facade"
-                defaultImage={fachadaImg}
-                alt="Fachada do Maliviê SPA no Núcleo Bandeirante, Brasília"
-                prefix="fachada"
-                style={{ objectPosition: 'center 60%' }}
-                className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/20 pointer-events-none" />
-              
-              {/* Floating Pill on top-left */}
-              <div
-                className="absolute top-3 left-3 z-30 pointer-events-auto"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg hover:scale-105 transition-transform duration-300">
-                  <EditableIcon id="location.facadeBadge.icon" defaultIcon="MapPin" className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <EditableText id="location.facadeBadge" defaultText="Fachada do Maliviê SPA" as="span">
-                    Fachada do Maliviê SPA
-                  </EditableText>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Card 2: Real Interactive Google Map */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.8, delay: 0.2, ease: EASE_LUXURY }}
-            className="lg:col-span-4 flex flex-col justify-between rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.55),_0_0_30px_rgba(212,175,55,0.15)] hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group"
-          >
-            {/* Linha dourada suave no topo que brilha ao hover */}
-            <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-            {/* Header */}
-            <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#F3EFE6]/10">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7A8B7B] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
-                </span>
-                <EditableText
-                  id="location.map.header"
-                  defaultText="Google Maps Interativo"
-                  as="span"
-                  className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
-                >
-                  Google Maps Interativo
-                </EditableText>
-              </div>
-              <EditableText
-                id="location.map.tag"
-                defaultText="Brasília • DF"
-                as="span"
-                className="text-[11px] text-[#7A8B7B] font-mono font-medium"
-              >
-                Brasília • DF
-              </EditableText>
-            </div>
-
-            {/* Real Interactive Google Maps Viewport matching exact start of Facade */}
-            <div className="relative w-full flex-1 min-h-[300px] rounded-2xl overflow-hidden bg-[#0D1410] border border-[#F3EFE6]/15 shadow-inner group/map">
-              <iframe
-                title="Google Maps Interativo - Maliviê SPA"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3838.285497217522!2d-47.96985782390618!3d-15.872212384777598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a2fec33e25ea5%3A0xc3918d2ad9f06bdc!2sMalivi%C3%AA%20SPA!5e0!3m2!1spt-BR!2sbr!4v1710000000000!5m2!1spt-BR!2sbr"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={true}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full filter contrast-[1.02] transition-opacity duration-500"
-              />
-
-              {/* Floating Address Tag Pill */}
-              <div
-                className="absolute top-3 left-3 z-30 pointer-events-auto"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121C16]/90 backdrop-blur-md border border-[#D4AF37]/40 text-[11px] font-sans font-semibold text-[#F3EFE6] shadow-lg hover:scale-105 transition-transform duration-300">
-                  <EditableIcon id="location.mapBadge.icon" defaultIcon="MapPin" className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <EditableText id="location.mapBadge" defaultText="Maliviê SPA • 3ª Avenida, 1124 - Lote 1208-A, Loja 3" as="span">
-                    Maliviê SPA • 3ª Avenida, 1124 - Lote 1208-A, Loja 3
-                  </EditableText>
-                </div>
-              </div> 
-            </div>
-
-            {/* Map Interactive Quick Actions */}
-            <div className="mt-3.5 flex items-center justify-center gap-2">
-              <a
-                href={googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#D4AF37]/50 hover:shadow-[0_8px_20px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-98 transition-all duration-300 group/btn"
-              >
-                <EditableIcon id="location.map.mapsBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#7A8B7B] group-hover/btn:text-[#D4AF37] group-hover/btn:scale-110 transition-all" />
-                <EditableText id="location.map.mapsBtn" defaultText="Abrir no Maps" as="span">
-                  Abrir no Maps
-                </EditableText>
-                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65 group-hover/btn:text-[#D4AF37] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-all" />
-              </a>
-
-              <a
-                href={wazeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#121C16] hover:bg-[#1E2D24] text-[11px] font-medium text-[#F3EFE6] border border-[#F3EFE6]/20 hover:border-[#7A8B7B]/60 hover:shadow-[0_8px_20px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-98 transition-all duration-300 group/btn"
-              >
-                <EditableIcon id="location.map.wazeBtn.icon" defaultIcon="Navigation" className="w-3.5 h-3.5 text-[#D4AF37] group-hover/btn:text-[#7A8B7B] group-hover/btn:scale-110 transition-all" />
-                <EditableText id="location.map.wazeBtn" defaultText="Traçar no Waze" as="span">
-                  Traçar no Waze
-                </EditableText>
-                <ExternalLink className="w-3 h-3 text-[#F3EFE6]/65 group-hover/btn:text-[#D4AF37] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-all" />
-              </a>
-            </div>
-          </motion.div>
-
-          {/* Column 3: 2 Separate Cards (Top & Bottom) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.8, delay: 0.3, ease: EASE_LUXURY }}
-            className="lg:col-span-4 flex flex-col justify-between gap-5 h-full"
-          >
-            {/* Card Top: Endereço Físico */}
-            <div className="rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/45 p-4 sm:p-4.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_55px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.1)] hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col justify-between overflow-hidden relative group flex-[0.75]">
-              {/* Linha dourada suave no topo que brilha ao hover */}
-              <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-              {/* Header */}
-              <div className="flex items-center justify-between pb-2 mb-1.5 border-b border-[#F3EFE6]/10">
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-60" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
-                  </span>
-                  <EditableText
-                    id="location.address.header"
-                    defaultText="Endereço Físico"
-                    as="span"
-                    className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
-                  >
-                    Endereço Físico
-                  </EditableText>
-                </div>
-                <EditableText
-                  id="location.address.cityTag"
-                  defaultText="Brasília • DF"
-                  as="span"
-                  className="text-[11px] text-[#7A8B7B] font-mono font-medium"
-                >
-                  Brasília • DF
-                </EditableText>
-              </div>
-
-              {/* Body Content */}
-              <div className="space-y-1 py-1">
-                <EditableText
-                  id="location.address.street"
-                  defaultText={SPA_BUSINESS_DATA.address.street}
-                  as="p"
-                  className="font-serif text-base sm:text-lg text-[#F3EFE6] font-light leading-snug group-hover:text-[#F3EFE6] transition-colors"
-                >
-                  {SPA_BUSINESS_DATA.address.street}
-                </EditableText>
-                <div className="text-xs text-[#F3EFE6]/70 font-sans leading-relaxed">
-                  <EditableText
-                    id="location.address.neighborhood"
-                    defaultText={`${SPA_BUSINESS_DATA.address.neighborhood}, ${SPA_BUSINESS_DATA.address.city} - ${SPA_BUSINESS_DATA.address.state}`}
-                    as="p"
-                  >
-                    {`${SPA_BUSINESS_DATA.address.neighborhood}, ${SPA_BUSINESS_DATA.address.city} - ${SPA_BUSINESS_DATA.address.state}`}
-                  </EditableText>
-                  <EditableText
-                    id="location.address.cep"
-                    defaultText={`CEP: ${SPA_BUSINESS_DATA.address.postalCode}`}
-                    as="p"
-                  >
-                    {`CEP: ${SPA_BUSINESS_DATA.address.postalCode}`}
-                  </EditableText>
-                </div>
-              </div>
-
-              {/* Footer Highlight */}
-              <div className="pt-2 border-t border-[#F3EFE6]/10 mt-1 flex items-center">
-                <EditableText
-                  id="location.address.parking"
-                  defaultText="Estacionamento amplo e gratuito em frente à loja."
-                  as="span"
-                  className="text-[11px] text-[#D4AF37] font-sans"
-                >
-                  Estacionamento amplo e gratuito em frente à loja.
-                </EditableText>
-              </div>
-            </div>
-
-            {/* Card Bottom: Horários de Funcionamento */}
-            <div className="rounded-3xl bg-gradient-to-b from-[#18251E] to-[#142019] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/45 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_25px_55px_rgba(0,0,0,0.5),_0_0_20px_rgba(212,175,55,0.1)] hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col justify-between overflow-hidden relative group flex-[1.25]">
-              {/* Linha dourada suave no topo que brilha ao hover */}
-              <div className="absolute inset-x-8 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-              {/* Header */}
-              <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-[#F3EFE6]/10">
-                <div className="flex items-center gap-2">
-                  <EditableIcon id="location.schedule.header.icon" defaultIcon="Clock" className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <EditableText
-                    id="location.schedule.header"
-                    defaultText="Horário de Funcionamento"
-                    as="span"
-                    className="text-xs font-semibold uppercase tracking-wider text-[#F3EFE6]"
-                  >
-                    Horário de Funcionamento
-                  </EditableText>
-                </div>
-                {abertoAgora ? (
-                  <span className="text-[10px] uppercase font-sans font-bold text-[#7A8B7B] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 flex items-center gap-1.5 shadow-[0_0_12px_rgba(122,139,123,0.3)]">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7A8B7B] opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7A8B7B]" />
-                    </span>
-                    <EditableText id="location.schedule.openNowBadge" defaultText="Aberto agora" as="span">
-                      Aberto agora
-                    </EditableText>
-                  </span>
-                ) : (
-                  <span className="text-[10px] uppercase font-sans font-medium text-[#F3EFE6]/60 px-2.5 py-0.5 rounded-full bg-[#121C16] border border-[#F3EFE6]/10">
-                    <EditableText id="location.schedule.closedNowBadge" defaultText="Fechado agora" as="span">
-                      Fechado agora
-                    </EditableText>
-                  </span>
-                )}
-              </div>
-
-              {/* Schedule Rows */}
-              <div className="space-y-2 py-1">
-                {/* Segunda-feira */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/50 hover:bg-[#1A2820] border border-[#F3EFE6]/5 hover:border-[#D4AF37]/25 transition-all duration-300 hover:scale-[1.01] cursor-default">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#F3EFE6]/25" />
-                    <EditableText
-                      id="location.schedule.monday.label"
-                      defaultText="Segunda-feira"
-                      as="span"
-                      className="text-xs text-[#F3EFE6]/70 font-medium"
-                    >
-                      Segunda-feira
-                    </EditableText>
-                  </div>
-                  <EditableText
-                    id="location.schedule.monday.hours"
-                    defaultText={SPA_BUSINESS_DATA.schedule.monday}
-                    as="span"
-                    className="text-[11px] font-sans font-medium text-[#F3EFE6]/40 px-2.5 py-0.5 rounded-full bg-[#121C16] border border-[#F3EFE6]/10"
-                  >
-                    {SPA_BUSINESS_DATA.schedule.monday}
-                  </EditableText>
-                </div>
-
-                {/* Terça a Sábado */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 hover:bg-[#1E2E24] border border-[#7A8B7B]/20 hover:border-[#7A8B7B]/45 transition-all duration-300 hover:scale-[1.01] shadow-sm cursor-default">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#7A8B7B]" />
-                    <EditableText
-                      id="location.schedule.tueSat.label"
-                      defaultText="Terça a Sábado"
-                      as="span"
-                      className="text-xs text-[#F3EFE6] font-medium"
-                    >
-                      Terça a Sábado
-                    </EditableText>
-                  </div>
-                  <EditableText
-                    id="location.schedule.tueSat.hours"
-                    defaultText={SPA_BUSINESS_DATA.schedule.tuesdayToSaturday.replace(/^De\s+/i, '')}
-                    as="span"
-                    className="text-[11px] font-sans font-semibold text-[#A3B899] px-2.5 py-0.5 rounded-full bg-[#7A8B7B]/15 border border-[#7A8B7B]/30 tracking-wide"
-                  >
-                    {SPA_BUSINESS_DATA.schedule.tuesdayToSaturday.replace(/^De\s+/i, '')}
-                  </EditableText>
-                </div>
-
-                {/* Domingo */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#121C16]/75 hover:bg-[#202E24] border border-[#D4AF37]/20 hover:border-[#D4AF37]/45 transition-all duration-300 hover:scale-[1.01] shadow-sm cursor-default">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-                    <EditableText
-                      id="location.schedule.sunday.label"
-                      defaultText="Domingo"
-                      as="span"
-                      className="text-xs text-[#F3EFE6] font-medium"
-                    >
-                      Domingo
-                    </EditableText>
-                  </div>
-                  <EditableText
-                    id="location.schedule.sunday.hours"
-                    defaultText={SPA_BUSINESS_DATA.schedule.sunday.replace(/^De\s+/i, '')}
-                    as="span"
-                    className="text-[11px] font-sans font-semibold text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 tracking-wide"
-                  >
-                    {SPA_BUSINESS_DATA.schedule.sunday.replace(/^De\s+/i, '')}
-                  </EditableText>
-                </div>
-              </div>
-
-              {/* Footer Highlight: Aviso sobre feriados */}
-              <div className="pt-2.5 border-t border-[#F3EFE6]/10 mt-1 flex items-center">
-                <EditableText
-                  id="location.schedule.holidayNotice"
-                  defaultText="* Os horários podem sofrer alterações em feriados."
-                  as="span"
-                  className="text-[11px] text-[#D4AF37] font-sans whitespace-nowrap"
-                >
-                  * Os horários podem sofrer alterações em feriados.
-                </EditableText>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Social Media & Official Channels Showcase */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.7, ease: EASE_LUXURY }}
-          className="py-8 border-t border-b border-[#F3EFE6]/10 flex flex-col sm:flex-row items-center justify-between gap-4"
-        >
-          <div className="flex items-center gap-2">
-            <EditableIcon
-              id="location.channels.icon"
-              defaultIcon="Sparkles"
-              className="w-3.5 h-3.5 text-[#D4AF37]"
-            />
-            <span className="text-xs uppercase tracking-[0.2em] font-sans font-semibold text-[#F3EFE6]/90">
-              Canais Oficiais:
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-[#F3EFE6]/80 font-sans">
-            <a
-              href={SPA_BUSINESS_DATA.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all"
-            >
-              <InstagramIcon className="w-4 h-4 text-[#D4AF37]" />
-              <span className="font-medium">Instagram {SPA_BUSINESS_DATA.social.instagramHandle}</span>
-            </a>
-
-            <a
-              href={SPA_BUSINESS_DATA.whatsapp.defaultUrl}
-              onClick={() => trackWhatsAppClick('rodape_canais')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#18251E] border border-[#7A8B7B]/30 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all"
-            >
-              <WhatsAppIcon className="w-4 h-4 text-[#7A8B7B]" />
-              <span className="font-medium">WhatsApp {SPA_BUSINESS_DATA.whatsapp.formattedDisplay}</span>
-            </a>
-
-            <a
-              href={SPA_BUSINESS_DATA.social.tiktok}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all"
-            >
-              <TikTokIcon className="w-3.5 h-3.5 text-[#F3EFE6]/60" />
-              <span>TikTok</span>
-            </a>
-
-            <a
-              href={SPA_BUSINESS_DATA.social.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#18251E] border border-[#F3EFE6]/10 hover:border-[#D4AF37]/50 hover:text-[#D4AF37] transition-all"
-            >
-              <FacebookIcon className="w-3.5 h-3.5 text-[#F3EFE6]/60" />
-              <span>Facebook</span>
-            </a>
-          </div>
-        </motion.div>
-
-        {/* Bottom Bar: Copyright & Back to Top */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F3EFE6]/65">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2.5 gap-y-1">
-            <div className="relative inline-flex items-center">
+        
+        {/* Grid Principal de 4 Colunas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 xl:gap-8 pb-12 sm:pb-16 items-start">
+          
+          {/* ========================================================================= */}
+          {/* COLUNA 1: IDENTIDADE DA MARCA & RECONHECIMENTO GOOGLE                     */}
+          {/* ========================================================================= */}
+          <div className="lg:col-span-4 space-y-4">
+            <div className="relative inline-flex flex-col items-start">
               <button
                 id="footer-editor-logo"
                 type="button"
                 onClick={handleLogoTripleClick}
-                className={`focus:outline-none transition-all duration-300 cursor-pointer p-1 rounded-xl ${
-                  logoPulse ? 'scale-125 ring-2 ring-[#D4AF37] bg-[#D4AF37]/25' : 'hover:scale-105'
+                className={`group flex items-center focus:outline-none transition-all duration-300 cursor-pointer p-1 -m-1 rounded-2xl ${
+                  logoPulse ? 'scale-110 ring-2 ring-[#D4AF37] bg-[#D4AF37]/20' : ''
                 } ${
                   isPasswordModalOpen || isEditorActive
                     ? 'ring-2 ring-[#D4AF37] bg-[#D4AF37]/15 shadow-[0_0_15px_rgba(212,175,55,0.4)]'
                     : ''
                 }`}
-                title="Maliviê SPA"
+                title="Maliviê SPA - Toque 3x para modo editor"
               >
                 <img
-                  loading="lazy"
-                  decoding="async"
-                  src={logoMalivieWhite}
+                  src="/logo-malivie-white.webp"
                   alt="Maliviê SPA"
-                  width={112}
-                  height={28}
-                  className="h-7 w-auto object-contain opacity-90"
+                  width={140}
+                  height={56}
+                  className="h-10 sm:h-12 w-auto object-contain opacity-95 group-hover:scale-105 transition-transform drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
                 />
               </button>
-
-              {/* Balãozinho compacto de senha estilo popover com indicador */}
               <PasswordModal />
+
+              <span className="text-[10px] tracking-[0.28em] uppercase font-sans font-semibold text-[#D4AF37] mt-1.5 pl-0.5">
+                <EditableText
+                  id="footer.brandSubtitle"
+                  defaultText="SPA BOTÂNICO • BRASÍLIA"
+                  as="span"
+                >
+                  SPA BOTÂNICO • BRASÍLIA
+                </EditableText>
+              </span>
             </div>
-            <span className="text-[#F3EFE6]/30">•</span>
-            <span>© {new Date().getFullYear()} Todos os direitos reservados.</span>
-            <span className="text-[#F3EFE6]/30">•</span>
-            <span className="text-[11px] text-[#F3EFE6]/80 inline-flex items-center gap-1.5 font-sans">
-              <span>crafted with care</span>
-              <span className="text-[#D4AF37]/50">•</span>
-              <a
-                href="https://github.com/madebycotrim"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#D4AF37] hover:text-[#E5C158] transition-colors font-medium hover:underline underline-offset-2"
+
+            <p className="font-serif italic text-base sm:text-lg text-[#D4AF37] pt-1">
+              <EditableText
+                id="footer.sloganQuote"
+                defaultText='"O lugar ideal para renovar suas energias!"'
+                as="span"
               >
-                madebycotrim
-              </a>
-            </span>
+                "O lugar ideal para renovar suas energias!"
+              </EditableText>
+            </p>
+
+            <p className="text-xs text-[#F3EFE6]/75 font-sans leading-relaxed max-w-sm">
+              <EditableText
+                id="footer.description"
+                defaultText="Mais do que um atendimento, uma experiência única de acolhimento, autocuidado e renovação de energias no coração do Núcleo Bandeirante."
+                as="span"
+              >
+                Mais do que um atendimento, uma experiência única de acolhimento, autocuidado e renovação de energias no coração do Núcleo Bandeirante.
+              </EditableText>
+            </p>
+
+            {/* Avaliação Google em Pill Refinada */}
+            <div className="pt-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#18251E]/60 border border-[#F3EFE6]/10 text-xs font-sans shadow-2xs">
+                <div className="flex items-center text-[#FBBC04] gap-0.5 text-xs">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+                <span className="font-bold text-[#F3EFE6]">
+                  <EditableText id="footer.googleRating" defaultText="5.0" as="span">
+                    5.0
+                  </EditableText>
+                </span>
+                <span className="text-[#F3EFE6]/30">•</span>
+                <span className="text-[#F3EFE6]/75">
+                  <EditableText id="footer.googleRatingLabel" defaultText="Avaliação Máxima Google" as="span">
+                    Avaliação Máxima Google
+                  </EditableText>
+                </span>
+              </div>
+            </div>
           </div>
 
-          <p className="font-serif italic text-sm text-[#D4AF37]/90 text-center">
-            "
+          {/* ========================================================================= */}
+          {/* COLUNA 2: HORÁRIOS OFICIAIS                                               */}
+          {/* ========================================================================= */}
+          <div className="lg:col-span-3 space-y-3">
+            <div className="flex items-center gap-2 mb-3">
+              <Clock className="w-4 h-4 text-[#D4AF37]" />
+              <h3 className="font-serif text-[17px] text-[#F3EFE6] font-normal tracking-wide">
+                <EditableText id="footer.scheduleTitle" defaultText="Horários Oficiais" as="span">
+                  Horários Oficiais
+                </EditableText>
+              </h3>
+            </div>
+
+            <div className="text-[13px] font-sans">
+              <div className="flex items-center justify-between pb-2 pt-1 border-b border-[#F3EFE6]/10">
+                <span className="text-[#D8D3C8]">
+                  <EditableText id="footer.schedule.monday.label" defaultText="Segunda-feira:" as="span">
+                    Segunda-feira:
+                  </EditableText>
+                </span>
+                <span className="text-[#E8A87C] font-normal">
+                  <EditableText id="footer.schedule.monday.value" defaultText="Fechado" as="span">
+                    Fechado
+                  </EditableText>
+                </span>
+              </div>
+              <div className="flex items-center justify-between pb-2 pt-2 border-b border-[#F3EFE6]/10">
+                <span className="text-[#D8D3C8]">
+                  <EditableText id="footer.schedule.tueSat.label" defaultText="Terça a Sábado:" as="span">
+                    Terça a Sábado:
+                  </EditableText>
+                </span>
+                <span className="text-white font-semibold">
+                  <EditableText id="footer.schedule.tueSat.value" defaultText="08h às 20h" as="span">
+                    08h às 20h
+                  </EditableText>
+                </span>
+              </div>
+              <div className="flex items-center justify-between pb-2 pt-2 border-b border-[#F3EFE6]/10">
+                <span className="text-[#D8D3C8]">
+                  <EditableText id="footer.schedule.sun.label" defaultText="Domingo:" as="span">
+                    Domingo:
+                  </EditableText>
+                </span>
+                <span className="text-white font-semibold">
+                  <EditableText id="footer.schedule.sun.value" defaultText="08h às 13h" as="span">
+                    08h às 13h
+                  </EditableText>
+                </span>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-[#7A8B7B] font-sans italic pt-2.5">
+              <EditableText
+                id="footer.appointmentNotice"
+                defaultText="Atendimentos mediante agendamento prévio."
+                as="span"
+              >
+                Atendimentos mediante agendamento prévio.
+              </EditableText>
+            </p>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* COLUNA 3: LOCALIZAÇÃO & CONTATO                                           */}
+          {/* ========================================================================= */}
+          <div className="lg:col-span-3 space-y-3 min-w-[310px]">
+            <div className="flex items-center gap-2 mb-3">
+              <MapPin className="w-4 h-4 text-[#D4AF37]" />
+              <h3 className="font-serif text-[17px] text-[#F3EFE6] font-normal tracking-wide">
+                <EditableText id="footer.locationTitle" defaultText="Localização" as="span">
+                  Localização
+                </EditableText>
+              </h3>
+            </div>
+
+            <p className="text-[13px] text-[#D8D3C8] font-sans leading-relaxed">
+              <EditableText
+                id="footer.exactAddress"
+                defaultText="3ª Avenida, 1124 - Lote 1208-A, Loja 3 - Núcleo Bandeirante, Brasília - DF, CEP: 71720-565"
+                as="span"
+              >
+                3ª Avenida, 1124 - Lote 1208-A, Loja 3 - Núcleo<br className="hidden sm:inline" /> Bandeirante, Brasília - DF, CEP: 71720-565
+              </EditableText>
+            </p>
+
+            <div className="pt-2 pb-2">
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-[13px] text-[#D4AF37] hover:text-[#E5C158] transition-colors group cursor-pointer"
+              >
+                <Navigation className="w-3.5 h-3.5 text-[#D4AF37] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <span>
+                  <EditableText id="footer.mapsRouteLabel" defaultText="Abrir rota no Google Maps" as="span">
+                    Abrir rota no Google Maps
+                  </EditableText>
+                </span>
+              </a>
+            </div>
+
+            <div className="pt-0.5">
+              <span className="text-[11px] text-[#8A9C8D] font-sans block mb-1">
+                <EditableText id="footer.whatsappLabel" defaultText="WhatsApp de Reservas:" as="span">
+                  WhatsApp de Reservas:
+                </EditableText>
+              </span>
+              <a
+                href={SPA_BUSINESS_DATA.whatsapp.defaultUrl}
+                onClick={() => trackWhatsAppClick('rodape_recepcao')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[15px] font-bold text-white hover:text-[#25D366] transition-colors group"
+              >
+                <WhatsAppIcon className="w-4 h-4 text-[#25D366] group-hover:scale-105 transition-transform" />
+                <span className="tracking-tight">
+                  <EditableText id="footer.whatsappNumber" defaultText="(61) 99956-9214" as="span">
+                    (61) 99956-9214
+                  </EditableText>
+                </span>
+              </a>
+            </div>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* COLUNA 4: CONECTE-SE (REDES SOCIAIS & LINKS)                              */}
+          {/* ========================================================================= */}
+          <div className="lg:col-span-2 space-y-3.5">
+            <h3 className="font-serif text-base text-[#F3EFE6] font-normal tracking-wide">
+              <EditableText id="footer.connectTitle" defaultText="Conecte-se" as="span">
+                Conecte-se
+              </EditableText>
+            </h3>
+
+            <div className="space-y-2.5">
+              <a
+                href={SPA_BUSINESS_DATA.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 px-3.5 rounded-2xl bg-[#18251E] hover:bg-[#203127] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 text-xs text-[#F3EFE6] flex items-center gap-2.5 transition-all duration-300 shadow-2xs group cursor-pointer"
+              >
+                <InstagramIcon className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+                <span className="font-sans text-xs">
+                  <EditableText id="footer.instagramHandle" defaultText="@maliviespa" as="span">
+                    @maliviespa
+                  </EditableText>
+                </span>
+              </a>
+
+              <a
+                href={SPA_BUSINESS_DATA.social.linktree}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 px-3.5 rounded-2xl bg-[#18251E] hover:bg-[#203127] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 text-xs text-[#F3EFE6] flex items-center gap-2.5 transition-all duration-300 shadow-2xs group cursor-pointer"
+              >
+                <ExternalLink className="w-3.5 h-3.5 text-[#7A8B7B] group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
+                <span className="font-sans text-xs">
+                  <EditableText id="footer.linktreeLabel" defaultText="Linktree Oficial" as="span">
+                    Linktree Oficial
+                  </EditableText>
+                </span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* ========================================================================= */}
+        {/* SUB-RODAPÉ: COPYRIGHT & CRÉDITOS                                          */}
+        {/* ========================================================================= */}
+        <div className="pt-8 border-t border-[#F3EFE6]/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#F3EFE6]/60">
+          <p>
             <EditableText
-              id="footer.slogan"
-              defaultText={SPA_BUSINESS_DATA.slogan}
+              id="footer.copyrightText"
+              defaultText={`© ${new Date().getFullYear()} Maliviê SPA. Todos os direitos reservados.`}
               as="span"
             >
-              {SPA_BUSINESS_DATA.slogan}
+              © {new Date().getFullYear()} Maliviê SPA. Todos os direitos reservados.
             </EditableText>
-            "
           </p>
 
-          <button
-            type="button"
-            onClick={scrollToTop}
-            className="group/top inline-flex items-center gap-2 text-xs text-[#F3EFE6]/70 hover:text-[#D4AF37] transition-all duration-300 focus:outline-none cursor-pointer py-1.5 px-3.5 rounded-full hover:bg-[#18251E] border border-transparent hover:border-[#D4AF37]/30 hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] active:scale-95"
-          >
-            <EditableText id="footer.backToTop" defaultText="Voltar ao topo" as="span">
-              Voltar ao topo
-            </EditableText>
-            <span className="transform group-hover/top:-translate-y-1 transition-transform duration-300 ease-out">
-              <EditableIcon id="location.backToTop.icon" defaultIcon="ArrowUp" className="w-3.5 h-3.5" />
+          <p className="text-[11px] text-[#F3EFE6]/75">
+            <EditableText id="footer.craftedPrefix" defaultText="Criado com excelência para" as="span">
+              Criado com excelência para
+            </EditableText>{' '}
+            <span className="text-[#D4AF37] font-medium">
+              <EditableText id="footer.craftedBrand" defaultText="Maliviê SPA • Brasília DF" as="span">
+                Maliviê SPA • Brasília DF
+              </EditableText>
             </span>
-          </button>
+          </p>
         </div>
+
       </div>
     </footer>
   );

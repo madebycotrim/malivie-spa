@@ -28,7 +28,8 @@ import {
   PlusCircle,
   Calendar,
   Gift,
-  FileText
+  FileText,
+  Check
 } from 'lucide-react';
 import { ServiceItem, ServiceCategory } from '../types';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
@@ -540,7 +541,7 @@ export const ServicesMenuSection: React.FC = () => {
                 key={service.id}
                 role="button"
                 tabIndex={0}
-                aria-label={`Ver detalhes e valores de ${service.name}`}
+                aria-label={`Ver detalhes e agendar ${service.name}`}
                 onClick={() => handleOpenDetails(service)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -551,120 +552,27 @@ export const ServicesMenuSection: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.96, y: 14 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                transition={{ duration: 0.5, ease: EASE_ORGANIC }}
-                className={`group rounded-3xl bg-[#F0EAE1]/75 hover:bg-[#F0EAE1] hover:-translate-y-2 hover:shadow-[0_25px_50px_rgba(18,28,22,0.16)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-hidden cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#7A8B7B]/40 ${
+                transition={{ duration: 0.45, ease: EASE_ORGANIC }}
+                className={`group rounded-3xl bg-white hover:bg-white hover:-translate-y-2 hover:shadow-[0_22px_50px_rgba(28,38,30,0.09)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between p-6 sm:p-7 overflow-hidden cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#7A8B7B]/40 ${
                   confirmDeleteId === service.id ? 'relative z-50' : 'relative z-10'
                 } ${
-                  service.popular || service.badge
-                    ? 'border-2 border-[#D4AF37]/60 shadow-[0_10px_30px_rgba(212,175,55,0.12)] ring-1 ring-[#D4AF37]/30'
-                    : 'border border-[#E8E0D5] hover:border-[#7A8B7B]/50'
+                  service.popular
+                    ? 'border-2 border-[#D4AF37]/50 shadow-[0_8px_30px_rgba(212,175,55,0.08)]'
+                    : 'border border-[#EAE4D9] hover:border-[#7A8B7B]/50 shadow-[0_4px_25px_rgba(28,38,30,0.03)]'
                 }`}
               >
-                {/* Linha dourada no topo que brilha ou permanece visível no destaque */}
+                {/* Linha sutil dourada no topo que brilha no hover */}
                 <div className={`absolute inset-x-8 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent pointer-events-none z-30 transition-opacity duration-500 ${
-                  service.popular || service.badge ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                  service.popular ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                 }`} />
 
-                {/* Image Section */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-[#18251E]">
-                  {/* Varredura de luz sobre a foto ao passar o mouse */}
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none z-20" />
-
-                  <img
-                    loading="lazy"
-                    decoding="async"
-                    src={service.image}
-                    alt={service.name}
-                    onClick={(e) => {
-                      if (isEditorActive) {
-                        e.stopPropagation();
-                        handleTriggerUpload(service.id, service.image, e);
-                      }
-                    }}
-                    className={`w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out ${
-                      isEditorActive ? 'cursor-pointer hover:brightness-95' : ''
-                    }`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#121C16]/60 via-transparent to-transparent pointer-events-none" />
-
-                  {/* Feedback visual durante salvamento em assets */}
-                  {uploadingId === service.id && (
-                    <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-35 backdrop-blur-sm pointer-events-auto">
-                      <Loader2 className="w-6 h-6 text-[#D4AF37] animate-spin mb-1.5" />
-                      <span className="text-xs text-[#F3EFE6] font-sans font-medium">
-                        Salvando na pasta assets...
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Feedback visual de sucesso */}
-                  {uploadSuccessId === service.id && (
-                    <div className="absolute inset-0 bg-[#121C16]/90 flex items-center justify-center z-35 pointer-events-none">
-                      <div className="px-3.5 py-1.5 rounded-full bg-emerald-600/95 text-white text-xs font-sans font-semibold shadow-lg animate-pulse">
-                        ✓ Salva em assets & anterior excluída!
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Categoria no Canto Superior Esquerdo */}
-                  <div
-                    className="absolute top-3 left-3 flex items-center gap-2 z-25 pointer-events-auto"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {isEditorActive ? (
-                      <div className="relative inline-flex items-center group/cat-select max-w-max">
-                        {/* Pílula visual que ocupa exatamente o tamanho do texto atual */}
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121C16]/95 group-hover/cat-select:bg-[#1C2C22] text-[10px] uppercase font-sans tracking-widest text-[#F3EFE6] font-semibold border border-[#D4AF37]/80 shadow-lg transition-all">
-                          <span className="whitespace-nowrap">{service.categoryLabel || getCategoryLabel(service.category)}</span>
-                          <ChevronDown className="w-3 h-3 text-[#D4AF37] group-hover/cat-select:scale-110 transition-transform" />
-                        </div>
-
-                        {/* Select invisível cobrindo a pílula para abrir opções nativas */}
-                        <select
-                          value={service.category}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            handleCategorySelect(
-                              service.id,
-                              e.target.value as ServiceCategory
-                            );
-                          }}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                          title="Clique para escolher a categoria deste card"
-                        >
-                          {categoryOptions.map((opt) => (
-                            <option
-                              key={opt.key}
-                              value={opt.key}
-                              className="bg-[#121C16] text-[#F3EFE6] py-1 font-sans"
-                            >
-                              {opt.label.toUpperCase()}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    ) : (
-                      <span className="px-3 py-1 rounded-full bg-[#121C16]/85 backdrop-blur-md text-[10px] uppercase font-sans tracking-widest text-[#F3EFE6] font-semibold border border-white/10">
-                        {service.categoryLabel || getCategoryLabel(service.category)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Coluna Superior Direita: Badge Dourado & Ações do Editor Perfeitamente Alinhados na Direita */}
-                  <div
-                    className="absolute top-3 right-3 z-30 flex flex-col items-end gap-1.5 pointer-events-auto"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {/* Badge Dourado (Destaque / Mais Procurado) Alinhado à Direita */}
+                {/* Bloco Superior: Cabeçalho com Categoria, Badges e Ações do Editor */}
+                <div className="space-y-3.5">
+                  <div className="flex items-center justify-between gap-2">
+                    {/* Badge ou Categoria à Esquerda */}
                     {service.badge ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#D4AF37] text-[10px] uppercase font-sans tracking-widest text-[#121C16] font-bold shadow-md whitespace-nowrap">
-                        <EditableIcon
-                          id={`service.${service.id}.badge.icon`}
-                          defaultIcon="Star"
-                          className="w-2.5 h-2.5 text-[#121C16]"
-                          darkBorder={true}
-                        />
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#18251E] text-[10.5px] uppercase font-sans font-bold tracking-wider text-[#D4AF37] shadow-2xs">
+                        <Sparkles className="w-3 h-3 text-[#D4AF37]" />
                         <EditableText
                           id={`service.${service.id}.badge`}
                           defaultText={service.badge}
@@ -674,309 +582,185 @@ export const ServicesMenuSection: React.FC = () => {
                           {service.badge}
                         </EditableText>
                       </span>
-                    ) : service.popular ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#D4AF37] text-[10px] uppercase font-sans tracking-widest text-[#121C16] font-bold shadow-md whitespace-nowrap">
-                        <EditableIcon
-                          id={`service.${service.id}.popularBadge.icon`}
-                          defaultIcon="Star"
-                          className="w-2.5 h-2.5 text-[#121C16]"
-                          darkBorder={true}
-                        />
-                        <EditableText
-                          id={`service.${service.id}.popularBadge`}
-                          defaultText="Destaque"
-                          as="span"
-                          darkBorder={true}
-                        >
-                          Destaque
-                        </EditableText>
+                    ) : (
+                      <span className="text-[11px] uppercase font-sans font-semibold tracking-widest text-[#7A8B7B]">
+                        {service.categoryLabel || getCategoryLabel(service.category)}
                       </span>
-                    ) : null}
+                    )}
 
-                    {/* Ações do Card no Modo Editor (Alinhadas perfeitamente abaixo do badge) */}
-                    {isEditorActive && (
-                      <>
-                        {/* Botões Principais: Destaque, Carregar Foto do PC e Excluir */}
-                        <div className="flex items-center gap-1.5">
-                        {/* Alternar Destaque */}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleServicePopular(service.id);
-                          }}
-                          className={`p-1.5 rounded-full border shadow-md transition-all cursor-pointer hover:scale-110 ${
-                            service.popular
-                              ? 'bg-[#D4AF37] text-[#121C16] border-[#D4AF37]'
-                              : 'bg-[#121C16]/85 text-white/70 hover:text-[#D4AF37] border-white/20'
-                          }`}
-                          title={service.popular ? 'Remover dos destaques' : 'Marcar como destaque'}
-                        >
-                          <Star className={`w-3.5 h-3.5 ${service.popular ? 'fill-[#121C16]' : ''}`} />
-                        </button>
+                    {/* Lado Direito: Favorito e Modo Editor */}
+                    <div className="flex items-center gap-2">
+                      {service.popular && (
+                        <span className="text-xs text-[#7A8B7B] font-sans font-medium flex items-center gap-1">
+                          <Star className="w-3.5 h-3.5 fill-[#D4AF37] text-[#D4AF37]" />
+                          <span>Favorito</span>
+                        </span>
+                      )}
 
-                        {/* Carregar Foto do Computador (Salva em assets e exclui a anterior) */}
-                        <button
-                          type="button"
-                          onClick={(e) => handleTriggerUpload(service.id, service.image, e)}
-                          className="p-1.5 rounded-full bg-[#121C16]/85 hover:bg-[#121C16] text-[#D4AF37] border border-[#D4AF37]/50 shadow-md transition-all hover:scale-110 cursor-pointer"
-                          title="Carregar nova foto do computador (salva na pasta assets e exclui a anterior)"
-                        >
-                          <Upload className="w-3.5 h-3.5" />
-                        </button>
-
-                        {/* Excluir Card */}
-                        <div className={`relative ${confirmDeleteId === service.id ? 'z-50' : ''}`}>
+                      {/* Modo Editor: Ações Administrativas */}
+                      {isEditorActive && (
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                          {/* Alternar Destaque */}
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setConfirmDeleteId((prev) => (prev === service.id ? null : service.id));
+                              toggleServicePopular(service.id);
                             }}
-                            className="p-1.5 rounded-full border shadow-md transition-all cursor-pointer bg-[#121C16]/85 hover:bg-red-950 text-[#94A595] hover:text-red-200 border-white/20 hover:border-red-500/50"
-                            title="Remover este ritual"
-                            aria-label="Remover ritual"
+                            className={`p-1 rounded-full border transition-all ${
+                              service.popular
+                                ? 'bg-[#D4AF37] text-[#121C16] border-[#D4AF37]'
+                                : 'bg-[#F6F2EB] text-[#2D4536] border-[#E8E0D5]'
+                            }`}
+                            title="Alternar favorito"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Star className={`w-3 h-3 ${service.popular ? 'fill-[#121C16]' : ''}`} />
                           </button>
 
-                          <ConfirmPopover
-                            isOpen={confirmDeleteId === service.id}
-                            onConfirm={() => handleDeleteService(service.id)}
-                            onCancel={() => setConfirmDeleteId(null)}
-                            message="Deseja excluir?"
-                            position="bottom"
-                            align="right"
-                          />
+                          {/* Reordenar */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveService(service.id, 'left', filteredServices.map((s) => s.id));
+                            }}
+                            className="p-1 rounded-full bg-[#F6F2EB] text-[#2D4536] border border-[#E8E0D5]"
+                            title="Mover ritual para esquerda"
+                          >
+                            <ArrowLeft className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveService(service.id, 'right', filteredServices.map((s) => s.id));
+                            }}
+                            className="p-1 rounded-full bg-[#F6F2EB] text-[#2D4536] border border-[#E8E0D5]"
+                            title="Mover ritual para direita"
+                          >
+                            <ArrowRight className="w-3 h-3" />
+                          </button>
+
+                          {/* Excluir Card */}
+                          <div className={`relative ${confirmDeleteId === service.id ? 'z-50' : ''}`}>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setConfirmDeleteId((prev) => (prev === service.id ? null : service.id));
+                              }}
+                              className="p-1 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
+                              title="Remover ritual"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+
+                            <ConfirmPopover
+                              isOpen={confirmDeleteId === service.id}
+                              onConfirm={() => handleDeleteService(service.id)}
+                              onCancel={() => setConfirmDeleteId(null)}
+                              message="Deseja excluir?"
+                              position="bottom"
+                              align="right"
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
+                    </div>
+                  </div>
 
-                      {/* Setinhas de Direção / Reordenação (Abaixo dos botões principais) */}
-                      <div className="flex items-center gap-0.5 bg-[#121C16]/90 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-[#D4AF37]/40 shadow-md">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveService(service.id, 'left', filteredServices.map((s) => s.id));
-                          }}
-                          className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] hover:bg-white/10 transition-all cursor-pointer"
-                          title="Mover para o lado esquerdo"
-                        >
-                          <ArrowLeft className="w-3 h-3" />
-                        </button>
+                  {/* Título do Ritual */}
+                  <h3 className="font-serif text-2xl sm:text-[1.65rem] text-[#121C16] group-hover:text-[#2D4536] transition-colors leading-snug">
+                    <EditableText id={`service.${service.id}.name`} defaultText={service.name} as="span">
+                      {service.name}
+                    </EditableText>
+                  </h3>
 
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveService(service.id, 'right', filteredServices.map((s) => s.id));
-                          }}
-                          className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] hover:bg-white/10 transition-all cursor-pointer"
-                          title="Mover para o lado direito"
-                        >
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
+                  {/* Descrição Concisa */}
+                  <p className="font-sans text-xs sm:text-[13px] text-[#555555] leading-relaxed line-clamp-3 min-h-[2.6rem]">
+                    <EditableText
+                      id={`service.${service.id}.description`}
+                      defaultText={service.tagline || service.description}
+                      as="span"
+                    >
+                      {service.tagline || service.description}
+                    </EditableText>
+                  </p>
 
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveService(service.id, 'up', filteredServices.map((s) => s.id));
-                          }}
-                          className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] hover:bg-white/10 transition-all cursor-pointer"
-                          title="Mover para cima (linha anterior)"
-                        >
-                          <ArrowUp className="w-3 h-3" />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveService(service.id, 'down', filteredServices.map((s) => s.id));
-                          }}
-                          className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] hover:bg-white/10 transition-all cursor-pointer"
-                          title="Mover para baixo (próxima linha)"
-                        >
-                          <ArrowDown className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </>
+                  {/* Caixa de Itens Inclusos (Destaque exclusivo quando houver) */}
+                  {service.includedItems && service.includedItems.length > 0 && (
+                    <div className="rounded-2xl bg-[#F9F6F0] border border-[#EFE9DF] p-3 sm:p-3.5 space-y-1.5 text-xs text-[#4A554D]">
+                      {service.includedItems.slice(0, 2).map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <Check className="w-3.5 h-3.5 text-[#2D4536] flex-shrink-0 mt-0.5" />
+                          <span className="line-clamp-1">{item}</span>
+                        </div>
+                      ))}
+                      {service.includedItems.length > 2 && (
+                        <p className="text-[11px] text-[#7A8B7B] font-medium pl-5.5">
+                          +{service.includedItems.length - 2} itens adicionais inclusos
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 
-                  {/* Duration Pill */}
-                  <div
-                    className="absolute bottom-3 right-3 z-30 pointer-events-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121C16]/85 backdrop-blur-md text-xs text-[#D4AF37] border border-[#D4AF37]/30"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <EditableIcon id={`service.${service.id}.duration.icon`} defaultIcon="Clock" className="w-3.5 h-3.5" />
-                    <EditableText id={`service.${service.id}.duration`} defaultText={service.duration} as="span">
-                      {service.duration}
-                    </EditableText>
-                  </div>
-                </div>
-
-                {/* Content Section */}
-                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2.5">
-                    {/* Título do Ritual */}
-                    <h3 className="font-serif text-2xl text-[#121C16] group-hover:text-[#2C2C2C] transition-colors leading-snug">
-                      <EditableText id={`service.${service.id}.name`} defaultText={service.name} as="span">
-                        {service.name}
-                      </EditableText>
-                    </h3>
-
-                    {/* Descrição Concisa e Fluida (Apenas texto corrido no card - tópicos ficam no Conhecer Ritual) */}
-                    <p className="font-sans text-xs text-[#555555] leading-relaxed line-clamp-3 min-h-[2.5rem]">
-                      <EditableText
-                        id={`service.${service.id}.description`}
-                        defaultText={service.tagline || service.description}
-                        as="span"
-                      >
-                        {service.tagline || service.description}
-                      </EditableText>
-                    </p>
-                  </div>
-
-                  {/* Bloco de Investimento e Ações Ancorados na Base */}
-                  <div className="space-y-3.5 pt-1">
-                    {/* Investimento Refinado */}
-                    {service.priceOptions && service.priceOptions.length > 0 ? (
-                      <div>
-                        {service.priceOptions.length === 1 ? (
-                          <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-white/80 border border-[#E8E0D5] shadow-2xs group-hover:border-[#2D4536]/30 transition-colors">
-                            <span className="text-[10px] font-sans font-semibold text-[#2D4536] uppercase tracking-wider">
-                              <EditableText
-                                id={`service.${service.id}.opt.0.duration`}
-                                defaultText={service.priceOptions[0].duration || 'Sessão'}
-                                as="span"
-                              >
-                                {service.priceOptions[0].duration || 'Sessão'}
-                              </EditableText>
-                            </span>
-                            <span className="font-serif text-base font-bold text-[#121C16]">
-                              <EditableText
-                                id={`service.${service.id}.opt.0.price`}
-                                defaultText={service.priceOptions[0].price}
-                                as="span"
-                              >
-                                {service.priceOptions[0].price}
-                              </EditableText>
-                            </span>
-                          </div>
-                        ) : service.priceOptions.length === 2 ? (
-                          <div className="grid grid-cols-2 gap-2">
-                            {service.priceOptions.map((opt, oIdx) => (
-                              <div
-                                key={oIdx}
-                                className="flex flex-col items-center justify-center py-2 px-2 rounded-xl bg-white/80 hover:bg-white border border-[#E8E0D5] hover:border-[#D4AF37]/50 text-center shadow-2xs group-hover:border-[#2D4536]/30 transition-all duration-300"
-                              >
-                                <span className="text-[10px] uppercase tracking-wider font-sans font-semibold text-[#2D4536]">
-                                  <EditableText
-                                    id={`service.${service.id}.opt.${oIdx}.duration`}
-                                    defaultText={opt.duration}
-                                    as="span"
-                                  >
-                                    {opt.duration}
-                                  </EditableText>
-                                </span>
-                                <span className="font-serif text-sm sm:text-[15px] font-bold text-[#121C16] leading-tight mt-0.5">
-                                  <EditableText
-                                    id={`service.${service.id}.opt.${oIdx}.price`}
-                                    defaultText={opt.price}
-                                    as="span"
-                                  >
-                                    {opt.price}
-                                  </EditableText>
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-3 gap-1.5">
-                            {service.priceOptions.map((opt, oIdx) => (
-                              <div
-                                key={oIdx}
-                                className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl border text-center shadow-2xs transition-colors ${
-                                  oIdx === service.priceOptions!.length - 1
-                                    ? 'bg-[#D4AF37]/15 border-[#D4AF37]/50'
-                                    : 'bg-white/80 border-[#E8E0D5]'
-                                }`}
-                              >
-                                <span className="text-[9.5px] uppercase tracking-tight font-sans font-semibold text-[#2D4536] truncate w-full">
-                                  <EditableText
-                                    id={`service.${service.id}.opt.${oIdx}.duration`}
-                                    defaultText={opt.duration}
-                                    as="span"
-                                  >
-                                    {opt.duration}
-                                  </EditableText>
-                                </span>
-                                <span className="font-serif text-xs font-bold text-[#121C16] leading-tight mt-0.5">
-                                  <EditableText
-                                    id={`service.${service.id}.opt.${oIdx}.price`}
-                                    defaultText={opt.price}
-                                    as="span"
-                                  >
-                                    {opt.price}
-                                  </EditableText>
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ) : service.price ? (
-                      <div>
-                        <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-white/80 border border-[#E8E0D5] shadow-2xs">
-                          <span className="text-[10px] font-sans font-semibold text-[#2D4536] uppercase tracking-wider">
-                            <EditableText
-                              id={`service.${service.id}.investmentLabel`}
-                              defaultText="Investimento"
-                              as="span"
-                            >
-                              Investimento
-                            </EditableText>
-                          </span>
-                          <span className="font-serif text-base font-bold text-[#121C16]">
-                            <EditableText
-                              id={`service.${service.id}.price`}
-                              defaultText={service.price}
-                              as="span"
-                            >
-                              {service.price}
-                            </EditableText>
-                          </span>
-                        </div>
-                      </div>
-                    ) : null}
-
-                    {/* Action Row */}
-                    <div className="pt-3 border-t border-[#E8E0D5] flex items-center justify-between gap-2.5">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold uppercase tracking-wider text-[#121C16] group-hover:text-[#7A8B7B] transition-colors">
-                        <EditableText id="menu.card.btn" defaultText="Conhecer Ritual" as="span">
-                          Conhecer Ritual
-                        </EditableText>
-                        <EditableIcon id={`service.${service.id}.arrow.icon`} defaultIcon="ArrowRight" className="w-3.5 h-3.5 text-[#D4AF37] group-hover:translate-x-1 transition-transform duration-300" />
+                {/* Bloco Inferior: Duração, Preço e Botão */}
+                <div className="pt-5 mt-4 border-t border-[#EFE9DF] space-y-4">
+                  <div className="flex items-end justify-between gap-3">
+                    {/* DURAÇÃO & VALOR */}
+                    <div className="flex flex-col">
+                      <span className="text-[9.5px] uppercase font-sans font-semibold tracking-wider text-[#888888]">
+                        DURAÇÃO & VALOR
                       </span>
-
-                      <a
-                        href={SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          trackWhatsAppClick('servico_card', service.name);
-                        }}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 py-1.5 px-3.5 rounded-full bg-[#18251E] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#121C16] text-xs font-sans font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 flex-shrink-0 group/wpp cursor-pointer"
-                        title={`Agendar ${service.name} direto no WhatsApp`}
-                        aria-label={`Agendar ${service.name} direto no WhatsApp`}
-                      >
-                        <EditableIcon id={`service.${service.id}.whatsapp.icon`} defaultIcon="WhatsApp" fallbackComponent={WhatsAppIcon} className="w-3.5 h-3.5 text-[#D4AF37] group-hover/wpp:text-[#121C16] transition-colors" />
-                        <span>Agendar</span>
-                      </a>
+                      <span className="font-sans text-xs sm:text-[13px] font-medium text-[#2D4536] mt-0.5">
+                        {service.priceOptions && service.priceOptions.length > 1
+                          ? service.priceOptions.map((opt) => opt.duration).join(' | ')
+                          : service.duration}
+                      </span>
                     </div>
+
+                    {/* Preço em destaque */}
+                    <div className="text-right">
+                      <span className="font-serif text-2xl sm:text-[1.65rem] font-bold text-[#121C16]">
+                        {service.priceOptions && service.priceOptions.length > 0
+                          ? service.priceOptions[0].price
+                          : service.price}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Dupla Ação Separada e Harmoniosa (Detalhes + Agendar no WhatsApp) */}
+                  <div className="grid grid-cols-[1fr_auto] gap-2 pt-1">
+                    {/* Botão 1: Ver Detalhes */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenDetails(service);
+                      }}
+                      className="py-3 px-3.5 sm:px-4 rounded-2xl bg-[#F0EAE1] hover:bg-[#E4DCCE] text-[#121C16] text-xs font-sans font-semibold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all duration-300 border border-[#E5DDD0] shadow-2xs hover:shadow-xs group/btn cursor-pointer"
+                    >
+                      <span>Ver Detalhes</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#7A8B7B] group-hover/btn:text-[#121C16] group-hover/btn:translate-x-0.5 transition-all duration-300" />
+                    </button>
+
+                    {/* Botão 2: Agendar Direto via WhatsApp */}
+                    <a
+                      href={SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        trackWhatsAppClick('servico_card', service.name);
+                      }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-3 px-4 sm:px-5 rounded-2xl bg-[#18251E] hover:bg-[#23352A] text-[#D4AF37] hover:text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 border border-[#D4AF37]/40 hover:border-[#D4AF37] shadow-2xs hover:shadow-sm hover:scale-[1.02] active:scale-95 group/wpp cursor-pointer"
+                      title={`Agendar ${service.name} direto no WhatsApp`}
+                      aria-label={`Agendar ${service.name} direto no WhatsApp`}
+                    >
+                      <WhatsAppIcon className="w-3.5 h-3.5 text-[#D4AF37] group-hover/wpp:text-white transition-colors" />
+                      <span>Agendar</span>
+                    </a>
                   </div>
                 </div>
               </motion.div>

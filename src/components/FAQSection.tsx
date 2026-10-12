@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HelpCircle, ChevronDown, MessageCircle, Sparkles, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import {
+  HelpCircle,
+  ChevronDown,
+  MessageCircle,
+  Sparkles,
+  Plus,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  Calendar,
+  ShieldCheck,
+  Clock,
+  Footprints,
+  Heart,
+  Info,
+  FileText
+} from 'lucide-react';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { EASE_LUXURY, EASE_ORGANIC } from '../utils/motionTransitions';
 import { trackWhatsAppClick } from '../services/analytics';
@@ -8,6 +24,33 @@ import { EditableText } from './editor/EditableText';
 import { EditableIcon } from './editor/EditableIcon';
 import { ConfirmPopover } from './editor/ConfirmPopover';
 import { useEditor } from '../context/EditorContext';
+
+// Mapeamento dinâmico de ícones temáticos para cada orientação/pergunta do FAQ
+const getFaqIcon = (faq: { id: string; category?: string; question: string }) => {
+  const q = (faq.question + ' ' + (faq.category || '')).toLowerCase();
+  if (q.includes('agendamento') || q.includes('chegada') || q.includes('antecedência') || q.includes('horário')) {
+    return Calendar;
+  }
+  if (q.includes('cancelamento') || q.includes('remarcação') || q.includes('regra') || q.includes('política') || q.includes('segurança')) {
+    return ShieldCheck;
+  }
+  if (q.includes('escalda-pés') || q.includes('pés') || q.includes('boas-vindas')) {
+    return Footprints;
+  }
+  if (q.includes('validade') || q.includes('plano') || q.includes('voucher') || q.includes('presente')) {
+    return Clock;
+  }
+  if (q.includes('gestante') || q.includes('gravidez') || q.includes('casal') || q.includes('amor')) {
+    return Heart;
+  }
+  if (q.includes('head spa') || q.includes('cabelo') || q.includes('química') || q.includes('ozônio')) {
+    return Sparkles;
+  }
+  if (q.includes('pagamento') || q.includes('parcelamento') || q.includes('pix') || q.includes('cartão')) {
+    return FileText;
+  }
+  return HelpCircle;
+};
 
 export const FAQSection: React.FC = () => {
   const { faqs, addFaq, removeFaq, moveFaq, isEditorActive } = useEditor();
@@ -35,24 +78,23 @@ export const FAQSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="relative py-28 sm:py-36 bg-[#121C16] text-[#F3EFE6] overflow-hidden border-t border-[#F3EFE6]/10">
-      {/* Botanical ambient subtle halos com respiração zen */}
-      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-[#7A8B7B]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-[450px] h-[450px] bg-[#D4AF37]/10 rounded-full blur-[130px] pointer-events-none" />
-
+    <section id="faq" className="relative py-28 sm:py-36 bg-[#F0EAE1] text-[#2C2C2C] overflow-hidden border-t border-[#E2D9CC]">
       <div className="max-w-4xl mx-auto px-5 sm:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-4xl mx-auto mb-14">
+        
+        {/* ========================================================================= */}
+        {/* CABEÇALHO DA SEÇÃO (ESTILO TRANQUILIDADE & TRANSPARÊNCIA)                */}
+        {/* ========================================================================= */}
+        <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-[#2D4536] border border-[#DDD5C7] text-xs font-sans font-semibold uppercase tracking-[0.25em] mb-4 shadow-2xs"
           >
-            <EditableIcon id="faq.badge.icon" defaultIcon="HelpCircle" className="w-3.5 h-3.5 text-[#7A8B7B]" />
-            <EditableText id="faq.badge" defaultText="Tire Suas Dúvidas" as="span">
-              Tire Suas Dúvidas
+            <EditableIcon id="faq.badge.icon" defaultIcon="ShieldCheck" className="w-3.5 h-3.5 text-[#2D4536]" />
+            <EditableText id="faq.badge" defaultText="Transparência & Cuidado" as="span">
+              Transparência & Cuidado
             </EditableText>
           </motion.div>
 
@@ -61,10 +103,10 @@ export const FAQSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
-            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#F3EFE6] font-light leading-tight"
+            className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#121C16] font-normal leading-tight tracking-tight"
           >
-            <EditableText id="faq.title" defaultText="Perguntas & Preparo para a Visita" as="span">
-              Perguntas & <span className="italic font-normal text-[#D4AF37]">Preparo para a Visita</span>
+            <EditableText id="faq.title" defaultText="Políticas & Orientações de Atendimento" as="span">
+              Políticas & Orientações de Atendimento
             </EditableText>
           </motion.h2>
 
@@ -73,22 +115,26 @@ export const FAQSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.85, delay: 0.2, ease: EASE_ORGANIC }}
-            className="mt-4 text-xs sm:text-sm text-[#F3EFE6]/75 font-sans leading-relaxed"
+            className="mt-4 text-xs sm:text-sm text-[#555555] font-sans max-w-2xl mx-auto leading-relaxed"
           >
             <EditableText
               id="faq.description"
-              defaultText="Tudo o que você precisa saber para chegar tranquilo(a) e desfrutar do seu momento de desaceleração sem preocupações."
+              defaultText="Regras essenciais para garantir que sua estadia no Maliviê SPA ocorra em total harmonia, pontualidade e bem-estar."
               as="span"
             >
-              Tudo o que você precisa saber para chegar tranquilo(a) e desfrutar do seu momento de desaceleração sem preocupações.
+              Regras essenciais para garantir que sua estadia no Maliviê SPA ocorra em total harmonia, pontualidade e bem-estar.
             </EditableText>
           </motion.p>
         </div>
 
-        {/* Minimalist Accordion List */}
-        <div className="space-y-3.5 mb-14">
+        {/* ========================================================================= */}
+        {/* LISTA DE CARDS FLUTUANTES (ACORDEOM LUXUOSO ILUMINADO)                     */}
+        {/* ========================================================================= */}
+        <div className="space-y-3.5 sm:space-y-4 mb-10 sm:mb-12">
           {faqs.map((faq, idx) => {
             const isOpen = !!openItems[faq.id];
+            const IconComponent = getFaqIcon(faq);
+
             return (
               <motion.div
                 layout
@@ -97,25 +143,42 @@ export const FAQSection: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, ease: EASE_ORGANIC }}
-                className={`rounded-2xl transition-all duration-300 border ${
+                className={`rounded-2xl sm:rounded-3xl transition-all duration-300 ${
                   confirmDeleteId === faq.id
                     ? 'relative z-50 overflow-visible'
                     : 'relative z-10 overflow-hidden'
                 } ${
                   isOpen
-                    ? 'bg-[#18251E] border-[#7A8B7B]/50 shadow-[0_10px_30px_rgba(0,0,0,0.35)]'
-                    : 'bg-[#18251E]/45 border-[#F3EFE6]/10 hover:border-[#F3EFE6]/25'
+                    ? 'bg-white border-2 border-[#2D4536]/30 shadow-[0_16px_36px_rgba(28,38,30,0.08)] ring-1 ring-[#2D4536]/10'
+                    : 'bg-white hover:bg-white border border-[#EAE4D9] hover:border-[#7A8B7B]/40 shadow-[0_4px_20px_rgba(28,38,30,0.03)] hover:shadow-[0_12px_28px_rgba(28,38,30,0.06)] hover:-translate-y-0.5'
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => toggleItem(faq.id)}
                   aria-expanded={isOpen}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 focus:outline-none cursor-pointer group"
+                  className="w-full p-4.5 sm:p-5 sm:px-6 text-left flex items-center justify-between gap-4 focus:outline-none cursor-pointer group"
                 >
-                  <div className="flex items-center gap-3.5">
-                    <span className="w-2 h-2 rounded-full bg-[#D4AF37] flex-shrink-0" />
-                    <span className="font-serif text-lg sm:text-xl text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors leading-snug">
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    {/* Ícone Temático em Caixinha Acetinada */}
+                    <div
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 border transition-all duration-300 ${
+                        isOpen
+                          ? 'bg-[#18251E] text-[#D4AF37] border-[#18251E] shadow-sm'
+                          : 'bg-[#F8F6F2] group-hover:bg-[#F2EEE6] text-[#2D4536] border-[#EAE4D9]'
+                      }`}
+                    >
+                      <IconComponent className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                    </div>
+
+                    {/* Pergunta */}
+                    <span
+                      className={`font-serif text-base sm:text-lg md:text-[1.12rem] leading-snug transition-colors ${
+                        isOpen
+                          ? 'text-[#121C16] font-semibold'
+                          : 'text-[#1C2C22] group-hover:text-[#2D4536]'
+                      }`}
+                    >
                       <EditableText
                         id={`faq.${faq.id}.question`}
                         defaultText={faq.question}
@@ -126,12 +189,12 @@ export const FAQSection: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     {/* Botões de Ação no Modo Editor */}
                     {isEditorActive && (
-                      <div className="flex items-center gap-1.5 mr-1">
-                        {/* Setinhas de Direção / Reordenação (Pílula dourada idêntica ao card) */}
-                        <div className="flex items-center gap-0.5 bg-[#121C16]/90 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-[#D4AF37]/40 shadow-md">
+                      <div className="flex items-center gap-1.5 mr-1" onClick={(e) => e.stopPropagation()}>
+                        {/* Setinhas de Direção / Reordenação */}
+                        <div className="flex items-center gap-0.5 bg-[#F6F2EB] px-1.5 py-0.5 rounded-full border border-[#E8E0D5] shadow-sm">
                           <button
                             type="button"
                             disabled={idx === 0}
@@ -139,9 +202,9 @@ export const FAQSection: React.FC = () => {
                               e.stopPropagation();
                               moveFaq(faq.id, 'up');
                             }}
-                            className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] disabled:opacity-20 disabled:hover:text-[#F3EFE6]/80 hover:bg-white/10 transition-all cursor-pointer"
-                            title="Mover pergunta para cima"
-                            aria-label="Mover pergunta para cima"
+                            className="p-1 rounded-full text-[#2D4536]/80 hover:text-[#121C16] disabled:opacity-20 hover:bg-black/5 transition-all cursor-pointer"
+                            title="Mover para cima"
+                            aria-label="Mover para cima"
                           >
                             <ArrowUp className="w-3 h-3" />
                           </button>
@@ -153,15 +216,15 @@ export const FAQSection: React.FC = () => {
                               e.stopPropagation();
                               moveFaq(faq.id, 'down');
                             }}
-                            className="p-1 rounded-full text-[#F3EFE6]/80 hover:text-[#D4AF37] disabled:opacity-20 disabled:hover:text-[#F3EFE6]/80 hover:bg-white/10 transition-all cursor-pointer"
-                            title="Mover pergunta para baixo"
-                            aria-label="Mover pergunta para baixo"
+                            className="p-1 rounded-full text-[#2D4536]/80 hover:text-[#121C16] disabled:opacity-20 hover:bg-black/5 transition-all cursor-pointer"
+                            title="Mover para baixo"
+                            aria-label="Mover para baixo"
                           >
                             <ArrowDown className="w-3 h-3" />
                           </button>
                         </div>
 
-                        {/* Excluir Pergunta (Botão circular idêntico ao card) */}
+                        {/* Excluir Pergunta */}
                         <div className={`relative ${confirmDeleteId === faq.id ? 'z-50' : ''}`}>
                           <button
                             type="button"
@@ -169,8 +232,8 @@ export const FAQSection: React.FC = () => {
                               e.stopPropagation();
                               setConfirmDeleteId((prev) => (prev === faq.id ? null : faq.id));
                             }}
-                            className="p-1.5 rounded-full border shadow-md transition-all cursor-pointer bg-[#121C16]/85 hover:bg-red-950 text-[#94A595] hover:text-red-200 border-white/20 hover:border-red-500/50"
-                            title="Remover esta pergunta do FAQ"
+                            className="p-1.5 rounded-full border shadow-sm transition-all cursor-pointer bg-red-50 hover:bg-red-100 text-red-600 border-red-200"
+                            title="Remover pergunta"
                             aria-label="Remover pergunta"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -188,14 +251,15 @@ export const FAQSection: React.FC = () => {
                       </div>
                     )}
 
+                    {/* Botão Circular Chevron Toggle */}
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border transition-all duration-300 ${
                         isOpen
-                          ? 'bg-[#121C16] border-[#D4AF37]/40 text-[#D4AF37] rotate-180'
-                          : 'bg-[#121C16]/50 border-[#F3EFE6]/15 text-[#F3EFE6]/60 group-hover:text-[#F3EFE6]'
+                          ? 'bg-[#18251E] border-[#18251E] text-[#D4AF37] rotate-180 shadow-sm'
+                          : 'bg-[#F6F2EB] group-hover:bg-[#EFE9DF] border-[#E8E0D5] text-[#7A8B7B] group-hover:text-[#2D4536]'
                       }`}
                     >
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className="w-4 h-4 transition-transform duration-300" />
                     </div>
                   </div>
                 </button>
@@ -209,7 +273,7 @@ export const FAQSection: React.FC = () => {
                       transition={{ duration: 0.35, ease: EASE_ORGANIC }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-[#F3EFE6]/80 font-sans leading-relaxed border-t border-[#F3EFE6]/5 space-y-2">
+                      <div className="px-5 sm:px-6 pb-6 pt-2 text-xs sm:text-[14.5px] text-[#4A554D] font-sans leading-relaxed border-t border-[#F0ECE4] space-y-2">
                         <EditableText
                           id={`faq.${faq.id}.answer`}
                           defaultText={faq.answer}
@@ -232,46 +296,52 @@ export const FAQSection: React.FC = () => {
               onClick={handleCreateFaq}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full py-4 px-6 rounded-2xl border-2 border-dashed border-[#D4AF37]/40 hover:border-[#D4AF37] bg-[#18251E]/40 hover:bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center gap-3 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg group mt-3"
+              className="w-full py-4 px-6 rounded-2xl sm:rounded-3xl border-2 border-dashed border-[#D4AF37]/50 hover:border-[#D4AF37] bg-white/60 hover:bg-[#D4AF37]/10 text-[#2D4536] flex items-center justify-center gap-3 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md group mt-3"
             >
-              <div className="w-7 h-7 rounded-full bg-[#D4AF37]/20 group-hover:bg-[#D4AF37] text-[#D4AF37] group-hover:text-[#121C16] flex items-center justify-center transition-all duration-200">
+              <div className="w-7 h-7 rounded-full bg-[#2D4536]/10 group-hover:bg-[#18251E] text-[#2D4536] group-hover:text-[#D4AF37] flex items-center justify-center transition-all duration-200">
                 <Plus className="w-4 h-4" />
               </div>
-              <span className="font-serif text-lg text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors">
-                Adicionar Nova Pergunta ao FAQ
+              <span className="font-serif text-lg text-[#121C16] group-hover:text-[#2D4536] transition-colors">
+                Adicionar Nova Pergunta / Política
               </span>
             </motion.button>
           )}
         </div>
 
-        {/* Personalized Reception Assistance Callout */}
+        {/* ========================================================================= */}
+        {/* BANNER DE INFORMAÇÃO & SUPORTE DIRETO (MELHORADO COM BOTÃO WHATSAPP)       */}
+        {/* ========================================================================= */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: EASE_ORGANIC }}
-          className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#18251E] to-[#142019] border border-[#7A8B7B]/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_15px_40px_rgba(0,0,0,0.3)]"
+          className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-[#EAE4D9] flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 shadow-[0_4px_20px_rgba(28,38,30,0.03)]"
         >
-          <div className="space-y-1.5 text-center sm:text-left">
-            <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-              <EditableIcon id="faq.receptionBadge.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5" />
-              <EditableText id="faq.receptionBadge" defaultText="Atendimento Direto & Humanizado" as="span">
-                Atendimento Direto & Humanizado
-              </EditableText>
+          <div className="flex items-start sm:items-center gap-3 sm:gap-3.5 text-center md:text-left">
+            <div className="w-8 h-8 rounded-full bg-[#D4AF37]/20 flex items-center justify-center flex-shrink-0 text-[#B5902B] mt-0.5 sm:mt-0">
+              <Info className="w-4.5 h-4.5" />
             </div>
-            <h3 className="font-serif text-xl sm:text-2xl text-[#F3EFE6] font-light">
-              <EditableText id="faq.receptionTitle" defaultText="Ainda tem alguma dúvida sobre seu ritual?" as="span">
-                Ainda tem alguma dúvida sobre seu ritual?
-              </EditableText>
-            </h3>
-            <EditableText
-              id="faq.receptionDesc"
-              defaultText="Fale agora com a nossa recepção no WhatsApp. Estamos prontos para orientar a melhor escolha para o seu bem-estar."
-              as="p"
-              className="text-xs text-[#F3EFE6]/70 font-sans max-w-md leading-relaxed"
-            >
-              Fale agora com a nossa recepção no WhatsApp. Estamos prontos para orientar a melhor escolha para o seu bem-estar.
-            </EditableText>
+            <p className="text-xs sm:text-[13.5px] text-[#555555] font-sans leading-relaxed">
+              <strong className="text-[#121C16] font-semibold block mb-0.5">
+                <EditableText
+                  id="faq.receptionCalloutTitle"
+                  defaultText="Dúvidas sobre reagendamentos ou contraindicações terapêuticas?"
+                  as="span"
+                >
+                  Dúvidas sobre reagendamentos ou contraindicações terapêuticas?
+                </EditableText>
+              </strong>
+              <span>
+                <EditableText
+                  id="faq.receptionCalloutDesc"
+                  defaultText="Nossa recepção está disponível no WhatsApp para esclarecer cada detalhe antes da sua visita."
+                  as="span"
+                >
+                  Nossa recepção está disponível no WhatsApp para esclarecer cada detalhe antes da sua visita.
+                </EditableText>
+              </span>
+            </p>
           </div>
 
           <a
@@ -279,14 +349,17 @@ export const FAQSection: React.FC = () => {
             onClick={() => trackWhatsAppClick('faq_recepcao')}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-shrink-0 inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#7A8B7B] hover:bg-[#677868] text-[#121C16] text-xs font-bold tracking-wide uppercase transition-all duration-300 shadow-[0_4px_20px_rgba(122,139,123,0.3)] hover:shadow-[0_6px_25px_rgba(122,139,123,0.45)] group cursor-pointer"
+            className="flex-shrink-0 inline-flex items-center gap-2 py-2.5 px-5 rounded-full bg-[#18251E] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#121C16] text-xs font-sans font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
           >
-            <EditableIcon id="faq.receptionCta.icon" defaultIcon="MessageCircle" className="w-4 h-4 text-[#121C16] group-hover:scale-110 transition-transform" />
-            <EditableText id="faq.receptionCta" defaultText="Falar com a Recepção" as="span">
-              Falar com a Recepção
-            </EditableText>
+            <MessageCircle className="w-3.5 h-3.5" />
+            <span>
+              <EditableText id="faq.receptionButtonText" defaultText="Falar com a Recepção" as="span">
+                Falar com a Recepção
+              </EditableText>
+            </span>
           </a>
         </motion.div>
+
       </div>
     </section>
   );

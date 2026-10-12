@@ -842,16 +842,19 @@ export const SERVICES_LIST: ServiceItem[] = [
   {
     id: 'ritual-dois-coracoes',
     name: 'Ritual Dois Corações • Day Spa Casal',
-    tagline: 'Relaxamento e conexão profunda para celebrar o amor',
+    tagline: 'Spa dos Pés casal, Massagem 50 min lado a lado, Banho Imersão Romântico, Vinho com chocolates',
     category: 'especiais',
     categoryLabel: 'Rituais Especiais',
     duration: '110 min',
     price: 'R$ 749,00 o casal',
-    badge: 'Experiência a Dois',
+    priceOptions: [
+      { duration: '110 min (o casal)', price: 'R$ 749,00' }
+    ],
+    badge: 'Romântico',
     popular: true,
     featured: true,
     courtesyNote: 'Degustação: Vinho com chocolates finos',
-    description: 'Momentos de relaxamento e conexão para celebrar o amor: Spa dos Pés para o casal • Massagem à escolha (50 min) • Banho de Imersão Romântico • Degustação de vinho com chocolates.',
+    description: 'Spa dos Pés casal, Massagem 50 min lado a lado, Banho Imersão Romântico, Vinho com chocolates.',
     longDescription: 'Uma pausa mágica a dois. Desfrutem lado a lado de escalda-pés relaxante, massagem corporal privativa e um brinde apaixonado em banheira de imersão com vinho e chocolates refinados.',
     image: daySpaChaImg,
     includedItems: [
