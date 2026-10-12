@@ -38,6 +38,7 @@ import { trackWhatsAppClick } from '../services/analytics';
 import { WhatsAppIcon } from './SocialIcons';
 import { ServiceDrawer } from './ServiceDrawer';
 import { EditableText } from './editor/EditableText';
+import { EditableImage } from './editor/EditableImage';
 import { EditableIcon } from './editor/EditableIcon';
 import { ConfirmPopover } from './editor/ConfirmPopover';
 import { useEditor } from '../context/EditorContext';
@@ -366,8 +367,8 @@ export const ServicesMenuSection: React.FC = () => {
             transition={{ duration: 0.9, delay: 0.1, ease: EASE_LUXURY }}
             className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2C2C2C] font-light leading-tight"
           >
-            <EditableText id="menu.title" defaultText="Menu de Rituais & Cuidados" as="span">
-              Menu de <span className="italic font-normal text-[#2D4536]">Rituais & Cuidados</span>
+            <EditableText id="menu.title" defaultText="Menu de Serviços & Rituais" as="span">
+              Menu de <span className="italic font-normal text-[#2D4536]">Serviços & Rituais</span>
             </EditableText>
           </motion.h2>
 
@@ -380,10 +381,10 @@ export const ServicesMenuSection: React.FC = () => {
           >
             <EditableText
               id="menu.description"
-              defaultText="Sessões individuais em salas privativas com acústica acolhedora, Welcome Drink artesanal em cristal e atendimento exclusivo pelas terapeutas Andressa e Luciana."
+              defaultText="Encontre a opção ideal para o seu momento. Massagens avulsas, terapias corporais, Head Spa e rituais completos em salas privativas com atendimento personalizado e acolhedor."
               as="span"
             >
-              Sessões individuais em salas privativas com acústica acolhedora, Welcome Drink artesanal em cristal e atendimento exclusivo pelas terapeutas Andressa e Luciana.
+              Encontre a opção ideal para o seu momento. Massagens avulsas, terapias corporais, Head Spa e rituais completos em salas privativas com atendimento personalizado e acolhedor.
             </EditableText>
           </motion.p>
         </div>
@@ -553,131 +554,42 @@ export const ServicesMenuSection: React.FC = () => {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 8 }}
                 transition={{ duration: 0.45, ease: EASE_ORGANIC }}
-                className={`group rounded-3xl bg-white hover:bg-white hover:-translate-y-2 hover:shadow-[0_22px_50px_rgba(28,38,30,0.09)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between p-6 sm:p-7 overflow-hidden cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#7A8B7B]/40 ${
+                className={`group relative rounded-[32px] sm:rounded-[36px] bg-white border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-hidden cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 ${
                   confirmDeleteId === service.id ? 'relative z-50' : 'relative z-10'
                 } ${
                   service.popular
-                    ? 'border-2 border-[#D4AF37]/50 shadow-[0_8px_30px_rgba(212,175,55,0.08)]'
-                    : 'border border-[#EAE4D9] hover:border-[#7A8B7B]/50 shadow-[0_4px_25px_rgba(28,38,30,0.03)]'
+                    ? 'border-[#D4AF37]/60 shadow-[0_12px_36px_rgba(28,38,30,0.08),_0_0_20px_rgba(212,175,55,0.12)] hover:border-[#D4AF37] hover:shadow-[0_24px_55px_rgba(28,38,30,0.14),_0_0_30px_rgba(212,175,55,0.2)] -translate-y-1 hover:-translate-y-2'
+                    : 'border-[#EAE3D6] hover:border-[#D4AF37]/60 shadow-[0_6px_24px_rgba(28,38,30,0.04)] hover:shadow-[0_20px_45px_rgba(28,38,30,0.1),_0_0_20px_rgba(212,175,55,0.1)] hover:-translate-y-2'
                 }`}
               >
-                {/* Linha sutil dourada no topo que brilha no hover */}
-                <div className={`absolute inset-x-8 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent pointer-events-none z-30 transition-opacity duration-500 ${
-                  service.popular ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                }`} />
+                {/* Linha Dourada Acetinada no Topo (Efeito de Luxo ao Passar o Cursor) */}
+                <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-30 pointer-events-none" />
 
-                {/* Bloco Superior: Cabeçalho com Categoria, Badges e Ações do Editor */}
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between gap-2">
-                    {/* Badge ou Categoria à Esquerda */}
-                    {service.badge ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#18251E] text-[10.5px] uppercase font-sans font-bold tracking-wider text-[#D4AF37] shadow-2xs">
-                        <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-                        <EditableText
-                          id={`service.${service.id}.badge`}
-                          defaultText={service.badge}
-                          as="span"
-                          darkBorder={true}
-                        >
-                          {service.badge}
-                        </EditableText>
-                      </span>
-                    ) : (
-                      <span className="text-[11px] uppercase font-sans font-semibold tracking-widest text-[#7A8B7B]">
-                        {service.categoryLabel || getCategoryLabel(service.category)}
-                      </span>
-                    )}
-
-                    {/* Lado Direito: Favorito e Modo Editor */}
-                    <div className="flex items-center gap-2">
-                      {service.popular && (
-                        <span className="text-xs text-[#7A8B7B] font-sans font-medium flex items-center gap-1">
-                          <Star className="w-3.5 h-3.5 fill-[#D4AF37] text-[#D4AF37]" />
-                          <span>Favorito</span>
-                        </span>
-                      )}
-
-                      {/* Modo Editor: Ações Administrativas */}
-                      {isEditorActive && (
-                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                          {/* Alternar Destaque */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleServicePopular(service.id);
-                            }}
-                            className={`p-1 rounded-full border transition-all ${
-                              service.popular
-                                ? 'bg-[#D4AF37] text-[#121C16] border-[#D4AF37]'
-                                : 'bg-[#F6F2EB] text-[#2D4536] border-[#E8E0D5]'
-                            }`}
-                            title="Alternar favorito"
-                          >
-                            <Star className={`w-3 h-3 ${service.popular ? 'fill-[#121C16]' : ''}`} />
-                          </button>
-
-                          {/* Reordenar */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              moveService(service.id, 'left', filteredServices.map((s) => s.id));
-                            }}
-                            className="p-1 rounded-full bg-[#F6F2EB] text-[#2D4536] border border-[#E8E0D5]"
-                            title="Mover ritual para esquerda"
-                          >
-                            <ArrowLeft className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              moveService(service.id, 'right', filteredServices.map((s) => s.id));
-                            }}
-                            className="p-1 rounded-full bg-[#F6F2EB] text-[#2D4536] border border-[#E8E0D5]"
-                            title="Mover ritual para direita"
-                          >
-                            <ArrowRight className="w-3 h-3" />
-                          </button>
-
-                          {/* Excluir Card */}
-                          <div className={`relative ${confirmDeleteId === service.id ? 'z-50' : ''}`}>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setConfirmDeleteId((prev) => (prev === service.id ? null : service.id));
-                              }}
-                              className="p-1 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
-                              title="Remover ritual"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-
-                            <ConfirmPopover
-                              isOpen={confirmDeleteId === service.id}
-                              onConfirm={() => handleDeleteService(service.id)}
-                              onCancel={() => setConfirmDeleteId(null)}
-                              message="Deseja excluir?"
-                              position="bottom"
-                              align="right"
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                {/* 1. Header do Card: Categoria & Selo Exclusivo */}
+                <div className="pt-5 sm:pt-6 px-5 sm:px-6 pb-3.5 flex items-center justify-between border-b border-[#F0EAE1]">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+                    <span className="text-[10.5px] uppercase font-sans font-bold tracking-[0.2em] text-[#7A8B7B]">
+                      {service.categoryLabel || getCategoryLabel(service.category)}
+                    </span>
                   </div>
 
-                  {/* Título do Ritual */}
-                  <h3 className="font-serif text-2xl sm:text-[1.65rem] text-[#121C16] group-hover:text-[#2D4536] transition-colors leading-snug">
+                  {(service.popular || service.badge) && (
+                    <span className="px-2.5 py-1 rounded-full bg-[#FAF5EC] border border-[#D4AF37]/50 text-[#8C6D1F] text-[10px] uppercase font-sans font-bold tracking-wider flex items-center gap-1 shadow-2xs">
+                      <Sparkles className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
+                      <span>{service.badge || 'MAIS PROCURADO'}</span>
+                    </span>
+                  )}
+                </div>
+
+                {/* 2. Título & Tagline no Topo (Hierarquia Editorial Invertida) */}
+                <div className="px-5 sm:px-6 pt-4 pb-2">
+                  <h3 className="font-serif text-[1.45rem] sm:text-[1.6rem] text-[#121C16] group-hover:text-[#2D4536] transition-colors leading-[1.25] font-normal mb-2">
                     <EditableText id={`service.${service.id}.name`} defaultText={service.name} as="span">
                       {service.name}
                     </EditableText>
                   </h3>
-
-                  {/* Descrição Concisa */}
-                  <p className="font-sans text-xs sm:text-[13px] text-[#555555] leading-relaxed line-clamp-3 min-h-[2.6rem]">
+                  <p className="font-sans text-[12.5px] text-[#666666] leading-relaxed line-clamp-2 min-h-[2.4rem]">
                     <EditableText
                       id={`service.${service.id}.description`}
                       defaultText={service.tagline || service.description}
@@ -686,82 +598,152 @@ export const ServicesMenuSection: React.FC = () => {
                       {service.tagline || service.description}
                     </EditableText>
                   </p>
+                </div>
 
-                  {/* Caixa de Itens Inclusos (Destaque exclusivo quando houver) */}
-                  {service.includedItems && service.includedItems.length > 0 && (
-                    <div className="rounded-2xl bg-[#F9F6F0] border border-[#EFE9DF] p-3 sm:p-3.5 space-y-1.5 text-xs text-[#4A554D]">
-                      {service.includedItems.slice(0, 2).map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <Check className="w-3.5 h-3.5 text-[#2D4536] flex-shrink-0 mt-0.5" />
-                          <span className="line-clamp-1">{item}</span>
+                {/* 3. Janela Fotográfica Arquitetural no Centro */}
+                <div className="px-5 sm:px-6 py-2.5">
+                  <div className="relative w-full aspect-[16/9.5] rounded-2xl overflow-hidden bg-[#18251E] shadow-xs group-hover:shadow-md transition-shadow">
+                    <EditableImage
+                      id={`service.${service.id}.image`}
+                      defaultImage={service.image}
+                      alt={service.name}
+                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+
+                    {/* Chip de Duração no Canto Inferior da Janela */}
+                    <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-full bg-[#121C16]/80 backdrop-blur-md text-[10.5px] font-sans text-white border border-white/10 flex items-center gap-1.5 shadow-xs">
+                      <Clock className="w-3 h-3 text-[#D4AF37]" />
+                      <span>{service.duration}</span>
+                    </div>
+
+                    {/* Modo Editor: Controles Administrativos */}
+                    {isEditorActive && (
+                      <div
+                        className="absolute bottom-2.5 left-2.5 z-20 flex items-center gap-1 bg-[#121C16]/90 p-1 rounded-full backdrop-blur-md border border-white/20"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleServicePopular(service.id);
+                          }}
+                          className={`p-1 rounded-full transition-all ${
+                            service.popular ? 'bg-[#D4AF37] text-[#121C16]' : 'text-white hover:text-[#D4AF37]'
+                          }`}
+                          title="Alternar favorito"
+                        >
+                          <Star className={`w-3 h-3 ${service.popular ? 'fill-[#121C16]' : ''}`} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            moveService(service.id, 'left', filteredServices.map((s) => s.id));
+                          }}
+                          className="p-1 rounded-full text-white hover:text-[#D4AF37]"
+                          title="Mover ritual para esquerda"
+                        >
+                          <ArrowLeft className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            moveService(service.id, 'right', filteredServices.map((s) => s.id));
+                          }}
+                          className="p-1 rounded-full text-white hover:text-[#D4AF37]"
+                          title="Mover ritual para direita"
+                        >
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
+                        <div className={`relative ${confirmDeleteId === service.id ? 'z-50' : ''}`}>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmDeleteId((prev) => (prev === service.id ? null : service.id));
+                            }}
+                            className="p-1 rounded-full text-red-400 hover:text-red-300"
+                            title="Remover ritual"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                          <ConfirmPopover
+                            isOpen={confirmDeleteId === service.id}
+                            onConfirm={() => handleDeleteService(service.id)}
+                            onCancel={() => setConfirmDeleteId(null)}
+                            message="Deseja excluir?"
+                            position="bottom"
+                            align="right"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 4. Tabela de Valores Estilo Menu Clássico de SPA (Linha Pontilhada) */}
+                <div className="px-5 sm:px-6 py-2.5">
+                  {service.priceOptions && service.priceOptions.length > 1 ? (
+                    <div className="space-y-2 py-2.5 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3D6]/70">
+                      {service.priceOptions.slice(0, 2).map((opt, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-xs font-sans">
+                          <span className="text-[#7A8B7B] font-semibold tracking-wider uppercase text-[10.5px] flex items-center gap-1.5 shrink-0">
+                            <span className="w-1 h-1 rounded-full bg-[#D4AF37]" />
+                            Sessão {opt.duration}
+                          </span>
+                          <div className="flex-1 mx-3 border-b border-dotted border-[#D4AF37]/50" />
+                          <span className="font-serif font-bold text-[14.5px] text-[#121C16] shrink-0">
+                            {opt.price}
+                          </span>
                         </div>
                       ))}
-                      {service.includedItems.length > 2 && (
-                        <p className="text-[11px] text-[#7A8B7B] font-medium pl-5.5">
-                          +{service.includedItems.length - 2} itens adicionais inclusos
-                        </p>
-                      )}
+                    </div>
+                  ) : (
+                    <div className="py-2.5 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3D6]/70 flex items-center justify-between text-xs font-sans">
+                      <span className="text-[#7A8B7B] font-semibold tracking-wider uppercase text-[10.5px] flex items-center gap-1.5 shrink-0">
+                        <span className="w-1 h-1 rounded-full bg-[#D4AF37]" />
+                        Sessão {service.duration}
+                      </span>
+                      <div className="flex-1 mx-3 border-b border-dotted border-[#D4AF37]/50" />
+                      <span className="font-serif font-bold text-base text-[#121C16] shrink-0">
+                        {service.priceOptions && service.priceOptions[0]?.price ? service.priceOptions[0].price : service.price}
+                      </span>
                     </div>
                   )}
                 </div>
 
-                {/* Bloco Inferior: Duração, Preço e Botão */}
-                <div className="pt-5 mt-4 border-t border-[#EFE9DF] space-y-4">
-                  <div className="flex items-end justify-between gap-3">
-                    {/* DURAÇÃO & VALOR */}
-                    <div className="flex flex-col">
-                      <span className="text-[9.5px] uppercase font-sans font-semibold tracking-wider text-[#888888]">
-                        DURAÇÃO & VALOR
-                      </span>
-                      <span className="font-sans text-xs sm:text-[13px] font-medium text-[#2D4536] mt-0.5">
-                        {service.priceOptions && service.priceOptions.length > 1
-                          ? service.priceOptions.map((opt) => opt.duration).join(' | ')
-                          : service.duration}
-                      </span>
-                    </div>
+                {/* 5. Rodapé com Ações Equilibradas Lado a Lado */}
+                <div className="p-5 sm:px-6 sm:pb-6 pt-2 flex items-center gap-2.5 mt-auto">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenDetails(service);
+                    }}
+                    className="flex-1 py-2.5 px-3 rounded-xl border border-[#121C16]/20 hover:border-[#D4AF37] hover:bg-[#FAF6F0] text-[#121C16] text-xs font-sans font-semibold tracking-wide transition-all text-center cursor-pointer flex items-center justify-center gap-1.5 group/btn"
+                  >
+                    <span>Ver detalhes</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#7A8B7B] group-hover/btn:text-[#D4AF37] group-hover/btn:translate-x-1 transition-all" />
+                  </button>
 
-                    {/* Preço em destaque */}
-                    <div className="text-right">
-                      <span className="font-serif text-2xl sm:text-[1.65rem] font-bold text-[#121C16]">
-                        {service.priceOptions && service.priceOptions.length > 0
-                          ? service.priceOptions[0].price
-                          : service.price}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Dupla Ação Separada e Harmoniosa (Detalhes + Agendar no WhatsApp) */}
-                  <div className="grid grid-cols-[1fr_auto] gap-2 pt-1">
-                    {/* Botão 1: Ver Detalhes */}
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenDetails(service);
-                      }}
-                      className="py-3 px-3.5 sm:px-4 rounded-2xl bg-[#F0EAE1] hover:bg-[#E4DCCE] text-[#121C16] text-xs font-sans font-semibold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all duration-300 border border-[#E5DDD0] shadow-2xs hover:shadow-xs group/btn cursor-pointer"
-                    >
-                      <span>Ver Detalhes</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#7A8B7B] group-hover/btn:text-[#121C16] group-hover/btn:translate-x-0.5 transition-all duration-300" />
-                    </button>
-
-                    {/* Botão 2: Agendar Direto via WhatsApp */}
-                    <a
-                      href={SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        trackWhatsAppClick('servico_card', service.name);
-                      }}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="py-3 px-4 sm:px-5 rounded-2xl bg-[#18251E] hover:bg-[#23352A] text-[#D4AF37] hover:text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 border border-[#D4AF37]/40 hover:border-[#D4AF37] shadow-2xs hover:shadow-sm hover:scale-[1.02] active:scale-95 group/wpp cursor-pointer"
-                      title={`Agendar ${service.name} direto no WhatsApp`}
-                      aria-label={`Agendar ${service.name} direto no WhatsApp`}
-                    >
-                      <WhatsAppIcon className="w-3.5 h-3.5 text-[#D4AF37] group-hover/wpp:text-white transition-colors" />
-                      <span>Agendar</span>
-                    </a>
-                  </div>
+                  <a
+                    href={SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      trackWhatsAppClick('servico_card', service.name);
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-[#121C16] hover:bg-[#203127] text-[#D4AF37] hover:text-[#F3EFE6] text-xs font-sans font-semibold tracking-wide shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    title={`Agendar ${service.name} direto no WhatsApp`}
+                    aria-label={`Agendar ${service.name} direto no WhatsApp`}
+                  >
+                    <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
+                    <span>Agendar</span>
+                  </a>
                 </div>
               </motion.div>
             ))}
@@ -773,15 +755,15 @@ export const ServicesMenuSection: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="group relative rounded-3xl border-2 border-dashed border-[#D4AF37]/50 hover:border-[#D4AF37] bg-white/40 hover:bg-[#D4AF37]/5 min-h-[460px] p-8 flex flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1"
+                className="group relative rounded-[32px] sm:rounded-[36px] border-2 border-dashed border-[#D4AF37]/50 hover:border-[#D4AF37] bg-white/60 hover:bg-[#FAF6F0] min-h-[480px] p-8 flex flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1"
               >
                 <div className="w-16 h-16 rounded-full bg-[#18251E] text-[#D4AF37] border border-[#D4AF37]/40 group-hover:bg-[#D4AF37] group-hover:text-[#121C16] flex items-center justify-center transition-all duration-300 transform group-hover:scale-110 shadow-md mb-4">
                   <Plus className="w-8 h-8" />
                 </div>
-                <h3 className="font-serif text-2xl text-[#2C2C2C] group-hover:text-[#121C16] transition-colors leading-snug">
+                <h3 className="font-serif text-2xl text-[#121C16] group-hover:text-[#2D4536] transition-colors leading-snug">
                   Adicionar Novo Ritual
                 </h3>
-                <p className="font-sans text-xs text-[#2D4536] mt-2 max-w-[240px] leading-relaxed">
+                <p className="font-sans text-xs text-[#7A8B7B] mt-2 max-w-[240px] leading-relaxed">
                   Crie uma nova experiência para o cardápio. Imagem, título, duração e textos totalmente editáveis.
                 </p>
                 <span className="mt-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#18251E] text-[#D4AF37] text-xs font-sans font-semibold uppercase tracking-wider group-hover:bg-[#D4AF37] group-hover:text-[#18251E] transition-all">

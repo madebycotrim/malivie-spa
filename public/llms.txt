@@ -10,19 +10,23 @@ Conta com avaliação 5.0 estrelas no Google Avaliações com mais de 120 avalia
 - Região de Atendimento: Brasília, Núcleo Bandeirante, Park Way, Guará, Asa Sul, Sudoeste, Águas Claras e entorno do DF
 - WhatsApp de Atendimento: +55 (61) 99956-9214
 - Instagram Oficial: @maliviespa (https://www.instagram.com/maliviespa/)
-- Horários de Funcionamento: Terça a Sábado das 08h às 20h; Domingo das 08h às 13h; Segunda-feira: Fechado
+- Horários de Funcionamento: Terça a Sábado das 08h às 19h; Domingo das 08h às 13h; Segunda-feira: Fechado
 - Estacionamento: Gratuito e amplo em frente ao estabelecimento
 - Faixa de Preço: Moderado/Premium ($$)
 
-## Serviços Principais
-- [Head SPA Coreano Signature](https://maliviespa.pages.dev/#head-spa): Ritual completo com diagnóstico capilar por microcâmera, aromaterapia botânica, banho de espuma aveludada, cascata hídrica contínua ASMR morna e massagem craniana descompressiva (Duração: 80 min).
-- [Head SPA Revitalizante Express](https://maliviespa.pages.dev/#head-spa): Higienização profunda dos folículos, cascata de água termal morna e massagem na nuca para descompressão rápida (Duração: 50 min).
-- [Massagem Relaxante com Pedras Quentes](https://maliviespa.pages.dev/#menu): Termoterapia profunda com pedras vulcânicas aquecidas e óleos botânicos nobres para liberação de contraturas musculares (Duração: 70 min).
-- [Day SPA Renovação & Harmonia](https://maliviespa.pages.dev/#menu): Imersão completa de 3 horas com Welcome Drink em cristal, escalda-pés com ervas, Head Spa Signature, massagem com pedras quentes, spa dos pés e cerimonial do chá (Duração: 180 min).
-- [Day SPA Momento Pausa & Serenidade](https://maliviespa.pages.dev/#menu): Experiência de 2 horas combinando massagem corporal de 60 min, Head Spa revitalizante e ritual do chá (Duração: 120 min).
-- [Spa dos Pés com Esfoliação & Hidratação](https://maliviespa.pages.dev/#menu): Escalda-pés morno com sais do Himalaia, esfoliação nutritiva e reflexologia podal (Duração: 45 min).
-- [Acupuntura Tradicional & Reequilíbrio](https://maliviespa.pages.dev/#menu): Medicina Tradicional Chinesa para modulação de dores, enxaqueca crônica e estresse (Duração: 60 min).
-- [Gift Card Maliviê](https://maliviespa.pages.dev/#gift-card): Vale-presente físico com embalagem de luxo e dedicatória, ou digital com entrega instantânea (Validade de 30 dias).
+## Serviços Principais (Menu Oficial Maliviê SPA)
+- [Head SPA Essencial](https://maliviespa.pages.dev/#head-spa): Inspirado nos rituais orientais, combina relaxamento profundo, produtos asiáticos e ozonioterapia para cuidar do couro cabeludo e dos fios (Duração: 45 min • R$ 239,00).
+- [Head SPA Harmonia](https://maliviespa.pages.dev/#head-spa): Todos os benefícios do Head Spa Essencial combinados a uma revitalização facial profunda (Duração: 80 min • R$ 349,00).
+- [Head SPA Plenitude](https://maliviespa.pages.dev/#head-spa): Head Spa, revitalização facial, esfoliação corporal e massagem com pedras quentes em um único ritual (Duração: 160 min • R$ 577,00).
+- [Condição Especial Head Spa]: Adicione o Spa dos Pés por 50% do valor em qualquer Head Spa.
+- [Massagem Relaxante Clássica](https://maliviespa.pages.dev/#menu-rituais): Movimentos suaves e contínuos que ajudam a aliviar o estresse, relaxar o corpo e proporcionar profundo bem-estar (50 min: R$ 219,00 / 80 min: R$ 299,00).
+- [Massagem com Pedras Quentes](https://maliviespa.pages.dev/#menu-rituais): Combinação da massagem com pedras aquecidas para aliviar tensões musculares e relaxamento profundo (50 min: R$ 239,00 / 80 min: R$ 319,00).
+- [Protocolo Anti-Dor Maliviê](https://maliviespa.pages.dev/#menu-rituais): Combina massagem terapêutica, liberação miofascial, ventosaterapia e alongamentos para alívio de dores musculares (80 min • R$ 369,00).
+- [Drene Modele Assinatura Maliviê](https://maliviespa.pages.dev/#menu-rituais): Protocolo exclusivo que une drenagem e modelagem corporal para promover leveza, redução de inchaço e definição (50 min: R$ 219,00 / 80 min: R$ 299,00).
+- [Rituais de Day SPA (Âmbar, Safira, Esmeralda, Citrino, Diamante)](https://maliviespa.pages.dev/#menu-rituais): Experiências completas com degustação da temporada e aromaterapia, disponíveis para até 5 pessoas simultaneamente.
+- [Rituais Especiais](https://maliviespa.pages.dev/#menu-rituais): Ritual Dois Corações (Casal - 110 min • R$ 749,00), Kids Spa (70 min • R$ 249,00), Ritual de Aniversário (155 min • R$ 649,00) e Ritual Pérola - Dia da Noiva (310 min • R$ 957,00).
+- [Planos de Sessões e Horas](https://maliviespa.pages.dev/#menu-rituais): Pacotes de 4, 8 ou 12 sessões com validade de 90 dias, e Planos de Horas em até 4x sem juros.
+- [Gift Card - Voucher Presente](https://maliviespa.pages.dev/#gift-card): Mais do que um presente, um momento para ser lembrado. Voucher físico para retirada no Maliviê ou digital com entrega imediata (Validade de 60 dias após a emissão).
 
 ## Documentação Completa
 - [llms-full.txt](https://maliviespa.pages.dev/llms-full.txt): Visão técnica detalhada de rituais, terapeutas, protocolos sensoriais e FAQ completo para inteligências artificiais.

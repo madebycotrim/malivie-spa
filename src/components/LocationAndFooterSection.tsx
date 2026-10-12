@@ -5,7 +5,7 @@ import {
   ExternalLink,
   Navigation,
 } from 'lucide-react';
-import { InstagramIcon, WhatsAppIcon } from './SocialIcons';
+import { InstagramIcon, WhatsAppIcon, FacebookIcon, TikTokIcon } from './SocialIcons';
 import { SPA_BUSINESS_DATA } from '../data/spaData';
 import { trackWhatsAppClick } from '../services/analytics';
 import { useEditor } from '../context/EditorContext';
@@ -80,35 +80,26 @@ export const LocationAndFooterSection: React.FC = () => {
                 />
               </button>
               <PasswordModal />
-
-              <span className="text-[10px] tracking-[0.28em] uppercase font-sans font-semibold text-[#D4AF37] mt-1.5 pl-0.5">
-                <EditableText
-                  id="footer.brandSubtitle"
-                  defaultText="SPA BOTÂNICO • BRASÍLIA"
-                  as="span"
-                >
-                  SPA BOTÂNICO • BRASÍLIA
-                </EditableText>
-              </span>
+ 
             </div>
 
             <p className="font-serif italic text-base sm:text-lg text-[#D4AF37] pt-1">
               <EditableText
                 id="footer.sloganQuote"
-                defaultText='"O lugar ideal para renovar suas energias!"'
+                defaultText='"Seu momento de pausa, cuidado e renovação começa aqui."'
                 as="span"
               >
-                "O lugar ideal para renovar suas energias!"
+                "Seu momento de pausa, cuidado e renovação começa aqui."
               </EditableText>
             </p>
 
             <p className="text-xs text-[#F3EFE6]/75 font-sans leading-relaxed max-w-sm">
               <EditableText
                 id="footer.description"
-                defaultText="Mais do que um atendimento, uma experiência única de acolhimento, autocuidado e renovação de energias no coração do Núcleo Bandeirante."
+                defaultText="No Maliviê, o autocuidado é uma necessidade, não um luxo. Experiências que unem relaxamento, presença e acolhimento no coração do Núcleo Bandeirante."
                 as="span"
               >
-                Mais do que um atendimento, uma experiência única de acolhimento, autocuidado e renovação de energias no coração do Núcleo Bandeirante.
+                No Maliviê, o autocuidado é uma necessidade, não um luxo. Experiências que unem relaxamento, presença e acolhimento no coração do Núcleo Bandeirante.
               </EditableText>
             </p>
 
@@ -168,8 +159,8 @@ export const LocationAndFooterSection: React.FC = () => {
                   </EditableText>
                 </span>
                 <span className="text-white font-semibold">
-                  <EditableText id="footer.schedule.tueSat.value" defaultText="08h às 20h" as="span">
-                    08h às 20h
+                  <EditableText id="footer.schedule.tueSat.value" defaultText="De 08h às 19h" as="span">
+                    De 08h às 19h
                   </EditableText>
                 </span>
               </div>
@@ -180,8 +171,8 @@ export const LocationAndFooterSection: React.FC = () => {
                   </EditableText>
                 </span>
                 <span className="text-white font-semibold">
-                  <EditableText id="footer.schedule.sun.value" defaultText="08h às 13h" as="span">
-                    08h às 13h
+                  <EditableText id="footer.schedule.sun.value" defaultText="De 08h às 13h" as="span">
+                    De 08h às 13h
                   </EditableText>
                 </span>
               </div>
@@ -190,10 +181,10 @@ export const LocationAndFooterSection: React.FC = () => {
             <p className="text-[11px] text-[#7A8B7B] font-sans italic pt-2.5">
               <EditableText
                 id="footer.appointmentNotice"
-                defaultText="Atendimentos mediante agendamento prévio."
+                defaultText="Atendimentos mediante agendamento prévio • Chegue com 10 min de antecedência para o escalda-pés cortesia."
                 as="span"
               >
-                Atendimentos mediante agendamento prévio.
+                Atendimentos mediante agendamento prévio • Chegue com 10 min de antecedência para o escalda-pés cortesia.
               </EditableText>
             </p>
           </div>
@@ -270,17 +261,48 @@ export const LocationAndFooterSection: React.FC = () => {
               </EditableText>
             </h3>
 
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <a
                 href={SPA_BUSINESS_DATA.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Instagram @maliviespa"
                 className="w-full py-2.5 px-3.5 rounded-2xl bg-[#18251E] hover:bg-[#203127] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 text-xs text-[#F3EFE6] flex items-center gap-2.5 transition-all duration-300 shadow-2xs group cursor-pointer"
               >
-                <InstagramIcon className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform" />
-                <span className="font-sans text-xs">
+                <InstagramIcon className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-sans text-xs truncate">
                   <EditableText id="footer.instagramHandle" defaultText="@maliviespa" as="span">
                     @maliviespa
+                  </EditableText>
+                </span>
+              </a>
+
+              <a
+                href={SPA_BUSINESS_DATA.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="TikTok @maliviespa"
+                className="w-full py-2.5 px-3.5 rounded-2xl bg-[#18251E] hover:bg-[#203127] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 text-xs text-[#F3EFE6] flex items-center gap-2.5 transition-all duration-300 shadow-2xs group cursor-pointer"
+              >
+                <TikTokIcon className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-sans text-xs truncate">
+                  <EditableText id="footer.tiktokHandle" defaultText="TikTok" as="span">
+                    TikTok
+                  </EditableText>
+                </span>
+              </a>
+
+              <a
+                href={SPA_BUSINESS_DATA.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Facebook Maliviê SPA"
+                className="w-full py-2.5 px-3.5 rounded-2xl bg-[#18251E] hover:bg-[#203127] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 text-xs text-[#F3EFE6] flex items-center gap-2.5 transition-all duration-300 shadow-2xs group cursor-pointer"
+              >
+                <FacebookIcon className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-sans text-xs truncate">
+                  <EditableText id="footer.facebookHandle" defaultText="Facebook" as="span">
+                    Facebook
                   </EditableText>
                 </span>
               </a>
@@ -289,10 +311,11 @@ export const LocationAndFooterSection: React.FC = () => {
                 href={SPA_BUSINESS_DATA.social.linktree}
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Linktree Oficial"
                 className="w-full py-2.5 px-3.5 rounded-2xl bg-[#18251E] hover:bg-[#203127] border border-[#F3EFE6]/15 hover:border-[#D4AF37]/50 text-xs text-[#F3EFE6] flex items-center gap-2.5 transition-all duration-300 shadow-2xs group cursor-pointer"
               >
-                <ExternalLink className="w-3.5 h-3.5 text-[#7A8B7B] group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
-                <span className="font-sans text-xs">
+                <ExternalLink className="w-3.5 h-3.5 text-[#7A8B7B] group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all shrink-0" />
+                <span className="font-sans text-xs truncate">
                   <EditableText id="footer.linktreeLabel" defaultText="Linktree Oficial" as="span">
                     Linktree Oficial
                   </EditableText>

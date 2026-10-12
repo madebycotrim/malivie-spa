@@ -65,6 +65,22 @@ export const GiftCardSection: React.FC = () => {
             </EditableText>
             "
           </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.8, delay: 0.25, ease: EASE_ORGANIC }}
+            className="mt-3 text-sm text-[#555555] font-sans max-w-xl mx-auto leading-relaxed"
+          >
+            <EditableText
+              id="giftCard.subTagline"
+              defaultText="Surpreenda alguém especial com uma experiência do Maliviê. Nossos vouchers-presente podem ser personalizados para qualquer serviço, ritual ou plano disponível no catálogo."
+              as="span"
+            >
+              Surpreenda alguém especial com uma experiência do Maliviê. Nossos vouchers-presente podem ser personalizados para qualquer serviço, ritual ou plano disponível no catálogo.
+            </EditableText>
+          </motion.p>
         </div>
 
         {/* 2-Column Showcase */}
@@ -93,17 +109,17 @@ export const GiftCardSection: React.FC = () => {
               </div>
 
               {/* Badges below image */}
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-[#555555]">
+              <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 px-1 text-xs text-[#555555]">
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <EditableIcon id="giftCard.badgeFormat.icon" defaultIcon="Sparkles" className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <EditableText id="giftCard.badgeFormat" defaultText="Voucher Físico ou Digital" as="span">
-                    Voucher Físico ou Digital
+                  <EditableText id="giftCard.badgeFormat" defaultText="Entrega digital ou retirada no local" as="span">
+                    Entrega digital ou retirada no local
                   </EditableText>
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <EditableIcon id="giftCard.badgeValidity.icon" defaultIcon="Check" className="w-3.5 h-3.5 text-[#7A8B7B]" />
-                  <EditableText id="giftCard.badgeValidity" defaultText="Validade de 60 dias" as="span">
-                    Validade de 60 dias
+                  <EditableText id="giftCard.badgeValidity" defaultText="Validade de 60 dias após a emissão" as="span">
+                    Validade de 60 dias após a emissão
                   </EditableText>
                 </span>
               </div>

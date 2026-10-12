@@ -108,45 +108,57 @@ export const OFFICIAL_COPIES = {
   googleRatingBadge: "5.0 Avaliação no Google",
   ctaButton: "Agendar um horário!",
 
-  // B. Seção de Boas-Vindas & Acolhimento
-  welcome: "Mais do que um atendimento, uma experiência. 🌿 No Maliviê, acreditamos que o autocuidado é uma necessidade, não um luxo.",
-  arrival: "Aqui, você é recebido(a) com calma. 🌿 Um momento de pausa já na sua chegada.",
-  welcomeDetail: "Aqui, cada detalhe é pensado para proporcionar conforto, presença e momentos que permanecem na memória.",
+  // B. Seção de Boas-Vindas & Acolhimento (Páginas 2 e 20 do PDF)
+  welcome: "Mais do que um atendimento, uma experiência.",
+  arrival: "Aqui, você é recebido(a) com calma.",
+  welcomeDetail: "No Maliviê, acreditamos que o autocuidado é uma necessidade, não um luxo. Criamos experiências que unem relaxamento, bem-estar e acolhimento para que cada pessoa encontre uma pausa em meio à rotina.",
+  welcomeClosing: "Aqui, cada detalhe é pensado para proporcionar conforto, presença e momentos que permanecem na memória.",
 
-  // C. Manifesto do Desaceleramento (Seção Institucional)
-  manifestoMain: "No Maliviê, acreditamos que o autocuidado é uma necessidade, não um luxo. Criamos experiências que unem relaxamento, bem-estar e acolhimento para que cada pessoa encontre uma pausa em meio à rotina. Seja através de uma massagem, um Head Spa ou um ritual completo, nosso propósito é cuidar de você de forma única e personalizada.",
-  manifestoSecondary: "Aqui, cada detalhe é pensado para proporcionar conforto, presença e momentos que permanecem na memória. Desacelere da rotina e permita-se um momento de cuidado único.",
+  // C. Manifesto do Desaceleramento (Página 2 do PDF)
+  manifestoMain: "No Maliviê, acreditamos que o autocuidado é uma necessidade, não um luxo. Criamos experiências que unem relaxamento, bem-estar e acolhimento para que cada pessoa encontre uma pausa em meio à rotina. Aqui, cada detalhe é pensado para proporcionar conforto, presença e momentos que permanecem na memória. Seja através de uma massagem, um Head Spa ou um ritual completo, nosso propósito é cuidar de você de forma única e personalizada.",
+  manifestoSecondary: "Seja através de uma massagem, um Head Spa ou um ritual completo, nosso propósito é cuidar de você de forma única e personalizada. Desacelere da rotina e permita-se um momento de presença plena.",
+  manifestoClosing: "Seu momento de pausa, cuidado e renovação começa aqui.",
 
-  // D. Seção Carro-Chefe – Head Spa Oriental
+  // D. Seção Carro-Chefe – Head Spa Oriental (Página 10 do PDF)
   headSpaTitle: "Head SPA",
-  headSpaQuote: "O ruído da água correndo, a textura da espuma suave e o ritmo desacelerado dos movimentos na cabeça. Quando a mente desacelera, o corpo inteiro responde. Inspirado nos rituais orientais, combina relaxamento profundo, produtos asiáticos e ozonioterapia para cuidar do couro cabeludo e dos fios.",
-  headSpaSubtitle: "Saúde capilar, relaxamento profundo e bem-estar em uma experiência única.",
+  headSpaSubtitle: "Saúde capilar e relaxamento profundo em uma experiência única.",
+  headSpaQuote: "Inspirado nos rituais orientais, combina relaxamento profundo, produtos asiáticos e ozonioterapia para cuidar do couro cabeludo e dos fios.",
+  headSpaPromoNote: "Adicione o Spa dos Pés por 50% do valor e torne sua experiência ainda mais especial.",
 
-  // E. Seção Massagens Relaxantes
+  // E. Seção Massagens & Terapias (Páginas 4, 5, 6 e 7 do PDF)
   massagensTitle: "Relaxamento & Terapias",
+  massagensSubtitle: "Massagens avulsas criadas para desacelerar, aliviar tensões e proporcionar bem-estar.",
+  terapiasSubtitle: "Experiências voltadas para o alívio de dores, tensões musculares e desconfortos físicos.",
   pedrasQuentesQuote: "A combinação da massagem com pedras aquecidas ajuda a aliviar tensões musculares e proporcionar um relaxamento ainda mais profundo.",
+  cortesiaRegra: "*Cortesia para clientes que chegam com antecedência ao horário agendado.",
 
-  // F. Seção Rituais de Day SPA
+  // F. Seção Rituais de Day SPA (Páginas 12 e 13 do PDF)
   daySpaTitle: "Rituais de Day SPA",
-  daySpaQuote: "Experiências completas de bem-estar com degustação da temporada. Disponível para até 5 pessoas simultaneamente.",
+  daySpaSubtitle: "Experiências completas de bem-estar com degustação da temporada.",
+  daySpaQuote: "Todos os rituais incluem aromaterapia e degustação da temporada. Disponível para até 5 pessoas simultaneamente. Consulte disponibilidade.",
   daySpaSazonal: "Encontre a opção ideal para o seu momento de renovação e celebração.",
 
-  // G. Seção Planos de Horas & Sessões
-  planosHorasTitle: "Planos de Sessões & Horas",
+  // G. Seção Planos de Horas & Sessões (Páginas 17 e 18 do PDF)
+  planosSessoesTitle: "Planos de Sessões",
+  planosSessoesSubtitle: "Escolha a técnica que melhor atende às suas necessidades e aproveite condições especiais para manter seu bem-estar em dia.",
+  planosHorasTitle: "Planos de Horas",
+  planosHorasSubtitle: "Mais liberdade para viver o bem-estar do seu jeito. Utilize seu crédito de horas em qualquer serviço do catálogo e monte sua jornada de bem-estar de forma personalizada.",
 
-  // H. Seção Gift Card (Voucher Presente)
+  // H. Seção Gift Card (Página 19 do PDF)
   giftCardTitle: "PRESENTEIE COM BEM-ESTAR",
-  giftCardOfficial: "**Presenteie com autocuidado:** Nossos vouchers-presente podem ser personalizados para qualquer serviço, ritual ou plano disponível no catálogo. Entrega digital imediata ou voucher físico para retirada no Maliviê · Validade de 60 dias após a emissão.",
-  giftCardMicroCopy: "Voucher físico (retirada no local) ou digital · Validade de 60 dias após a emissão.",
   giftCardTagline: "Mais do que um presente, um momento para ser lembrado.",
-  giftCardSubTagline: "Surpreenda alguém especial com uma experiência do Maliviê SPA.",
+  giftCardSubTagline: "Surpreenda alguém especial com uma experiência do Maliviê.",
+  giftCardOfficial: "Nossos vouchers-presente podem ser personalizados para qualquer serviço, ritual ou plano disponível no catálogo. Entrega digital imediata ou voucher físico disponível para retirada no Maliviê · Validade de 60 dias após a emissão.",
+  giftCardMicroCopy: "Voucher físico (retirada no Maliviê) ou digital · Validade de 60 dias após a emissão.",
   giftCardHook: "Poucos sabem dar o presente certo.",
-  giftCardForWhom: "O Gift Card do Maliviê é pra quem conhece alguém que cuida de todo mundo e esquece de cuidar de si mesma.",
-  giftCardPersonaAmiga: "Aquela amiga que tá exausta mas não para.",
-  giftCardPersonaMae: "A mãe resolve tudo e nunca pede nada.",
-  giftCardPersonaMulher: "A mulher que você mais admira e que merece muito mais do que mais uma coisa pra guardar em casa.",
-  giftCardExperience: "Com o Gift Card do Maliviê, você não dá um presente. Você dá um momento inteiro de bem-estar. Uma experiência que ela vai sentir, guardar na memória e associar ao seu nome para sempre.",
-  giftCardChoice: "Ela escolhe o dia. Ela escolhe a experiência. Você fica sendo a pessoa que entendeu o que ela realmente precisava.",
+  giftCardForWhom: "O Gift Card do Maliviê é para quem conhece alguém que cuida de todo mundo e precisa de uma pausa para cuidar de si.",
+  giftCardExperience: "Com o Gift Card do Maliviê, você não entrega apenas um presente. Você proporciona um momento inteiro de bem-estar, acolhimento e renovação. Uma experiência que permanece na memória.",
+  giftCardChoice: "Ela escolhe o dia. Ela escolhe a experiência. E você proporciona exatamente o cuidado que ela merecia.",
+
+  // I. Assinatura Final & Informações Importantes (Página 20 do PDF)
+  closingSlogan: "Seu momento de pausa, cuidado e renovação começa aqui.",
+  arrivalRecommendation: "Recomendamos chegar com 10 minutos de antecedência para aproveitar nosso ritual de boas-vindas com escalda-pés de cortesia.",
+  cancellationPolicy: "Cancelamentos e remarcações devem ser solicitados com, no mínimo, 12 horas de antecedência. Caso contrário, será considerado como sessão realizada.",
 };
 
 export const HEAD_SPA_STEPS: RitualStep[] = [
@@ -1253,8 +1265,8 @@ export const WELCOME_RITUAL_STEPS = [
     icon: 'slippers'
   },
   {
-    title: 'Escalda-Pés Terapêutico',
-    description: 'Imersão dos pés em água morna enriquecida com sal grosso, folhas de alecrim fresco e óleos essenciais em bacia de madeira nobre.',
+    title: 'Escalda-Pés de Boas-Vindas*',
+    description: 'Cortesia para quem chega com antecedência ao horário agendado: imersão em água morna com sais minerais, ervas frescas e óleos botânicos relaxantes.',
     icon: 'feet'
   },
   {
