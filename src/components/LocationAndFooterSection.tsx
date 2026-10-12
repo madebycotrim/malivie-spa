@@ -93,13 +93,13 @@ export const LocationAndFooterSection: React.FC = () => {
               </EditableText>
             </p>
 
-            <p className="text-xs text-[#F3EFE6]/75 font-sans leading-relaxed max-w-sm">
+            <p className="text-[12.5px] text-[#F3EFE6]/80 font-sans leading-relaxed max-w-sm">
               <EditableText
                 id="footer.description"
-                defaultText="No Maliviê, o autocuidado é uma necessidade, não um luxo. Experiências que unem relaxamento, presença e acolhimento no coração do Núcleo Bandeirante."
+                defaultText="O Maliviê SPA é um refúgio botânico dedicado ao bem-estar integral e à desaceleração. Unimos terapias manuais integrativas, rituais sensoriais e acolhimento humanizado para aliviar o estresse, renovar energias e transformar o autocuidado em um hábito restaurador no coração do Núcleo Bandeirante, Brasília."
                 as="span"
               >
-                No Maliviê, o autocuidado é uma necessidade, não um luxo. Experiências que unem relaxamento, presença e acolhimento no coração do Núcleo Bandeirante.
+                O Maliviê SPA é um refúgio botânico dedicado ao bem-estar integral e à desaceleração. Unimos terapias manuais integrativas, rituais sensoriais e acolhimento humanizado para aliviar o estresse, renovar energias e transformar o autocuidado em um hábito restaurador no coração do Núcleo Bandeirante, Brasília.
               </EditableText>
             </p>
 
@@ -340,15 +340,19 @@ export const LocationAndFooterSection: React.FC = () => {
             </EditableText>
           </p>
 
-          <p className="text-[11px] text-[#F3EFE6]/75">
-            <EditableText id="footer.craftedPrefix" defaultText="Criado com excelência para" as="span">
-              Criado com excelência para
+          <p className="text-[11px] text-[#F3EFE6]/60 inline-flex items-center gap-1.5 justify-center md:justify-end">
+            <EditableText id="footer.craftedPrefix" defaultText="Crafted by" as="span">
+              Crafted by
             </EditableText>{' '}
-            <span className="text-[#D4AF37] font-medium">
-              <EditableText id="footer.craftedBrand" defaultText="Maliviê SPA • Brasília DF" as="span">
-                Maliviê SPA • Brasília DF
-              </EditableText>
-            </span>
+            <a
+              href="https://github.com/madebycotrim"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#D4AF37] hover:text-[#E5C158] font-medium transition-colors hover:underline underline-offset-2"
+              title="madebycotrim"
+            >
+              madebycotrim
+            </a>
           </p>
         </div>
 

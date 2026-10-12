@@ -227,7 +227,7 @@ export const SERVICES_LIST: ServiceItem[] = [
       { duration: "80' min", price: 'R$ 299,00' }
     ],
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Movimentos suaves e contínuos que ajudam a aliviar o estresse, relaxar o corpo e proporcionar uma profunda sensação de bem-estar.',
+    description: 'Movimentos rítmicos, suaves e contínuos com óleos aquecidos e toalhas mornas. Atua no sistema nervoso simpático para dissolver tensões musculares, desacelerar a mente e restaurar o bem-estar integral.',
     longDescription: 'Uma experiência clássica e profundamente acolhedora de desaceleração. Manobras rítmicas e contínuas que atuam no sistema nervoso simpático, dissolvendo a ansiedade e restabelecendo o fluxo harmônico do organismo sob iluminação âmbar relaxante.',
     image: pedrasQuentesImg,
     popular: true,
@@ -262,7 +262,7 @@ export const SERVICES_LIST: ServiceItem[] = [
       { duration: "80' min", price: 'R$ 319,00' }
     ],
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'A combinação da massagem com pedras aquecidas ajuda a aliviar tensões musculares e proporcionar um relaxamento ainda mais profundo.',
+    description: 'Termoterapia integrativa com pedras vulcânicas aquecidas e óleos aromáticos. O calor penetra profundamente na musculatura, desfazendo nós de dor e aliviando a sobrecarga física e mental.',
     longDescription: 'A massagem com pedras quentes entra devagar e vai desfazendo os nós da tensão. O calor das pedras vulcânicas penetra profundamente nas camadas musculares, aliviando o cansaço acumulado e proporcionando a sensação inigualável de derreter na maca.',
     image: pedrasQuentesImg,
     popular: true,
@@ -289,7 +289,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     duration: "25' min",
     price: 'R$ 129,00',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Alivia a sensação de peso e promove leveza para pernas e pés cansados pela rotina diária.',
+    description: 'Massagem drenante e revigorante focada em panturrilhas e pés. Desobstrui a circulação periférica, drena edemas e alivia a sensação de peso acumulado com efeito de leveza imediata.',
     longDescription: 'Pausa rápida e revigorante focada em desobstruir a circulação e aliviar o cansaço acumulado nas extremidades inferiores. Perfeita para quem passa muito tempo em pé, pratica atividades físicas ou enfrenta dias intensos.',
     image: spaDosPesImg,
     includedItems: [
@@ -311,7 +311,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     duration: "25' min",
     price: 'R$ 129,00',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Ideal para quem sofre com tensão cervical, estresse acumulado e dores de cabeça.',
+    description: 'Técnica focada na liberação do trapézio, nuca, têmporas e couro cabeludo. Dissolve contraturas musculares, alivia cefaleias tensionais e devolve o foco e a clareza mental.',
     longDescription: 'Foco exclusivo na liberação do trapézio, nuca, têmporas e couro cabeludo. Dissolve contraturas e restaura a clareza mental em uma pausa estratégica de 25 minutos.',
     image: headSpaDetalheImg,
     includedItems: [
@@ -333,7 +333,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     duration: "25' min",
     price: 'R$ 129,00',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Ideal para aliviar tensões musculares dorsais e nos membros superiores causadas pela postura e rotina de trabalho.',
+    description: 'Alívio pontual e profundo para escápulas, coluna torácica e lombar. Desfaz tensões posturais causadas por longas jornadas de trabalho com toques firmes e descompressivos.',
     longDescription: 'Trabalho focado nas escápulas, coluna torácica e lombar. Promove descompressão muscular instantânea para renovar as energias durante uma pausa no meio do dia.',
     image: malivieBandejaReflexaoImg,
     includedItems: [
@@ -361,7 +361,7 @@ export const SERVICES_LIST: ServiceItem[] = [
       { duration: "80' min", price: 'R$ 299,00' }
     ],
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Técnica direcionada às áreas de maior tensão, promovendo alívio muscular, melhora da mobilidade e bem-estar físico.',
+    description: 'Manobras precisas de liberação miofascial e acupressão nas áreas de maior rigidez. Restaura a amplitude articular, alivia contraturas crônicas e devolve a mobilidade natural.',
     longDescription: 'Aplicação de manobras mais profundas e precisas onde seu corpo mais pede socorro. Alivia pontos de gatilho miofasciais, rigidez postural e sobrecargas articulares com máxima maestria e acolhimento.',
     image: pedrasQuentesImg,
     popular: true,
@@ -389,7 +389,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     ],
     badge: 'Especial Gestantes',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Experiência desenvolvida especialmente para gestantes, combinando técnicas de relaxamento, drenagem e cuidados personalizados conforme cada fase.',
+    description: 'Cuidado seguro e personalizado para cada fase gestacional. Combina drenagem suave para pernas e pés com alívio lombar, em maca com apoios anatômicos para conforto pleno da mamãe e do bebê.',
     longDescription: 'Posicionamento acolhedor com almofadas especiais para conforto absoluto da mamãe e do bebê. Estimula a redução de edemas e inchaços nas pernas, alivia tensões lombares e acolhe com toda segurança e carinho.',
     image: malivieRoupaoChinelosImg,
     includedItems: [
@@ -414,7 +414,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     popular: true,
     featured: true,
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Combina diferentes técnicas terapêuticas para auxiliar no alívio de dores musculares, tensões e limitações de movimento.',
+    description: 'Abordagem integrativa para alívio imediato de dores agudas e crônicas. Une massagem terapêutica profunda, liberação miofascial e ventosaterapia personalizada para resgatar a mobilidade do corpo.',
     longDescription: 'Atendimento personalizado de acordo com as necessidades de cada cliente. Pode incluir Massagem Terapêutica, Liberação Miofascial, Ventosaterapia, Alongamentos e técnicas complementares conforme avaliação individual. Indicado para dores musculares recorrentes, tensão cervical e lombar, sobrecarga física, limitação de movimento e recuperação muscular.',
     image: ritualBoasVindasImg,
     includedItems: [
@@ -444,7 +444,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     badge: 'Assinatura Maliviê',
     popular: true,
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Protocolo exclusivo que une drenagem e modelagem corporal para promover leveza, redução de inchaço e definição do contorno.',
+    description: 'Protocolo exclusivo que une manobras de drenagem linfática com modelagem corporal profunda. Elimina a retenção hídrica, ativa a circulação e delineia curvas com leveza imediata.',
     longDescription: 'Combina manobras vigorosas de modelagem com o ritmo drenante que ativa os linfonodos. Elimina a retenção hídrica, traz sensação imediata de desinchaço e esculpe as curvas corporais com delicadeza e eficiência.',
     image: malivieBandejaReflexaoImg,
     includedItems: [
@@ -466,7 +466,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     duration: "30' min",
     price: 'R$ 109,00',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Renova a pele através da remoção suave das células mortas, promovendo maciez e luminosidade imediata.',
+    description: 'Remoção delicada de células mortas através de microgrãos botânicos nutritivos e toalhas aquecidas. Desperta a luminosidade cutânea, hidrata profundamente e deixa a pele sedosa.',
     longDescription: 'Remove impurezas e estimula a microcirculação periférica com esfoliantes botânicos nutritivos, deixando a pele incrivelmente aveludada e pronta para receber hidratações profundas.',
     image: malivieBandejaReflexaoImg,
     includedItems: [
@@ -490,7 +490,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     badge: 'Pele Dourada',
     popular: true,
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Experiência completa com clareamento dos pelos, esfoliação corporal, hidratação profunda e perfumaria fina.',
+    description: 'Ritual nobre de banho de lua dourado com clareamento suave dos pelos, esfoliação aromática de corpo inteiro, nutrição intensiva e bruma de perfumaria sensorial de longa fixação.',
     longDescription: 'O verdadeiro ritual de deusa. Clareamento delicado e sem pinicar dos pelos corporais (banho de lua nobre), seguido de esfoliação aromática completa, nutrição intensa e bruma de perfumaria sensorial que deixa o corpo luminoso e perfumado o dia todo.',
     image: daySpaChaImg,
     includedItems: [
@@ -514,7 +514,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     duration: "25' min",
     price: 'R$ 99,00',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Reduz o inchaço, melhora a circulação e promove uma aparência mais leve e revitalizada para a pele do rosto.',
+    description: 'Estímulo suave dos canais linfáticos do rosto, contorno dos olhos e pescoço. Drena edemas perioculares, diminui o inchaço matinal e resgata o viço natural e contorno descansado.',
     longDescription: 'Toques sutis e precisos ao longo das cadeias linfáticas do rosto, olhos e pescoço. Drena bolsas perioculares, desinflama o contorno facial e estimula o viço natural da pele.',
     image: headSpaDetalheImg,
     includedItems: [
@@ -536,7 +536,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     duration: "35' min",
     price: 'R$ 149,00',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Cuidados essenciais para uma pele mais saudável, hidratada e iluminada com ativos botânicos.',
+    description: 'Nutrição intensiva com máscara facial antioxidante, ativos calmantes e massagem lifting delicada. Restaura a barreira protetora da pele e devolve um brilho radiante e viçoso.',
     longDescription: 'Tratamento nutritivo com máscara facial rica em antioxidantes, ativos calmantes e massagem lifting delicada. Restaura a barreira protetora da pele após dias exaustivos ou exposição climática.',
     image: headSpaTerapeutaImg,
     includedItems: [
@@ -558,7 +558,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     duration: "90' min",
     price: 'R$ 239,00',
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés de boas-vindas cortesia*',
-    description: 'Cuidado facial completo que une limpeza profunda, tecnologias e relaxamento para uma pele saudável e revitalizada.',
+    description: 'Protocolo facial completo unindo higienização, emoliência morna, extração minuciosa sem dor, alta frequência antisséptica e máscara calmante sob massagem facial relaxante.',
     longDescription: 'Higienização, emoliência morna, extração delicada de cravos e comedões, aplicação de alta frequência antisséptica e máscara calmante regeneradora sob toques relaxantes.',
     image: headSpaDetalheImg,
     includedItems: [
@@ -585,7 +585,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     popular: true,
     featured: true,
     courtesyNote: 'Aromaterapia Inclusa • Escalda-pés cortesia • Adicione Spa dos Pés por 50%',
-    description: 'Inspirado nos rituais orientais, combina relaxamento profundo, produtos asiáticos e ozonioterapia para cuidar do couro cabeludo e dos fios.',
+    description: 'Autêntico ritual asiático com cascata contínua do arco hídrico ASMR, ozonioterapia capilar e massagem craniana profunda. Desintoxica o couro cabeludo enquanto induz à paz absoluta.',
     longDescription: 'O autêntico ritual capilar oriental que desacelera a mente. Cascata contínua do arco hídrico com água termal morna, espuma densa desintoxicante, vapor de ozônio purificante e massagem no couro cabeludo, nuca e têmporas. Finalizado com secagem suave.',
     image: headSpaTerapeutaImg,
     includedItems: [

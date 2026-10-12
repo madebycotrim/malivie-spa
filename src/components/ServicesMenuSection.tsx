@@ -112,6 +112,288 @@ const INTENT_PRESETS: IntentPreset[] = [
   },
 ];
 
+interface ServiceCardProps {
+  service: ServiceItem;
+  categoryLabel: string;
+  onOpenDetails: (service: ServiceItem) => void;
+  isEditorActive: boolean;
+  confirmDeleteId: string | null;
+  setConfirmDeleteId: React.Dispatch<React.SetStateAction<string | null>>;
+  handleDeleteService: (id: string) => void;
+  toggleServicePopular: (id: string) => void;
+  moveService: (id: string, direction: 'left' | 'right', currentIds: string[]) => void;
+  filteredServiceIds: string[];
+}const ServiceCard: React.FC<ServiceCardProps> = ({
+  service,
+  categoryLabel,
+  onOpenDetails,
+  isEditorActive,
+  confirmDeleteId,
+  setConfirmDeleteId,
+  handleDeleteService,
+  toggleServicePopular,
+  moveService,
+  filteredServiceIds,
+}) => {
+  // URL direta e limpa para agendamento no WhatsApp
+  const whatsappUrl = React.useMemo(() => {
+    const text = `Olá! Gostaria de agendar o ritual ${service.name} no Maliviê SPA.`;
+    return `https://wa.me/5561999569214?text=${encodeURIComponent(text)}`;
+  }, [service.name]);
+
+
+  return (
+    <motion.div
+      layout
+      role="button"
+      tabIndex={0}
+      aria-label={`Ver etapas completas e agendar ${service.name}`}
+      onClick={() => onOpenDetails(service)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onOpenDetails(service);
+        }
+      }}
+      initial={{ opacity: 0, scale: 0.96, y: 14 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96, y: 8 }}
+      transition={{ duration: 0.45, ease: EASE_ORGANIC }}
+      className={`group relative rounded-[32px] sm:rounded-[36px] bg-white border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col h-full overflow-hidden cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 ${
+        confirmDeleteId === service.id ? 'relative z-50' : 'relative z-10'
+      } ${
+        service.popular
+          ? 'border-[#D4AF37]/60 shadow-[0_16px_45px_rgba(28,38,30,0.08),_0_0_24px_rgba(212,175,55,0.14)] hover:border-[#D4AF37] hover:shadow-[0_28px_65px_rgba(28,38,30,0.16),_0_0_35px_rgba(212,175,55,0.22)] -translate-y-1 hover:-translate-y-2'
+          : 'border-[#EAE3D6] hover:border-[#D4AF37]/60 shadow-[0_8px_30px_rgba(28,38,30,0.04)] hover:shadow-[0_24px_55px_rgba(28,38,30,0.12),_0_0_24px_rgba(212,175,55,0.12)] hover:-translate-y-2'
+      }`}
+    >
+      {/* Linha Dourada Acetinada no Topo (Efeito de Luxo ao Passar o Cursor) */}
+      <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-30 pointer-events-none" />
+
+      {/* 1. Imagem Hero no Topo (Bleed Total de Ponta a Ponta - Sem molduras escuras) */}
+      <div className="relative w-full h-64 sm:h-72 overflow-hidden bg-[#18251E] shrink-0">
+        <EditableImage
+          id={`service.${service.id}.image`}
+          defaultImage={service.image}
+          alt={service.name}
+          className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        />
+        {/* Gradiente cinematográfico sobre a foto */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/35 pointer-events-none" />
+
+        {/* Categoria e Tag Flutuantes no Topo da Imagem */}
+        <div className="absolute top-3.5 inset-x-3.5 sm:top-4 sm:inset-x-4 flex items-center justify-between gap-2 pointer-events-none">
+          <span className="px-3 py-1 rounded-full bg-[#121C16]/75 backdrop-blur-md text-[10px] uppercase font-sans font-semibold tracking-wider text-[#FAF6F0] border border-white/20 flex items-center gap-1.5 shadow-xs whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shrink-0" />
+            <span>{categoryLabel}</span>
+          </span>
+
+          {(service.popular || service.badge) && (
+            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#DFBC48] to-[#D4AF37] text-[#0F1913] text-[10px] uppercase font-sans font-bold tracking-wider flex items-center gap-1.5 shadow-sm whitespace-nowrap shrink-0">
+              <Sparkles className="w-3 h-3 fill-[#0F1913] shrink-0" />
+              <span>{service.badge || 'MAIS PROCURADO'}</span>
+            </span>
+          )}
+        </div>
+
+        {/* Rodapé da Foto: Chip de Duração e Affordance de Gaveta */}
+        <div className="absolute bottom-3.5 inset-x-4 flex items-center justify-between pointer-events-none">
+          <div className="px-3 py-1 rounded-full bg-[#121C16]/85 backdrop-blur-md text-xs font-sans text-white border border-white/15 flex items-center gap-1.5 shadow-xs">
+            <Clock className="w-3 h-3 text-[#D4AF37]" />
+            <span>{service.duration}</span>
+          </div>
+
+          <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0 px-3 py-1 rounded-full bg-white/95 text-[#121C16] text-[10px] uppercase font-sans font-bold tracking-wider backdrop-blur-md shadow-md flex items-center gap-1">
+            <span>Ver etapas</span>
+            <ArrowRight className="w-2.5 h-2.5 text-[#D4AF37]" />
+          </div>
+        </div>
+
+        {/* Modo Editor: Controles Administrativos */}
+        {isEditorActive && (
+          <div
+            className="absolute bottom-3.5 left-4 z-20 flex items-center gap-1 bg-[#121C16]/95 p-1 rounded-full backdrop-blur-md border border-white/20 shadow-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleServicePopular(service.id);
+              }}
+              className={`p-1.5 rounded-full transition-all ${
+                service.popular ? 'bg-[#D4AF37] text-[#121C16]' : 'text-white hover:text-[#D4AF37]'
+              }`}
+              title="Alternar favorito"
+            >
+              <Star className={`w-3 h-3 ${service.popular ? 'fill-[#121C16]' : ''}`} />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                moveService(service.id, 'left', filteredServiceIds);
+              }}
+              className="p-1.5 rounded-full text-white hover:text-[#D4AF37]"
+              title="Mover ritual para esquerda"
+            >
+              <ArrowLeft className="w-3 h-3" />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                moveService(service.id, 'right', filteredServiceIds);
+              }}
+              className="p-1.5 rounded-full text-white hover:text-[#D4AF37]"
+              title="Mover ritual para direita"
+            >
+              <ArrowRight className="w-3 h-3" />
+            </button>
+            <div className={`relative ${confirmDeleteId === service.id ? 'z-50' : ''}`}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setConfirmDeleteId((prev) => (prev === service.id ? null : service.id));
+                }}
+                className="p-1.5 rounded-full text-red-400 hover:text-red-300"
+                title="Remover ritual"
+              >
+                <Trash2 className="w-3 h-3" />
+              </button>
+              <ConfirmPopover
+                isOpen={confirmDeleteId === service.id}
+                onConfirm={() => handleDeleteService(service.id)}
+                onCancel={() => setConfirmDeleteId(null)}
+                message="Deseja excluir?"
+                position="bottom"
+                align="right"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 2. Corpo do Card: Tipografia Editorial Pura e Serena */}
+      <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between">
+        <div>
+          {/* Título com Altura Fixa para Alinhamento Perfeito */}
+          <div className="h-[3.6rem] sm:h-[3.8rem] flex items-start">
+            <h3 className="font-serif text-[1.55rem] sm:text-[1.7rem] text-[#121C16] group-hover:text-[#2D4536] transition-colors leading-[1.2] font-normal line-clamp-2">
+              <EditableText id={`service.${service.id}.name`} defaultText={service.name} as="span">
+                {service.name}
+              </EditableText>
+            </h3>
+          </div>
+
+          {/* Subtítulo / Descrição Completa e Envolvente */}
+          <div className="h-[4.8rem] sm:h-[5.2rem] mt-2.5">
+            <p className="font-sans text-[13px] sm:text-[13.5px] text-[#556357] leading-relaxed line-clamp-3 sm:line-clamp-4">
+              <EditableText
+                id={`service.${service.id}.description`}
+                defaultText={service.description || service.tagline}
+                as="span"
+              >
+                {service.description || service.tagline}
+              </EditableText>
+            </p>
+          </div>
+        </div>
+
+        {/* 3. Preço & Duração em Linha Nobre (Zero Caixas Cinzas, Puro Menu de Luxo) */}
+        <div className="mt-5 pt-4 border-t border-[#F0EAE1] flex items-end justify-between">
+          <div>
+            <span className="text-[10px] uppercase font-sans tracking-widest text-[#8C7A6B] block font-semibold">
+              Sessão Privativa
+            </span>
+            <span className="text-xs font-sans text-[#7A8B7B] font-medium block mt-0.5">
+              {service.duration}
+            </span>
+          </div>
+
+          <div className="text-right">
+            {(() => {
+              const rawPrice = service.price || '';
+              if (!rawPrice) return null;
+
+              if (rawPrice.toLowerCase().includes('a partir de')) {
+                return (
+                  <div className="flex flex-col items-end">
+                    <span className="text-[11px] font-sans text-[#8C7A6B] block leading-tight">
+                      A partir de
+                    </span>
+                    <span className="font-serif text-2xl sm:text-[1.55rem] font-normal text-[#121C16] block leading-tight mt-0.5">
+                      {rawPrice.replace(/a partir de\s*/i, '')}
+                    </span>
+                  </div>
+                );
+              }
+
+              if (rawPrice.includes(':')) {
+                return (
+                  <div className="flex flex-col items-end">
+                    <span className="text-[11px] font-sans text-[#8C7A6B] block leading-tight">
+                      {rawPrice.split(':')[0]}:
+                    </span>
+                    <span className="font-serif text-2xl sm:text-[1.55rem] font-normal text-[#121C16] block leading-tight mt-0.5">
+                      {rawPrice.split(':')[1].trim()}
+                    </span>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="flex flex-col items-end justify-end">
+                  <span className="text-[11px] font-sans text-transparent select-none block leading-tight pointer-events-none">
+                    Valor
+                  </span>
+                  <span className="font-serif text-2xl sm:text-[1.55rem] font-normal text-[#121C16] block leading-tight mt-0.5">
+                    {rawPrice}
+                  </span>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+
+        {/* 4. Régua de Botões em Pílulas Orgânicas (rounded-full) */}
+        <div className="mt-5 flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenDetails(service);
+            }}
+            className="flex-1 py-3 px-4 rounded-full border border-[#121C16]/20 hover:border-[#121C16] hover:bg-[#FAF6F0] text-[#121C16] text-xs font-sans font-semibold tracking-wider uppercase transition-all duration-300 text-center cursor-pointer flex items-center justify-center gap-1.5 group/btn shadow-2xs hover:shadow-xs active:scale-[0.98]"
+            title="Abre instantaneamente a gaveta com etapas completas, terapeutas e bastidores"
+            aria-label={`Ver etapas e detalhes de ${service.name}`}
+          >
+            <span>Ver detalhes</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#7A8B7B] group-hover/btn:text-[#D4AF37] group-hover/btn:translate-x-1 transition-transform duration-300" />
+          </button>
+
+          <a
+            href={whatsappUrl}
+            onClick={(e) => {
+              e.stopPropagation();
+              trackWhatsAppClick('servico_card', service.name);
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 py-3 px-4 rounded-full bg-[#121C16] hover:bg-[#203127] text-[#D4AF37] hover:text-[#F3EFE6] text-xs font-sans font-semibold tracking-wider uppercase shadow-sm hover:shadow-[0_4px_16px_rgba(18,28,22,0.25)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer"
+            title={`Agendar ${service.name} direto no WhatsApp`}
+            aria-label={`Agendar ${service.name} direto no WhatsApp`}
+          >
+            <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
+            <span>Agendar</span>
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 export const ServicesMenuSection: React.FC = () => {
   const {
     services,
@@ -538,214 +820,19 @@ export const ServicesMenuSection: React.FC = () => {
         >
           <AnimatePresence mode="popLayout">
             {displayedServices.map((service) => (
-              <motion.div
+              <ServiceCard
                 key={service.id}
-                role="button"
-                tabIndex={0}
-                aria-label={`Ver detalhes e agendar ${service.name}`}
-                onClick={() => handleOpenDetails(service)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleOpenDetails(service);
-                  }
-                }}
-                initial={{ opacity: 0, scale: 0.96, y: 14 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                transition={{ duration: 0.45, ease: EASE_ORGANIC }}
-                className={`group relative rounded-[32px] sm:rounded-[36px] bg-white border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-hidden cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 ${
-                  confirmDeleteId === service.id ? 'relative z-50' : 'relative z-10'
-                } ${
-                  service.popular
-                    ? 'border-[#D4AF37]/60 shadow-[0_12px_36px_rgba(28,38,30,0.08),_0_0_20px_rgba(212,175,55,0.12)] hover:border-[#D4AF37] hover:shadow-[0_24px_55px_rgba(28,38,30,0.14),_0_0_30px_rgba(212,175,55,0.2)] -translate-y-1 hover:-translate-y-2'
-                    : 'border-[#EAE3D6] hover:border-[#D4AF37]/60 shadow-[0_6px_24px_rgba(28,38,30,0.04)] hover:shadow-[0_20px_45px_rgba(28,38,30,0.1),_0_0_20px_rgba(212,175,55,0.1)] hover:-translate-y-2'
-                }`}
-              >
-                {/* Linha Dourada Acetinada no Topo (Efeito de Luxo ao Passar o Cursor) */}
-                <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-30 pointer-events-none" />
-
-                {/* 1. Header do Card: Categoria & Selo Exclusivo */}
-                <div className="pt-5 sm:pt-6 px-5 sm:px-6 pb-3.5 flex items-center justify-between border-b border-[#F0EAE1]">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-                    <span className="text-[10.5px] uppercase font-sans font-bold tracking-[0.2em] text-[#7A8B7B]">
-                      {service.categoryLabel || getCategoryLabel(service.category)}
-                    </span>
-                  </div>
-
-                  {(service.popular || service.badge) && (
-                    <span className="px-2.5 py-1 rounded-full bg-[#FAF5EC] border border-[#D4AF37]/50 text-[#8C6D1F] text-[10px] uppercase font-sans font-bold tracking-wider flex items-center gap-1 shadow-2xs">
-                      <Sparkles className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
-                      <span>{service.badge || 'MAIS PROCURADO'}</span>
-                    </span>
-                  )}
-                </div>
-
-                {/* 2. Título & Tagline no Topo (Hierarquia Editorial Invertida) */}
-                <div className="px-5 sm:px-6 pt-4 pb-2">
-                  <h3 className="font-serif text-[1.45rem] sm:text-[1.6rem] text-[#121C16] group-hover:text-[#2D4536] transition-colors leading-[1.25] font-normal mb-2">
-                    <EditableText id={`service.${service.id}.name`} defaultText={service.name} as="span">
-                      {service.name}
-                    </EditableText>
-                  </h3>
-                  <p className="font-sans text-[12.5px] text-[#666666] leading-relaxed line-clamp-2 min-h-[2.4rem]">
-                    <EditableText
-                      id={`service.${service.id}.description`}
-                      defaultText={service.tagline || service.description}
-                      as="span"
-                    >
-                      {service.tagline || service.description}
-                    </EditableText>
-                  </p>
-                </div>
-
-                {/* 3. Janela Fotográfica Arquitetural no Centro */}
-                <div className="px-5 sm:px-6 py-2.5">
-                  <div className="relative w-full aspect-[16/9.5] rounded-2xl overflow-hidden bg-[#18251E] shadow-xs group-hover:shadow-md transition-shadow">
-                    <EditableImage
-                      id={`service.${service.id}.image`}
-                      defaultImage={service.image}
-                      alt={service.name}
-                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-
-                    {/* Chip de Duração no Canto Inferior da Janela */}
-                    <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-full bg-[#121C16]/80 backdrop-blur-md text-[10.5px] font-sans text-white border border-white/10 flex items-center gap-1.5 shadow-xs">
-                      <Clock className="w-3 h-3 text-[#D4AF37]" />
-                      <span>{service.duration}</span>
-                    </div>
-
-                    {/* Modo Editor: Controles Administrativos */}
-                    {isEditorActive && (
-                      <div
-                        className="absolute bottom-2.5 left-2.5 z-20 flex items-center gap-1 bg-[#121C16]/90 p-1 rounded-full backdrop-blur-md border border-white/20"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleServicePopular(service.id);
-                          }}
-                          className={`p-1 rounded-full transition-all ${
-                            service.popular ? 'bg-[#D4AF37] text-[#121C16]' : 'text-white hover:text-[#D4AF37]'
-                          }`}
-                          title="Alternar favorito"
-                        >
-                          <Star className={`w-3 h-3 ${service.popular ? 'fill-[#121C16]' : ''}`} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveService(service.id, 'left', filteredServices.map((s) => s.id));
-                          }}
-                          className="p-1 rounded-full text-white hover:text-[#D4AF37]"
-                          title="Mover ritual para esquerda"
-                        >
-                          <ArrowLeft className="w-3 h-3" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            moveService(service.id, 'right', filteredServices.map((s) => s.id));
-                          }}
-                          className="p-1 rounded-full text-white hover:text-[#D4AF37]"
-                          title="Mover ritual para direita"
-                        >
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
-                        <div className={`relative ${confirmDeleteId === service.id ? 'z-50' : ''}`}>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setConfirmDeleteId((prev) => (prev === service.id ? null : service.id));
-                            }}
-                            className="p-1 rounded-full text-red-400 hover:text-red-300"
-                            title="Remover ritual"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                          <ConfirmPopover
-                            isOpen={confirmDeleteId === service.id}
-                            onConfirm={() => handleDeleteService(service.id)}
-                            onCancel={() => setConfirmDeleteId(null)}
-                            message="Deseja excluir?"
-                            position="bottom"
-                            align="right"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* 4. Tabela de Valores Estilo Menu Clássico de SPA (Linha Pontilhada) */}
-                <div className="px-5 sm:px-6 py-2.5">
-                  {service.priceOptions && service.priceOptions.length > 1 ? (
-                    <div className="space-y-2 py-2.5 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3D6]/70">
-                      {service.priceOptions.slice(0, 2).map((opt, idx) => (
-                        <div key={idx} className="flex items-center justify-between text-xs font-sans">
-                          <span className="text-[#7A8B7B] font-semibold tracking-wider uppercase text-[10.5px] flex items-center gap-1.5 shrink-0">
-                            <span className="w-1 h-1 rounded-full bg-[#D4AF37]" />
-                            Sessão {opt.duration}
-                          </span>
-                          <div className="flex-1 mx-3 border-b border-dotted border-[#D4AF37]/50" />
-                          <span className="font-serif font-bold text-[14.5px] text-[#121C16] shrink-0">
-                            {opt.price}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-2.5 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE3D6]/70 flex items-center justify-between text-xs font-sans">
-                      <span className="text-[#7A8B7B] font-semibold tracking-wider uppercase text-[10.5px] flex items-center gap-1.5 shrink-0">
-                        <span className="w-1 h-1 rounded-full bg-[#D4AF37]" />
-                        Sessão {service.duration}
-                      </span>
-                      <div className="flex-1 mx-3 border-b border-dotted border-[#D4AF37]/50" />
-                      <span className="font-serif font-bold text-base text-[#121C16] shrink-0">
-                        {service.priceOptions && service.priceOptions[0]?.price ? service.priceOptions[0].price : service.price}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* 5. Rodapé com Ações Equilibradas Lado a Lado */}
-                <div className="p-5 sm:px-6 sm:pb-6 pt-2 flex items-center gap-2.5 mt-auto">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenDetails(service);
-                    }}
-                    className="flex-1 py-2.5 px-3 rounded-xl border border-[#121C16]/20 hover:border-[#D4AF37] hover:bg-[#FAF6F0] text-[#121C16] text-xs font-sans font-semibold tracking-wide transition-all text-center cursor-pointer flex items-center justify-center gap-1.5 group/btn"
-                  >
-                    <span>Ver detalhes</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#7A8B7B] group-hover/btn:text-[#D4AF37] group-hover/btn:translate-x-1 transition-all" />
-                  </button>
-
-                  <a
-                    href={SPA_BUSINESS_DATA.whatsapp.formatServiceUrl(service.name)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      trackWhatsAppClick('servico_card', service.name);
-                    }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-[#121C16] hover:bg-[#203127] text-[#D4AF37] hover:text-[#F3EFE6] text-xs font-sans font-semibold tracking-wide shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                    title={`Agendar ${service.name} direto no WhatsApp`}
-                    aria-label={`Agendar ${service.name} direto no WhatsApp`}
-                  >
-                    <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
-                    <span>Agendar</span>
-                  </a>
-                </div>
-              </motion.div>
+                service={service}
+                categoryLabel={service.categoryLabel || getCategoryLabel(service.category)}
+                onOpenDetails={handleOpenDetails}
+                isEditorActive={isEditorActive}
+                confirmDeleteId={confirmDeleteId}
+                setConfirmDeleteId={setConfirmDeleteId}
+                handleDeleteService={handleDeleteService}
+                toggleServicePopular={toggleServicePopular}
+                moveService={moveService}
+                filteredServiceIds={filteredServices.map((s) => s.id)}
+              />
             ))}
 
             {/* Card de Adicionar Novo Ritual no Modo Editor */}
