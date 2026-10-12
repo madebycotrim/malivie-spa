@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "d1:migrate:local": "wrangler d1 migrations apply malivie-db --local",
     "d1:migrate:remote": "wrangler d1 migrations apply malivie-db --remote",
-    "pages:dev": "wrangler pages dev dist --d1=DB=malivie-db"
+    "pages:dev": "wrangler pages dev dist --d1=DB=malivie-db",
+    "optimize:pdf": "node scripts/optimize-pdf.mjs"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.21",
@@ -37,6 +38,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
+    "pdf-lib": "^1.17.1",
     "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
